@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6412888985524141537}
   - component: {fileID: 8401890018267894458}
   - component: {fileID: 6126608032687205084}
+  - component: {fileID: 5724187260545175532}
   m_Layer: 0
   m_Name: Line
   m_TagString: Untagged
@@ -30,8 +31,7 @@ Transform:
   m_LocalPosition: {x: 0.25816107, y: 1.4705304, z: 0.09859583}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1296494845783010774}
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8401890018267894458
@@ -47,7 +47,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _renderer: {fileID: 6126608032687205084}
-  _collider: {fileID: 1915202564065148964}
+  _collider: {fileID: 5724187260545175532}
   _intersectionCollider: {fileID: 3074071656345859991, guid: 629cdaa9282644141980a31a5ed16c3f, type: 3}
 --- !u!120 &6126608032687205084
 LineRenderer:
@@ -153,45 +153,13 @@ LineRenderer:
   m_UseWorldSpace: 1
   m_Loop: 0
   m_ApplyActiveColorSpace: 1
---- !u!1 &6646748777657228935
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1296494845783010774}
-  - component: {fileID: 1915202564065148964}
-  m_Layer: 0
-  m_Name: Collider
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1296494845783010774
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6646748777657228935}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 6412888985524141537}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!68 &1915202564065148964
+--- !u!68 &5724187260545175532
 EdgeCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6646748777657228935}
+  m_GameObject: {fileID: 5109253036769506395}
   m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
