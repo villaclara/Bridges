@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 585487331907932103}
   - component: {fileID: 2986627317527075612}
   - component: {fileID: 4260897166256829420}
+  - component: {fileID: 4572731563433308726}
   m_Layer: 0
   m_Name: NumberContainer
   m_TagString: Untagged
@@ -47,6 +48,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91c3f40128630794f900225e9ccc8665, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CurrentNumber: 0
 --- !u!58 &4260897166256829420
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -81,8 +83,35 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_Radius: 0.26146805
+  m_Offset: {x: -0.009412795, y: -0.0013447404}
+  m_Radius: 0.4362755
+--- !u!50 &4572731563433308726
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 314743299326614906}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 1
+  m_UseAutoMass: 0
+  m_Mass: 0.0001
+  m_LinearDrag: 0
+  m_AngularDrag: 0
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &2556919314243186249
 GameObject:
   m_ObjectHideFlags: 0

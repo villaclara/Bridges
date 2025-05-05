@@ -28,6 +28,7 @@ public class NumbersManager : MonoBehaviour
 
 		var current = Instantiate(numberPrefab, Number.DefaultPosition, Quaternion.identity);
 		var textObject = current.transform.GetComponentInChildren<TextMeshPro>();
+		current.CurrentNumber = _currentNumber;
 		textObject.text = _currentNumber.ToString();
 		current.gameObject.SetActive(true);
 		_currentNumber++;
