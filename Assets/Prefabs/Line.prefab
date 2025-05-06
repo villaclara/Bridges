@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 5724187260545175532}
   m_Layer: 0
   m_Name: Line
-  m_TagString: Untagged
+  m_TagString: Line
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -48,7 +48,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _renderer: {fileID: 6126608032687205084}
   _collider: {fileID: 5724187260545175532}
-  _intersectionCollider: {fileID: 3074071656345859991, guid: 629cdaa9282644141980a31a5ed16c3f, type: 3}
+  _bridge: {fileID: 3074071656345859991, guid: 629cdaa9282644141980a31a5ed16c3f, type: 3}
 --- !u!120 &6126608032687205084
 LineRenderer:
   serializedVersion: 2

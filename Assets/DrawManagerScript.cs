@@ -11,12 +11,14 @@ public class DrawManager : MonoBehaviour
 
 
 	public const float RESOLUTION = 0.02f;
+	private bool _canDraw = false;
 
 	private Line _currentLine;
 	void Start()
 	{
 		_cam = Camera.main;
-	}
+        GlobalVars.OnNumbersPlaced += EnableDrawing;
+    }
 
 	// Update is called once per frame
 	void Update()
@@ -34,16 +36,21 @@ public class DrawManager : MonoBehaviour
 
 		Vector2 mousePos = _cam.ScreenToWorldPoint(Input.mousePosition);
 
-		if (Input.GetMouseButtonDown(0))
+		if (Input.GetMouseButtonDown(0) && _canDraw)
 		{
 			_currentLine = Instantiate(_linePrefab, mousePos, Quaternion.identity);
 			_intersectionCollider.transform.position = mousePos;
 		}
 
-		if (Input.GetMouseButton(0))
+		if (Input.GetMouseButton(0) && _canDraw)
 		{
 			_currentLine.SetPosition(mousePos);
 			_intersectionCollider.transform.position = mousePos;
 		}
 	}
+
+    private void EnableDrawing()
+    {
+        _canDraw = true;
+    }
 }

@@ -23,7 +23,8 @@ public class NumbersManager : MonoBehaviour
 	{
 		if (_currentNumber > GlobalVars.NUMBERS_COUNT)
 		{
-			return;
+            GlobalVars.OnNumbersPlaced?.Invoke();
+            return;
 		}
 
 		var current = Instantiate(numberPrefab, Number.DefaultPosition, Quaternion.identity);
