@@ -7,7 +7,7 @@ public class Line : MonoBehaviour
 
     [SerializeField] private LineRenderer _renderer;
     [SerializeField] private EdgeCollider2D _collider;
-    [SerializeField] private GameObject _intersectionCollider;
+    [SerializeField] private GameObject _bridge;
 
 
     private readonly List<Vector2> _points = new List<Vector2>();
@@ -42,11 +42,12 @@ public class Line : MonoBehaviour
 
         return Vector2.Distance(_renderer.GetPosition(_renderer.positionCount - 1), pos) > DrawManager.RESOLUTION;
     }
-    
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        Debug.Log("Bruh");
-        Instantiate(_intersectionCollider, collision.transform.position, Quaternion.identity);
-    }
+
+    //private void OnTriggerEnter2D(Collider2D collision)
+    //{
+    //    Instantiate(_bridge, collision.transform.position, Quaternion.identity);
+    //    Debug.Log(GlobalVars.score + 1);
+    //    GlobalVars.score += 1;
+    //}
 
 }

@@ -28,6 +28,7 @@ public class Number : MonoBehaviour
 
 		// Check if mouse is not over the screen.
 		// xz chu norm tyt.
+		
 		Vector3 mousePos1 = Input.mousePosition;
 		var isMouseOverScreen = mousePos1.x >= 0 && mousePos1.x <= Screen.width &&
 			   mousePos1.y >= 0 && mousePos1.y <= Screen.height;
@@ -39,7 +40,7 @@ public class Number : MonoBehaviour
 
 		Vector3 mousePos = _cam.ScreenToWorldPoint(Input.mousePosition);
 		mousePos.z = -2f;   // -2 because of the border of circle. (border has z= -1 in prefab).
-		this.transform.position = mousePos;
+		transform.position = mousePos;
 
 		if (Input.GetMouseButtonUp(0))
 		{
@@ -48,7 +49,7 @@ public class Number : MonoBehaviour
 			// TODO - Disabling Update in Number after drag and release
 			// Check whats better here. No need to set enabled two different times.
 			// Maybe after adding lines it will be clear what to use.
-			this.enabled = false; // disable script after drag ends
+			enabled = false; // disable script after drag ends
 			_isEnabled = false;     // disable OnMouseDown registering event
 			OnDragEnded?.Invoke(); // Notify Manager when drag ends
 		}

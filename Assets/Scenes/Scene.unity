@@ -135,7 +135,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &332824309
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -314,6 +314,7 @@ GameObject:
   - component: {fileID: 1081907909}
   - component: {fileID: 1081907908}
   - component: {fileID: 1081907910}
+  - component: {fileID: 1081907911}
   m_Layer: 0
   m_Name: IntersectionCollider
   m_TagString: Untagged
@@ -356,7 +357,7 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 0.05
+  m_Radius: 0.03
 --- !u!4 &1081907909
 Transform:
   m_ObjectHideFlags: 0
@@ -399,6 +400,19 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &1081907911
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1081907907}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9599b3d31fb45f1428cc4feccbed96be, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _bridge: {fileID: 3074071656345859991, guid: 629cdaa9282644141980a31a5ed16c3f, type: 3}
 --- !u!1 &1190940370
 GameObject:
   m_ObjectHideFlags: 0
@@ -657,8 +671,8 @@ Transform:
   m_GameObject: {fileID: 1953165986}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.0056, y: 0.0041, z: 0}
-  m_LocalScale: {x: 0.8950254, y: 1.2951484, z: -1.21986}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.8950254, y: 1.295148, z: -1.3371786}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4260897166256829420}
   m_Layer: 0
   m_Name: NumberContainer
-  m_TagString: Untagged
+  m_TagString: Number
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
