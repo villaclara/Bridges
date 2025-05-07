@@ -6,23 +6,34 @@ public class Number : MonoBehaviour
 	public static readonly Vector3 DefaultPosition = new(0f, 0f, -2f);   // if 0z - the black border is not visible
 	private Camera _cam;
 	private bool _isDragging;
-	private Rigidbody2D _rb;
+	private bool _isValidPositionToStopDrag = true;
+	public event Action<bool> OnIsAllowedToStopDragChanged;
 
-	private Vector2 _targetPosition = Vector2.zero;
+	public bool IsValidPosToStopDrag
+	{
+		get => _isValidPositionToStopDrag;
+		private set
+		{
+			_isValidPositionToStopDrag = value;
+			Debug.Log($"Is allowed to drop set prop - {_isValidPositionToStopDrag}");
+			OnIsAllowedToStopDragChanged?.Invoke(_isValidPositionToStopDrag);
+		}
+	}
+
+	private SpriteRenderer _circleRenderer;
 
 	// invokes when the position is set. Is assigned in NumbersManager to create next number.
 	public Action OnDragEnded;
 
 	private bool _isEnabled = true;
-	public int CurrentNumber;
-
-	private bool _isInsideOtherNumber = false;
 
 	// Start is called before the first frame update
 	void Start()
 	{
 		_cam = Camera.main;
-		_rb = GetComponent<Rigidbody2D>();
+		_circleRenderer = GetComponentInChildren<SpriteRenderer>();
+		//OnIsAllowedToStopDragChanged += SetColorIfAllowedToDrop;
+		Debug.Log(OnIsAllowedToStopDragChanged.Method);
 	}
 
 	// Update is called once per frame
@@ -35,6 +46,7 @@ public class Number : MonoBehaviour
 
 		// Check if mouse is not over the screen.
 		// xz chu norm tyt.
+
 		Vector3 mousePos1 = Input.mousePosition;
 		var isMouseOverScreen = mousePos1.x >= 0 && mousePos1.x <= Screen.width &&
 			   mousePos1.y >= 0 && mousePos1.y <= Screen.height;
@@ -46,31 +58,26 @@ public class Number : MonoBehaviour
 
 		Vector3 mousePos = _cam.ScreenToWorldPoint(Input.mousePosition);
 		mousePos.z = -2f;   // -2 because of the border of circle. (border has z= -1 in prefab).
+		transform.position = mousePos;
 
-		if (_isInsideOtherNumber)
+		if (Input.GetMouseButtonUp(0) && IsValidPosToStopDrag)
 		{
-			return;
-		}
+			OnIsAllowedToStopDragChanged -= SetColorIfAllowedToDrop;
 
-		_targetPosition = mousePos;
-		this.transform.position = mousePos;
-
-		if (Input.GetMouseButtonUp(0))
-		{
 			_isDragging = false;
-
+			_circleRenderer.color = Color.yellow;
 			// TODO - Disabling Update in Number after drag and release
 			// Check whats better here. No need to set enabled two different times.
 			// Maybe after adding lines it will be clear what to use.
-			this.enabled = false; // disable script after drag ends
+			enabled = false; // disable script after drag ends
 			_isEnabled = false;     // disable OnMouseDown registering event
-									//this.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
 			OnDragEnded?.Invoke(); // Notify Manager when drag ends
 		}
 	}
 
 	void OnMouseDown()
 	{
+		// do not perform any movement when the Number is already placed on grid.
 		if (!_isEnabled)
 		{
 			return;
@@ -79,27 +86,54 @@ public class Number : MonoBehaviour
 		if (Input.GetMouseButtonDown(0))
 		{
 			_isDragging = true;
+			//SetColorIfAllowedToDrop(_isAllowedToStopDrag);
 		}
 	}
 
-	//void FixedUpdate()
-	//{
-	//	if (_isDragging)
-	//	{
-	//		_rb.MovePosition(Vector2.Lerp(_rb.position, _targetPosition, 0.3f));
-	//	}
-	//}
+	private void OnCollisionStay2D(Collision2D collision)
+	{
+		IsValidPosToStopDrag = false;
+	}
 
 	private void OnCollisionEnter2D(Collision2D collision)
 	{
-		Debug.Log($"On collision enter, current ({CurrentNumber}), enabled ({this.enabled})");
-		_isInsideOtherNumber = true;
+		// checking this because the OnCollision method triggers for both Numbers.
+		if (!_isDragging)
+		{
+			return;
+		}
+
+		if (collision.gameObject.GetComponent<Number>().GetType() == typeof(Number))
+		{
+			IsValidPosToStopDrag = false;
+			Debug.Log($"collision enter - {IsValidPosToStopDrag}");
+			//SetColorIfAllowedToDrop(_isAllowedToStopDrag);
+		}
 	}
 
 	private void OnCollisionExit2D(Collision2D collision)
 	{
-		Debug.Log($"col exit");
-		_isInsideOtherNumber = false;
+		// checking this because the OnCollision method triggers for both Numbers.
+		if (!_isDragging)
+		{
+			return;
+		}
+
+		if (collision.gameObject.GetComponent<Number>().GetType() == typeof(Number))
+		{
+			IsValidPosToStopDrag = true;
+			Debug.Log($"collision exit - {IsValidPosToStopDrag}");
+
+			//SetColorIfAllowedToDrop(_isAllowedToStopDrag);
+		}
+	}
+
+
+	private void SetColorIfAllowedToDrop(bool isAllowedToDrop)
+	{
+		_circleRenderer.color = isAllowedToDrop
+			? new Color32(60, 143, 79, 255)
+			: new Color32(255, 0, 0, 255);
 	}
 
 }
