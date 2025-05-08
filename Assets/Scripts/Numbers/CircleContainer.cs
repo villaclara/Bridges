@@ -4,13 +4,13 @@ public class CircleContainer : MonoBehaviour
 {
 	private SpriteRenderer _renderer;
 
-	private void Awake()
-	{
-		_renderer = GetComponent<SpriteRenderer>();
-		var number = GetComponentInParent<Number>();
-		number.OnIsAllowedToStopDragChanged += SetColorIfAllowedToDrop;
-		//Debug.Log(number.OnIsAllowedToStopDragChanged.Method);
-	}
+	// Uncomment this to start working script.
+	//private void Awake()
+	//{
+	//	_renderer = GetComponent<SpriteRenderer>();
+	//	var number = GetComponentInParent<Number>();
+	//	number.OnIsAllowedToStopDragChanged += SetColorIfAllowedToDrop;
+	//}
 
 	private void SetColorIfAllowedToDrop(bool isAllowedToDrop)
 	{

@@ -4,9 +4,19 @@ using UnityEngine;
 public class Number : MonoBehaviour
 {
 	public static readonly Vector3 DefaultPosition = new(0f, 0f, -2f);   // if 0z - the black border is not visible
+
+	#region private fields
+
 	private Camera _cam;
 	private bool _isDragging;
-	private bool _isValidPositionToStopDrag = true;
+	private bool _isValidPositionToStopDrag = true; // by default we allow to stop
+	private SpriteRenderer _circleRenderer;
+	private bool _isEnabled = true;
+
+	#endregion
+
+	#region public fields
+
 	public event Action<bool> OnIsAllowedToStopDragChanged;
 
 	public bool IsValidPosToStopDrag
@@ -15,29 +25,26 @@ public class Number : MonoBehaviour
 		private set
 		{
 			_isValidPositionToStopDrag = value;
-			Debug.Log($"Is allowed to drop set prop - {_isValidPositionToStopDrag}");
 			OnIsAllowedToStopDragChanged?.Invoke(_isValidPositionToStopDrag);
 		}
 	}
 
-	private SpriteRenderer _circleRenderer;
-
 	// invokes when the position is set. Is assigned in NumbersManager to create next number.
 	public Action OnDragEnded;
 
-	private bool _isEnabled = true;
+	#endregion
 
 	// Start is called before the first frame update
-	void Start()
+	private void Start()
 	{
 		_cam = Camera.main;
 		_circleRenderer = GetComponentInChildren<SpriteRenderer>();
-		//OnIsAllowedToStopDragChanged += SetColorIfAllowedToDrop;
-		Debug.Log(OnIsAllowedToStopDragChanged.Method);
+		_circleRenderer.color = Color.yellow;
+		OnIsAllowedToStopDragChanged += SetColorIfAllowedToDrop;
 	}
 
 	// Update is called once per frame
-	void Update()
+	private void Update()
 	{
 		if (!_isDragging)
 		{
@@ -58,24 +65,24 @@ public class Number : MonoBehaviour
 
 		Vector3 mousePos = _cam.ScreenToWorldPoint(Input.mousePosition);
 		mousePos.z = -2f;   // -2 because of the border of circle. (border has z= -1 in prefab).
-		transform.position = mousePos;
+		this.transform.position = mousePos;
 
 		if (Input.GetMouseButtonUp(0) && IsValidPosToStopDrag)
 		{
 			OnIsAllowedToStopDragChanged -= SetColorIfAllowedToDrop;
 
 			_isDragging = false;
-			_circleRenderer.color = Color.yellow;
+			_circleRenderer.color = Color.white;
 			// TODO - Disabling Update in Number after drag and release
 			// Check whats better here. No need to set enabled two different times.
 			// Maybe after adding lines it will be clear what to use.
-			enabled = false; // disable script after drag ends
+			this.enabled = false; // disable script after drag ends
 			_isEnabled = false;     // disable OnMouseDown registering event
 			OnDragEnded?.Invoke(); // Notify Manager when drag ends
 		}
 	}
 
-	void OnMouseDown()
+	private void OnMouseDown()
 	{
 		// do not perform any movement when the Number is already placed on grid.
 		if (!_isEnabled)
@@ -86,7 +93,8 @@ public class Number : MonoBehaviour
 		if (Input.GetMouseButtonDown(0))
 		{
 			_isDragging = true;
-			//SetColorIfAllowedToDrop(_isAllowedToStopDrag);
+			// set default color to green when starting
+			SetColorIfAllowedToDrop(IsValidPosToStopDrag);
 		}
 	}
 
@@ -106,8 +114,6 @@ public class Number : MonoBehaviour
 		if (collision.gameObject.GetComponent<Number>().GetType() == typeof(Number))
 		{
 			IsValidPosToStopDrag = false;
-			Debug.Log($"collision enter - {IsValidPosToStopDrag}");
-			//SetColorIfAllowedToDrop(_isAllowedToStopDrag);
 		}
 	}
 
@@ -122,9 +128,6 @@ public class Number : MonoBehaviour
 		if (collision.gameObject.GetComponent<Number>().GetType() == typeof(Number))
 		{
 			IsValidPosToStopDrag = true;
-			Debug.Log($"collision exit - {IsValidPosToStopDrag}");
-
-			//SetColorIfAllowedToDrop(_isAllowedToStopDrag);
 		}
 	}
 
