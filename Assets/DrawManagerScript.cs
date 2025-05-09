@@ -5,8 +5,9 @@ public class DrawManager : MonoBehaviour
 
 	private Camera _cam;
 	[SerializeField] private Line _linePrefab;
-	[SerializeField] public GameObject _bridge;
+	[SerializeField] public GameObject Bridge;
 	[SerializeField] private GameObject _intersectionCollider;
+	[SerializeField] private GameObject _numbersManager;
 
 
 
@@ -17,8 +18,8 @@ public class DrawManager : MonoBehaviour
 	void Start()
 	{
 		_cam = Camera.main;
-        GlobalVars.OnNumbersPlaced += EnableDrawing;
-    }
+		GlobalVars.OnNumbersPlaced += EnableDrawing;
+	}
 
 	// Update is called once per frame
 	void Update()
@@ -49,8 +50,8 @@ public class DrawManager : MonoBehaviour
 		}
 	}
 
-    private void EnableDrawing()
-    {
-        _canDraw = true;
-    }
+	private void EnableDrawing()
+	{
+		_canDraw = true;
+	}
 }
