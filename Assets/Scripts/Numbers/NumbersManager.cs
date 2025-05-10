@@ -10,7 +10,9 @@ public class NumbersManager : MonoBehaviour, IGameStage
 
 	public Number numberPrefab;
 
-	public List<NumberModel> NumbersList { get; } = new List<NumberModel>();
+	public List<NumberModel> NumbersList1 { get; } = new List<NumberModel>();
+
+	private NumbersList _numbersList = NumbersList.GetInstance();
 
 	// event is called when all numbers are added and positions are set
 	public event Action OnStageExecutionCompleted;
@@ -19,12 +21,14 @@ public class NumbersManager : MonoBehaviour, IGameStage
 	{
 		if (model is not null)
 		{
-			NumbersList.Add(model);
+			_numbersList.Add(model);
 		}
 
 		if (_currentNumber > GlobalVars.NUMBERS_COUNT)
 		{
 			//GlobalVars.OnNumbersPlaced?.Invoke();
+
+			_numbersList.Setup();
 			OnStageExecutionCompleted?.Invoke();
 			return;
 		}

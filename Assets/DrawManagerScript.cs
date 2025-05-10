@@ -8,7 +8,7 @@ public class DrawManager : MonoBehaviour, IGameStage
 	[SerializeField] private Line _linePrefab;
 	[SerializeField] public GameObject Bridge;
 	[SerializeField] private GameObject _intersectionCollider;
-	[SerializeField] private GameObject _numbersManager;
+	[SerializeField] private NumbersList _numbers;
 
 
 
@@ -23,6 +23,7 @@ public class DrawManager : MonoBehaviour, IGameStage
 	{
 		_cam = Camera.main;
 		//GlobalVars.OnNumbersPlaced += EnableDrawing;
+		_numbers = NumbersList.GetInstance();
 	}
 
 	// Update is called once per frame
@@ -41,7 +42,10 @@ public class DrawManager : MonoBehaviour, IGameStage
 
 		Vector2 mousePos = _cam.ScreenToWorldPoint(Input.mousePosition);
 
-		if (Input.GetMouseButtonDown(0) && _canDraw)
+		// TODO - Number current position is badly.
+		// Make check for some offset as now its position is only in center.
+		Debug.Log(_numbers.Current.Position);
+		if (Input.GetMouseButtonDown(0) && _canDraw && mousePos == _numbers.Current.Position)
 		{
 			_currentLine = Instantiate(_linePrefab, mousePos, Quaternion.identity);
 			_intersectionCollider.transform.position = mousePos;
@@ -49,13 +53,14 @@ public class DrawManager : MonoBehaviour, IGameStage
 
 		if (Input.GetMouseButton(0) && _canDraw)
 		{
-			_currentLine.SetPosition(mousePos);
-			_intersectionCollider.transform.position = mousePos;
+			//_currentLine.SetPosition(mousePos);
+			//_intersectionCollider.transform.position = mousePos;
 		}
 	}
 
 	public void ExecuteStage()
 	{
 		_canDraw = true;
+		gameObject.SetActive(true);
 	}
 }

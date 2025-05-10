@@ -1,5 +1,3 @@
-using System;
-
 public class GlobalVars
 {
 	public static bool IsMobilePlatform = false;
@@ -8,5 +6,4 @@ public class GlobalVars
 
 	public static int score = 0;
 
-    public static Action OnNumbersPlaced;
 }

@@ -13,10 +13,18 @@ public class IntersectionCollider : MonoBehaviour
 			Debug.Log(GlobalVars.score + 1);
 			GlobalVars.score += 1;
 		}
-		else if (collision.CompareTag("Bridge") || collision.CompareTag("Number"))
+		else if (collision.CompareTag("Bridge"))
 		{
 			Debug.Log("Can not place bidge");
 			_canPlaceBridge = false;
+		}
+
+		else if (collision.CompareTag("Number"))
+		{
+			var obj = collision.GetComponent<Number>();
+			Debug.Log("Can not place bidge");
+			_canPlaceBridge = false;
+			Debug.Log($"value - {obj.value}");
 		}
 	}
 
@@ -28,4 +36,6 @@ public class IntersectionCollider : MonoBehaviour
 			_canPlaceBridge = true;
 		}
 	}
+
+
 }

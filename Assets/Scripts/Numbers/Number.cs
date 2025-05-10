@@ -13,6 +13,7 @@ public class Number : MonoBehaviour
 	private SpriteRenderer _circleRenderer;
 	private bool _isEnabled = true;
 
+	public int value;
 	#endregion
 
 	#region public fields
@@ -30,7 +31,7 @@ public class Number : MonoBehaviour
 	}
 
 	// invokes when the position is set. Is assigned in NumbersManager to create next number.
-	public Action OnDragEnded;
+	public Action<NumberModel> OnDragEnded;
 
 	#endregion
 
@@ -78,7 +79,8 @@ public class Number : MonoBehaviour
 			// Maybe after adding lines it will be clear what to use.
 			this.enabled = false; // disable script after drag ends
 			_isEnabled = false;     // disable OnMouseDown registering event
-			OnDragEnded?.Invoke(); // Notify Manager when drag ends
+			OnDragEnded?.Invoke(
+				new NumberModel(value, new Vector2(transform.position.x, transform.position.y), 1)); // Notify Manager when drag ends
 		}
 	}
 

@@ -135,7 +135,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &332824309
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -149,7 +149,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _linePrefab: {fileID: 8401890018267894458, guid: 0e97d446b9c2a8d43afb2a9601416915, type: 3}
-  _bridge: {fileID: 3074071656345859991, guid: 629cdaa9282644141980a31a5ed16c3f, type: 3}
+  Bridge: {fileID: 0}
   _intersectionCollider: {fileID: 1081907907}
 --- !u!4 &332824310
 Transform:
@@ -161,6 +161,52 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.5255271, y: -0.9390859, z: -0.016093438}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &394712254
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 394712256}
+  - component: {fileID: 394712255}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &394712255
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 394712254}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70e9b9b973996b5408bdfbf214627149, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  numbersManager: {fileID: 1190940371}
+  drawManager: {fileID: 332824309}
+--- !u!4 &394712256
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 394712254}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.16892745, y: -1.3333929, z: -1.8576748}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -412,7 +458,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9599b3d31fb45f1428cc4feccbed96be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _bridge: {fileID: 3074071656345859991, guid: 629cdaa9282644141980a31a5ed16c3f, type: 3}
+  Bridge: {fileID: 3074071656345859991, guid: 629cdaa9282644141980a31a5ed16c3f, type: 3}
 --- !u!1 &1190940370
 GameObject:
   m_ObjectHideFlags: 0
@@ -688,3 +734,4 @@ SceneRoots:
   - {fileID: 1409128066}
   - {fileID: 1953165988}
   - {fileID: 1190940372}
+  - {fileID: 394712256}
