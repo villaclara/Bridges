@@ -1,6 +1,7 @@
+using System;
 using UnityEngine;
 
-public class DrawManager : MonoBehaviour
+public class DrawManager : MonoBehaviour, IGameStage
 {
 
 	private Camera _cam;
@@ -15,10 +16,13 @@ public class DrawManager : MonoBehaviour
 	private bool _canDraw = false;
 
 	private Line _currentLine;
+
+	public event Action OnStageExecutionCompleted;
+
 	void Start()
 	{
 		_cam = Camera.main;
-		GlobalVars.OnNumbersPlaced += EnableDrawing;
+		//GlobalVars.OnNumbersPlaced += EnableDrawing;
 	}
 
 	// Update is called once per frame
@@ -50,7 +54,7 @@ public class DrawManager : MonoBehaviour
 		}
 	}
 
-	private void EnableDrawing()
+	public void ExecuteStage()
 	{
 		_canDraw = true;
 	}
