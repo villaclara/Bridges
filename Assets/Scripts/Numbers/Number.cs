@@ -80,7 +80,7 @@ public class Number : MonoBehaviour
 			this.enabled = false; // disable script after drag ends
 			_isEnabled = false;     // disable OnMouseDown registering event
 			OnDragEnded?.Invoke(
-				new NumberModel(value, new Vector2(transform.position.x, transform.position.y), 1)); // Notify Manager when drag ends
+				new NumberModel(value, new Vector2(transform.position.x, transform.position.y), transform.GetComponentInChildren<CircleCollider2D>().radius)); // Notify Manager when drag ends
 		}
 	}
 

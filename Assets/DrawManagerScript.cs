@@ -3,26 +3,32 @@ using UnityEngine;
 
 public class DrawManager : MonoBehaviour, IGameStage
 {
-
 	private Camera _cam;
 	[SerializeField] private Line _linePrefab;
 	[SerializeField] public GameObject Bridge;
 	[SerializeField] private GameObject _intersectionCollider;
 	[SerializeField] private NumbersList _numbers;
 
+	[SerializeField]
+	private bool _isDrawing = false;
 
-
-	public const float RESOLUTION = 0.02f;
-	private bool _canDraw = false;
+	[SerializeField]
+	private bool _isDrawingToNextCompleted = true;
 
 	private Line _currentLine;
 
+	// is used for temporary saving _currentLine object into memory
+	private Line _unfinishedLine;
+	private Vector2 _previousColliderPos;
+
+	/// <summary>
+	/// <inheritdoc/>
+	/// </summary>
 	public event Action OnStageExecutionCompleted;
 
 	void Start()
 	{
 		_cam = Camera.main;
-		//GlobalVars.OnNumbersPlaced += EnableDrawing;
 		_numbers = NumbersList.GetInstance();
 	}
 
@@ -42,25 +48,114 @@ public class DrawManager : MonoBehaviour, IGameStage
 
 		Vector2 mousePos = _cam.ScreenToWorldPoint(Input.mousePosition);
 
-		// TODO - Number current position is badly.
-		// Make check for some offset as now its position is only in center.
-		Debug.Log(_numbers.Current.Position);
-		if (Input.GetMouseButtonDown(0) && _canDraw && mousePos == _numbers.Current.Position)
+		// Press 
+		if (Input.GetMouseButtonDown(0))
 		{
-			_currentLine = Instantiate(_linePrefab, mousePos, Quaternion.identity);
-			_intersectionCollider.transform.position = mousePos;
+			// when starting new line (at first or after completed drawing to next number)
+			if (_isDrawingToNextCompleted)
+			{
+				// check positions
+				if (mousePos.x >= (_numbers.Current.Position.x - _numbers.Current.Radius) && mousePos.x <= (_numbers.Current.Position.x + _numbers.Current.Radius)
+				&& mousePos.y >= (_numbers.Current.Position.y - _numbers.Current.Radius) && mousePos.y <= (_numbers.Current.Position.y + _numbers.Current.Radius))
+				{
+					_currentLine = Instantiate(_linePrefab, mousePos, Quaternion.identity);
+					_intersectionCollider.transform.position = mousePos;
+
+					_isDrawing = true;
+					_isDrawingToNextCompleted = false;
+				}
+			}
+
+			// drawing to next not completed
+			// check the position of previous line
+			else
+			{
+
+				if (mousePos.x >= _previousColliderPos.x - IntersectionCollider.Radius * 2 && mousePos.x <= _previousColliderPos.x + IntersectionCollider.Radius * 2
+					&& mousePos.y >= _previousColliderPos.y - IntersectionCollider.Radius * 2 && mousePos.y <= _previousColliderPos.y + IntersectionCollider.Radius * 2)
+				{
+					_currentLine = _unfinishedLine;
+					_intersectionCollider.transform.position = mousePos;
+
+					_isDrawing = true;
+					_isDrawingToNextCompleted = false;
+				}
+			}
+
+
 		}
 
-		if (Input.GetMouseButton(0) && _canDraw)
+		// Hold
+		if (Input.GetMouseButton(0) && _isDrawing && !_isDrawingToNextCompleted)
 		{
-			//_currentLine.SetPosition(mousePos);
-			//_intersectionCollider.transform.position = mousePos;
+			_currentLine.SetPosition(mousePos);
+			_intersectionCollider.transform.position = mousePos;
+			// TODO - Add here check if the line reached next number
+			// Then we need to force stop drawing
+
+			if (mousePos.x >= (_numbers.Next.Position.x - _numbers.Next.Radius) && mousePos.x <= (_numbers.Next.Position.x + _numbers.Next.Radius)
+				&& mousePos.y >= (_numbers.Next.Position.y - _numbers.Next.Radius) && mousePos.y <= (_numbers.Next.Position.y + _numbers.Next.Radius))
+			{
+				Debug.Log($"Inside next element - {_numbers.Next.Value} - {_numbers.Next.Position}");
+
+				_isDrawingToNextCompleted = true;
+				_isDrawing = false;
+				// get new values for numbers.Current and .Next
+				var isMoveNextReady = _numbers.MoveNext();
+				if (!isMoveNextReady)
+				{
+					Debug.Log("Execution ended");
+					this.enabled = false;
+					OnStageExecutionCompleted?.Invoke();
+				}
+			}
+
+
+
+		}
+
+		// Release
+		if (Input.GetMouseButtonUp(0) && _isDrawing)
+		{
+			// Line is at the next number.
+			if (mousePos.x >= (_numbers.Next.Position.x - _numbers.Next.Radius) && mousePos.x <= (_numbers.Next.Position.x + _numbers.Next.Radius)
+				&& mousePos.y >= (_numbers.Next.Position.y - _numbers.Next.Radius) && mousePos.y <= (_numbers.Next.Position.y + _numbers.Next.Radius))
+			{
+				Debug.Log($"Inside next element - {_numbers.Next.Value} - {_numbers.Next.Position}");
+
+				_isDrawingToNextCompleted = true;
+
+				// get new values for numbers.Current and .Next
+				var isMoveNextReady = _numbers.MoveNext();
+				if (!isMoveNextReady)
+				{
+					Debug.Log("Execution ended");
+					this.enabled = false;
+					OnStageExecutionCompleted?.Invoke();
+				}
+			}
+
+			// Line released somewhere, we save its position to start drawing again from it
+			else
+			{
+				_unfinishedLine = _currentLine;
+				_isDrawingToNextCompleted = false;
+
+				_previousColliderPos = mousePos;
+			}
+
+			_isDrawing = false;
 		}
 	}
 
 	public void ExecuteStage()
 	{
-		_canDraw = true;
+		//_canDraw = true;
 		gameObject.SetActive(true);
+	}
+
+	private void OnMouseDown()
+	{
+		Debug.Log("ON MOUSE DOWN");
 	}
 }

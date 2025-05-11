@@ -4,6 +4,14 @@ public class IntersectionCollider : MonoBehaviour
 {
 	[SerializeField] public GameObject Bridge;
 	private bool _canPlaceBridge = true;
+
+	public static float Radius;
+
+	private void Awake()
+	{
+		Radius = GetComponent<CircleCollider2D>().radius;
+	}
+
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
 		if (_canPlaceBridge && collision.CompareTag("Line"))

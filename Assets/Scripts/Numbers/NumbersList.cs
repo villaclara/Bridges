@@ -9,7 +9,7 @@ public class NumbersList
 {
 	private List<NumberModel> _numbers;
 	private static NumbersList _instance;
-
+	private static int _currentIndex = 0;
 	public static NumbersList GetInstance()
 	{
 		return _instance ??= new NumbersList();
@@ -20,14 +20,17 @@ public class NumbersList
 		_numbers = new List<NumberModel>();
 	}
 
-	public void AddNumber(NumberModel number)
+	public bool MoveNext()
 	{
-		_numbers.Add(number);
-	}
+		_currentIndex++;
+		if (_currentIndex >= _numbers.Count - 1)
+		{
+			return false;
+		}
 
-	public void MoveNext()
-	{
-		this.Current = this.Next;
+		this.Current = _numbers[_currentIndex];
+		this.Next = _numbers[_currentIndex + 1];
+		return true;
 	}
 
 	public NumberModel Current { get; private set; }
@@ -37,21 +40,23 @@ public class NumbersList
 	{
 		this.Current = _numbers[0];
 		this.Next = _numbers[1];
+		_currentIndex = 0;
 	}
 
 	public void Add(NumberModel number)
 	{
 		_numbers.Add(number);
 	}
+
 }
 
 public class NumberModel
 {
 	public int Value { get; }
 	public Vector2 Position { get; }
-	public int Radius { get; }
+	public float Radius { get; }
 
-	public NumberModel(int number, Vector2 position, int radius)
+	public NumberModel(int number, Vector2 position, float radius)
 	{
 		Value = number;
 		Position = position;

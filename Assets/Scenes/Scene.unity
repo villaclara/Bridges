@@ -149,8 +149,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _linePrefab: {fileID: 8401890018267894458, guid: 0e97d446b9c2a8d43afb2a9601416915, type: 3}
-  Bridge: {fileID: 0}
+  Bridge: {fileID: 3074071656345859991, guid: 629cdaa9282644141980a31a5ed16c3f, type: 3}
   _intersectionCollider: {fileID: 1081907907}
+  _isDrawing: 0
+  _isDrawingToNextCompleted: 1
 --- !u!4 &332824310
 Transform:
   m_ObjectHideFlags: 0

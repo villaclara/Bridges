@@ -1,13 +1,12 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Line : MonoBehaviour
 {
 
-    [SerializeField] private LineRenderer _renderer;
-    [SerializeField] private EdgeCollider2D _collider;
-    [SerializeField] private GameObject _bridge;
+	[SerializeField] private LineRenderer _renderer;
+	[SerializeField] private EdgeCollider2D _collider;
+	[SerializeField] private GameObject _bridge;
 
 
 	private readonly List<Vector2> _points = new List<Vector2>();
@@ -40,14 +39,14 @@ public class Line : MonoBehaviour
 		if (_renderer.positionCount == 0)
 			return true;
 
-        return Vector2.Distance(_renderer.GetPosition(_renderer.positionCount - 1), pos) > DrawManager.RESOLUTION;
-    }
+		return Vector2.Distance(_renderer.GetPosition(_renderer.positionCount - 1), pos) > GlobalVars.LINE_CREATE_MINIMAL_RESOLUTION;
+	}
 
-    //private void OnTriggerEnter2D(Collider2D collision)
-    //{
-    //    Instantiate(_bridge, collision.transform.position, Quaternion.identity);
-    //    Debug.Log(GlobalVars.score + 1);
-    //    GlobalVars.score += 1;
-    //}
+	//private void OnTriggerEnter2D(Collider2D collision)
+	//{
+	//    Instantiate(_bridge, collision.transform.position, Quaternion.identity);
+	//    Debug.Log(GlobalVars.score + 1);
+	//    GlobalVars.score += 1;
+	//}
 
 }
