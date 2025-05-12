@@ -26,7 +26,7 @@ public class GameManager : MonoBehaviour
 	{
 		if (index >= _stages.Count)
 		{
-			Debug.Log("Index outside of array");
+			Debug.Log("Index outside of array. End of game.");
 			return;
 		}
 
