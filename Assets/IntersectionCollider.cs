@@ -29,10 +29,8 @@ public class IntersectionCollider : MonoBehaviour
 
 		else if (collision.CompareTag("Number"))
 		{
-			var obj = collision.GetComponent<Number>();
 			Debug.Log("Can not place bidge");
 			_canPlaceBridge = false;
-			Debug.Log($"value - {obj.value}");
 		}
 	}
 

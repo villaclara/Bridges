@@ -55,8 +55,7 @@ public class DrawManager : MonoBehaviour, IGameStage
 			if (_isDrawingToNextCompleted)
 			{
 				// check positions
-				if (mousePos.x >= (_numbers.Current.Position.x - _numbers.Current.Radius) && mousePos.x <= (_numbers.Current.Position.x + _numbers.Current.Radius)
-				&& mousePos.y >= (_numbers.Current.Position.y - _numbers.Current.Radius) && mousePos.y <= (_numbers.Current.Position.y + _numbers.Current.Radius))
+				if (IfPointInsideCurrentNumber(mousePos))
 				{
 					_currentLine = Instantiate(_linePrefab, mousePos, Quaternion.identity);
 					_intersectionCollider.transform.position = mousePos;
@@ -70,9 +69,7 @@ public class DrawManager : MonoBehaviour, IGameStage
 			// check the position of previous line
 			else
 			{
-
-				if (mousePos.x >= _previousColliderPos.x - IntersectionCollider.Radius * 2 && mousePos.x <= _previousColliderPos.x + IntersectionCollider.Radius * 2
-					&& mousePos.y >= _previousColliderPos.y - IntersectionCollider.Radius * 2 && mousePos.y <= _previousColliderPos.y + IntersectionCollider.Radius * 2)
+				if (IfPointNearUnfinishedLine(mousePos))
 				{
 					_currentLine = _unfinishedLine;
 					_intersectionCollider.transform.position = mousePos;
@@ -82,7 +79,6 @@ public class DrawManager : MonoBehaviour, IGameStage
 				}
 			}
 
-
 		}
 
 		// Hold
@@ -90,16 +86,12 @@ public class DrawManager : MonoBehaviour, IGameStage
 		{
 			_currentLine.SetPosition(mousePos);
 			_intersectionCollider.transform.position = mousePos;
-			// TODO - Add here check if the line reached next number
-			// Then we need to force stop drawing
 
-			if (mousePos.x >= (_numbers.Next.Position.x - _numbers.Next.Radius) && mousePos.x <= (_numbers.Next.Position.x + _numbers.Next.Radius)
-				&& mousePos.y >= (_numbers.Next.Position.y - _numbers.Next.Radius) && mousePos.y <= (_numbers.Next.Position.y + _numbers.Next.Radius))
+			if (IfPointInsideNextNumber(mousePos))
 			{
-				Debug.Log($"Inside next element - {_numbers.Next.Value} - {_numbers.Next.Position}");
-
 				_isDrawingToNextCompleted = true;
 				_isDrawing = false;
+
 				// get new values for numbers.Current and .Next
 				var isMoveNextReady = _numbers.MoveNext();
 				if (!isMoveNextReady)
@@ -109,20 +101,14 @@ public class DrawManager : MonoBehaviour, IGameStage
 					OnStageExecutionCompleted?.Invoke();
 				}
 			}
-
-
-
 		}
 
 		// Release
 		if (Input.GetMouseButtonUp(0) && _isDrawing)
 		{
 			// Line is at the next number.
-			if (mousePos.x >= (_numbers.Next.Position.x - _numbers.Next.Radius) && mousePos.x <= (_numbers.Next.Position.x + _numbers.Next.Radius)
-				&& mousePos.y >= (_numbers.Next.Position.y - _numbers.Next.Radius) && mousePos.y <= (_numbers.Next.Position.y + _numbers.Next.Radius))
+			if (IfPointInsideNextNumber(mousePos))
 			{
-				Debug.Log($"Inside next element - {_numbers.Next.Value} - {_numbers.Next.Position}");
-
 				_isDrawingToNextCompleted = true;
 
 				// get new values for numbers.Current and .Next
@@ -154,8 +140,17 @@ public class DrawManager : MonoBehaviour, IGameStage
 		gameObject.SetActive(true);
 	}
 
-	private void OnMouseDown()
-	{
-		Debug.Log("ON MOUSE DOWN");
-	}
+	private bool IfPointInsideCurrentNumber(Vector2 point) =>
+		(point.x >= _numbers.Current.Position.x - _numbers.Current.Radius) && (point.x <= _numbers.Current.Position.x + _numbers.Current.Radius)
+				&& (point.y >= _numbers.Current.Position.y - _numbers.Current.Radius) && (point.y <= _numbers.Current.Position.y + _numbers.Current.Radius);
+
+	private bool IfPointInsideNextNumber(Vector2 point) =>
+		(point.x >= _numbers.Next.Position.x - _numbers.Next.Radius) && (point.x <= _numbers.Next.Position.x + _numbers.Next.Radius)
+				&& (point.y >= _numbers.Next.Position.y - _numbers.Next.Radius) && (point.y <= _numbers.Next.Position.y + _numbers.Next.Radius);
+
+	private bool IfPointNearUnfinishedLine(Vector2 point) =>
+		(point.x >= _previousColliderPos.x - IntersectionCollider.Radius * 2) && (point.x <= _previousColliderPos.x + IntersectionCollider.Radius * 2)
+					&& (point.y >= _previousColliderPos.y - IntersectionCollider.Radius * 2) && (point.y <= _previousColliderPos.y + IntersectionCollider.Radius * 2);
+
+
 }

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class Number : MonoBehaviour
+public class NumberScript : MonoBehaviour
 {
 	public static readonly Vector3 DefaultPosition = new(0f, 0f, -2f);   // if 0z - the black border is not visible
 
@@ -79,8 +79,17 @@ public class Number : MonoBehaviour
 			// Maybe after adding lines it will be clear what to use.
 			this.enabled = false; // disable script after drag ends
 			_isEnabled = false;     // disable OnMouseDown registering event
+
+			var childObj = transform.GetChild(0); // get Circle object
+			var childCircle = childObj.GetComponent<CircleCollider2D>(); // index 1 because the parent itself has collider and it also counts
+			Debug.Log($"parent scale - {transform.localScale}, name - {name}");
+			Debug.Log($"child scale - {childObj.transform.localScale}, name - {childObj.name}");
+			Debug.Log($"child radisu - {childCircle.radius * childObj.transform.lossyScale.x}");
+			// Notify Manager when drag ends
 			OnDragEnded?.Invoke(
-				new NumberModel(value, new Vector2(transform.position.x, transform.position.y), transform.GetComponentInChildren<CircleCollider2D>().radius)); // Notify Manager when drag ends
+				new NumberModel(value,
+								new Vector2(transform.position.x, transform.position.y),
+								childCircle.radius * childObj.transform.lossyScale.x)); // here to get real radius in World space
 		}
 	}
 
@@ -113,7 +122,7 @@ public class Number : MonoBehaviour
 			return;
 		}
 
-		if (collision.gameObject.GetComponent<Number>().GetType() == typeof(Number))
+		if (collision.gameObject.GetComponent<NumberScript>().GetType() == typeof(NumberScript))
 		{
 			IsValidPosToStopDrag = false;
 		}
@@ -127,7 +136,7 @@ public class Number : MonoBehaviour
 			return;
 		}
 
-		if (collision.gameObject.GetComponent<Number>().GetType() == typeof(Number))
+		if (collision.gameObject.GetComponent<NumberScript>().GetType() == typeof(NumberScript))
 		{
 			IsValidPosToStopDrag = true;
 		}

@@ -8,7 +8,7 @@ public class NumbersManager : MonoBehaviour, IGameStage
 	[SerializeField]
 	private int _currentNumber = 1;
 
-	public Number numberPrefab;
+	public NumberScript numberPrefab;
 
 	public List<NumberModel> NumbersList1 { get; } = new List<NumberModel>();
 
@@ -30,10 +30,11 @@ public class NumbersManager : MonoBehaviour, IGameStage
 
 			_numbersList.Setup();
 			OnStageExecutionCompleted?.Invoke();
+			Debug.Log("Numbermanager after completed calling invoke.");
 			return;
 		}
 
-		var current = Instantiate(numberPrefab, Number.DefaultPosition, Quaternion.identity);
+		var current = Instantiate(numberPrefab, NumberScript.DefaultPosition, Quaternion.identity);
 		var textObject = current.transform.GetComponentInChildren<TextMeshPro>();
 		textObject.text = _currentNumber.ToString();
 		current.gameObject.SetActive(true);

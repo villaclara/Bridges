@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 4572731563433308726}
   m_Layer: 0
   m_Name: NumberContainer
-  m_TagString: Number
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -48,6 +48,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91c3f40128630794f900225e9ccc8665, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  value: 0
 --- !u!58 &4260897166256829420
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -125,7 +126,7 @@ GameObject:
   - component: {fileID: 2271267581339670403}
   m_Layer: 0
   m_Name: Circle
-  m_TagString: Untagged
+  m_TagString: Number
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -207,7 +208,7 @@ CircleCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2556919314243186249}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
   m_Material: {fileID: 0}
@@ -261,7 +262,7 @@ GameObject:
   - component: {fileID: 164468503613606985}
   m_Layer: 0
   m_Name: BorderCircle
-  m_TagString: Untagged
+  m_TagString: Number
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
