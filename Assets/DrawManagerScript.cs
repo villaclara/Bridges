@@ -8,6 +8,7 @@ public class DrawManager : MonoBehaviour, IGameStage
 	[SerializeField] public GameObject Bridge;
 	[SerializeField] private GameObject _intersectionCollider;
 	[SerializeField] private NumbersList _numbers;
+	[SerializeField] private PlayerManager _playerManager;
 
 	[SerializeField]
 	private bool _isDrawing = false;
@@ -21,6 +22,7 @@ public class DrawManager : MonoBehaviour, IGameStage
 	private Line _unfinishedLine;
 	private Vector2 _previousColliderPos;
 
+
 	/// <summary>
 	/// <inheritdoc/>
 	/// </summary>
@@ -30,6 +32,11 @@ public class DrawManager : MonoBehaviour, IGameStage
 	{
 		_cam = Camera.main;
 		_numbers = NumbersList.GetInstance();
+
+		uint seed = (uint)System.Environment.TickCount;
+		if (seed == 0) seed = 1;
+		var rnd = new Unity.Mathematics.Random(seed).NextBool();
+		_playerManager.SetupFirstTurn(rnd);
 	}
 
 	// Update is called once per frame
@@ -58,6 +65,15 @@ public class DrawManager : MonoBehaviour, IGameStage
 				if (IfPointInsideCurrentNumber(mousePos))
 				{
 					_currentLine = Instantiate(_linePrefab, mousePos, Quaternion.identity);
+					if (PlayerManager.playerTurn == PlayerTurn.P1_Turn)
+					{
+						_currentLine.SetLineColor(PlayerManager.player1.ColorHEX);
+					}
+					else
+					{
+						_currentLine.SetLineColor(PlayerManager.player2.ColorHEX);
+					}
+					Debug.Log($"current turn - {PlayerManager.playerTurn}");
 					_intersectionCollider.transform.position = mousePos;
 
 					_isDrawing = true;
@@ -91,6 +107,8 @@ public class DrawManager : MonoBehaviour, IGameStage
 			{
 				_isDrawingToNextCompleted = true;
 				_isDrawing = false;
+				PlayerManager.playerTurn = PlayerManager.playerTurn == PlayerTurn.P1_Turn ?
+					PlayerTurn.P2_Turn : PlayerTurn.P1_Turn;
 
 				// get new values for numbers.Current and .Next
 				var isMoveNextReady = _numbers.MoveNext();
@@ -110,6 +128,8 @@ public class DrawManager : MonoBehaviour, IGameStage
 			if (IfPointInsideNextNumber(mousePos))
 			{
 				_isDrawingToNextCompleted = true;
+				PlayerManager.playerTurn = PlayerManager.playerTurn == PlayerTurn.P1_Turn ?
+					PlayerTurn.P2_Turn : PlayerTurn.P1_Turn;
 
 				// get new values for numbers.Current and .Next
 				var isMoveNextReady = _numbers.MoveNext();

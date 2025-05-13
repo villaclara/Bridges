@@ -2,9 +2,13 @@ using UnityEngine;
 
 public class IntersectionCollider : MonoBehaviour
 {
-	[SerializeField] public GameObject Bridge;
-	private bool _canPlaceBridge = true;
+	[SerializeField]
+	public GameObject Bridge;
 
+	[SerializeField]
+	private PlayerManager _playerManager;
+
+	private bool _canPlaceBridge = true;
 	public static float Radius;
 
 	private void Awake()

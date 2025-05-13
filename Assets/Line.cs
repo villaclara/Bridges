@@ -8,16 +8,22 @@ public class Line : MonoBehaviour
 	[SerializeField] private EdgeCollider2D _collider;
 	[SerializeField] private GameObject _bridge;
 
-
 	private readonly List<Vector2> _points = new List<Vector2>();
 	void Start()
 	{
 		_collider.transform.position -= transform.position; //to make collider points the same as line points
 	}
 
-	void Update()
-	{
 
+	public void SetLineColor(string colorHEX)
+	{
+		if (ColorUtility.TryParseHtmlString(colorHEX, out Color newcolor))
+		{
+			_renderer.material = new Material(Shader.Find("Sprites/Default"));
+			_renderer.startColor = newcolor;
+			_renderer.endColor = newcolor;
+			Debug.Log($"set color - {newcolor}");
+		}
 	}
 
 	public void SetPosition(Vector2 pos)

@@ -2,7 +2,7 @@ public class GlobalVars
 {
 	public static bool IsMobilePlatform = false;
 
-	public const int NUMBERS_COUNT = 3;
+	public const int NUMBERS_COUNT = 5;
 
 	public static int score = 0;
 
