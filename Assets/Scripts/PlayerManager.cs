@@ -2,23 +2,11 @@ using UnityEngine;
 
 public class PlayerManager : MonoBehaviour
 {
-	public readonly static PlayerModel player1 = new(1, "#000000");
+	public readonly static PlayerModel player1 = new(1, "#b58950");
 
 	public readonly static PlayerModel player2 = new(2, "#6c94d4");
 
 	public static PlayerTurn playerTurn;
-
-	// Start is called before the first frame update
-	void Start()
-	{
-
-	}
-
-	// Update is called once per frame
-	void Update()
-	{
-
-	}
 
 	public void SetupFirstTurn(bool isPlayer1First)
 	{
