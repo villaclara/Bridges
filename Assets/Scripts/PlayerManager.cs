@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class PlayerManager : MonoBehaviour
 {
-	public readonly static PlayerModel player1 = new(1, "#b58950");
+	public readonly static IPlayerModel player1 = new PlayerModel(1, "#b58950");
 
-	public readonly static PlayerModel player2 = new(2, "#6c94d4");
+	public readonly static IPlayerModel player2 = new PlayerModel(2, "#6c94d4");
 
 	public static PlayerTurn playerTurn;
 

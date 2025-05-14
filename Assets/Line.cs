@@ -35,7 +35,7 @@ public class Line : MonoBehaviour
 
 		_points.Add(pos);
 		_renderer.positionCount++;
-		_renderer.SetPosition(_renderer.positionCount - 1, pos);
+		_renderer.SetPosition(_renderer.positionCount - 1, new Vector3(pos.x, pos.y, -3));  // z = -3 to display line above number. Remove if want display behind number.
 
 		_collider.points = _points.ToArray();
 	}

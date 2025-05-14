@@ -103,7 +103,7 @@ public class DrawManager : MonoBehaviour, IGameStage
 			_currentLine.SetPosition(mousePos);
 			_intersectionCollider.transform.position = mousePos;
 
-			if (IfPointInsideNextNumber(mousePos))
+			if (IfPointPreciselyInsideNextNumber(mousePos))
 			{
 				_isDrawingToNextCompleted = true;
 				_isDrawing = false;
@@ -167,6 +167,10 @@ public class DrawManager : MonoBehaviour, IGameStage
 	private bool IfPointInsideNextNumber(Vector2 point) =>
 		(point.x >= _numbers.Next.Position.x - _numbers.Next.Radius) && (point.x <= _numbers.Next.Position.x + _numbers.Next.Radius)
 				&& (point.y >= _numbers.Next.Position.y - _numbers.Next.Radius) && (point.y <= _numbers.Next.Position.y + _numbers.Next.Radius);
+
+	private bool IfPointPreciselyInsideNextNumber(Vector2 point) =>
+		(point.x >= _numbers.Next.Position.x - _numbers.Next.Radius / 4) && (point.x <= _numbers.Next.Position.x + _numbers.Next.Radius / 4)
+				&& (point.y >= _numbers.Next.Position.y - _numbers.Next.Radius / 3) && (point.y <= _numbers.Next.Position.y + _numbers.Next.Radius / 3);
 
 	private bool IfPointNearUnfinishedLine(Vector2 point) =>
 		(point.x >= _previousColliderPos.x - IntersectionCollider.Radius * 2) && (point.x <= _previousColliderPos.x + IntersectionCollider.Radius * 2)
