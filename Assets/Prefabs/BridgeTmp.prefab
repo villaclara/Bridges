@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1392559710982895132}
   - component: {fileID: 3832916300964017135}
   - component: {fileID: 3778038148936408440}
+  - component: {fileID: 7357020178275759893}
   m_Layer: 0
   m_Name: BridgeTmp
   m_TagString: Bridge
@@ -123,3 +124,15 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
   m_Radius: 0.5
+--- !u!114 &7357020178275759893
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3074071656345859991}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 265c59025f1bcd048b9466804b7706b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

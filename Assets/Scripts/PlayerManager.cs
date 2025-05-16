@@ -8,7 +8,7 @@ public class PlayerManager : MonoBehaviour
 
 	public static PlayerTurn playerTurn;
 
-	public void SetupFirstTurn(bool isPlayer1First)
+	public static void SetupFirstTurn(bool isPlayer1First)
 	{
 		if (isPlayer1First)
 		{
@@ -18,15 +18,21 @@ public class PlayerManager : MonoBehaviour
 		}
 		else
 		{
-			player1.IsMyTurn = !isPlayer1First;
-			player2.IsMyTurn = isPlayer1First;
+			player1.IsMyTurn = isPlayer1First;
+			player2.IsMyTurn = !isPlayer1First;
 			playerTurn = PlayerTurn.P2_Turn;
 		}
 	}
 
-	public void SwitchTurns()
+	public static void SwitchTurns()
 	{
 		player1.IsMyTurn = !player1.IsMyTurn;
 		player2.IsMyTurn = !player2.IsMyTurn;
+		playerTurn = player1.IsMyTurn ? PlayerTurn.P1_Turn : PlayerTurn.P2_Turn;
+	}
+
+	public static void AddBridgeToPlayer(IPlayerModel player, int count = 1)
+	{
+		player.BridgesCount += count;
 	}
 }
