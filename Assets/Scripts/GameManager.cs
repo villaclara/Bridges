@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -10,8 +11,12 @@ public class GameManager : MonoBehaviour
 	[Header("Manager References")]
 	public NumbersManager numbersManager;
 	public DrawManager drawManager;
+	public IntersectionCollider intersectionsCollider;
 
 	private int _currentStageIndex = 0;
+
+	[SerializeField]
+	private GameObject _endGameScreen;
 
 	// Start is called before the first frame update
 	void Start()
@@ -26,6 +31,17 @@ public class GameManager : MonoBehaviour
 	{
 		if (index >= _stages.Count)
 		{
+			_endGameScreen.SetActive(true);
+			var playerIdWon = "Draw";
+			if (PlayerManager.player1.BridgesCount < PlayerManager.player2.BridgesCount)
+			{
+				playerIdWon = "Player 1 won. GG";
+			}
+			else if (PlayerManager.player1.BridgesCount > PlayerManager.player2.BridgesCount)
+			{
+				playerIdWon = "Player 2 won. GG";
+			}
+			_endGameScreen.GetComponentsInChildren<TextMeshProUGUI>()[1].text = playerIdWon;
 			Debug.Log("Index outside of array. End of game.");
 			return;
 		}
@@ -46,5 +62,17 @@ public class GameManager : MonoBehaviour
 		_currentStageIndex++;
 		StartStage(_currentStageIndex);
 	}
+
+	public void ResetAll()
+	{
+		numbersManager.DestroyAllNumbers();
+		drawManager.DestroyAllLines();
+		PlayerManager.player1.BridgesCount = 0;
+		PlayerManager.player2.BridgesCount = 0;
+		_currentStageIndex = 0;
+		StartStage(_currentStageIndex);
+	}
+
+
 
 }

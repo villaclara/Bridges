@@ -48,6 +48,11 @@ public class NumbersList
 		_numbers.Add(number);
 	}
 
+	public void RemoveAll()
+	{
+		_numbers.Clear();
+	}
+
 }
 
 public class NumberModel

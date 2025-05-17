@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class IntersectionCollider : MonoBehaviour
@@ -12,6 +13,9 @@ public class IntersectionCollider : MonoBehaviour
 	private bool _canPlaceBridge = true;
 	public static float Radius;
 
+
+	private readonly List<GameObject> _bridgesToDelete = new();
+
 	private void Awake()
 	{
 		Radius = GetComponent<CircleCollider2D>().radius;
@@ -24,6 +28,7 @@ public class IntersectionCollider : MonoBehaviour
 		{
 			//Debug.Log("Line collision, can place bridge");
 			var bridge = Instantiate(Bridge, transform.position, Quaternion.identity);
+			_bridgesToDelete.Add(bridge);
 			Action a = PlayerManager.playerTurn switch
 			{
 				PlayerTurn.P1_Turn => () =>
@@ -100,6 +105,14 @@ public class IntersectionCollider : MonoBehaviour
 		{
 			bridge.GetComponent<SpriteRenderer>().color = newcolor;
 			Debug.Log($"set bridge color - {newcolor}");
+		}
+	}
+
+	public void DestroyAllBridges()
+	{
+		foreach (var bridge in _bridgesToDelete)
+		{
+			Destroy(bridge);
 		}
 	}
 

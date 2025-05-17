@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class DrawManager : MonoBehaviour, IGameStage
@@ -21,6 +22,9 @@ public class DrawManager : MonoBehaviour, IGameStage
 	// is used for temporary saving _currentLine object into memory
 	private Line _unfinishedLine;
 	private Vector2 _previousColliderPos;
+
+
+	private readonly List<GameObject> _linesToDelete = new();
 
 
 	/// <summary>
@@ -67,6 +71,7 @@ public class DrawManager : MonoBehaviour, IGameStage
 				if (IfPointInsideCurrentNumber(mousePos))
 				{
 					_currentLine = Instantiate(_linePrefab, mousePos, Quaternion.identity);
+					_linesToDelete.Add(_currentLine.gameObject);
 					if (PlayerManager.playerTurn == PlayerTurn.P1_Turn)
 					{
 						_currentLine.SetLineColor(PlayerManager.player1.ColorHEX);
@@ -180,5 +185,12 @@ public class DrawManager : MonoBehaviour, IGameStage
 		(point.x >= _previousColliderPos.x - IntersectionCollider.Radius * 2) && (point.x <= _previousColliderPos.x + IntersectionCollider.Radius * 2)
 					&& (point.y >= _previousColliderPos.y - IntersectionCollider.Radius * 2) && (point.y <= _previousColliderPos.y + IntersectionCollider.Radius * 2);
 
+	public void DestroyAllLines()
+	{
+		foreach (var line in _linesToDelete)
+		{
+			Destroy(line);
+		}
+	}
 
 }
