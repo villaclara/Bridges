@@ -44,4 +44,10 @@ public class PlayerCanvasStyleController : MonoBehaviour
 	private void ChangeOutline_forP2() =>
 		_borderOutline.effectColor = _playerId == 1 ? Color.white : Color.green;
 
+	public void Reset()
+	{
+		_borderOutline = GetComponentInChildren<Outline>();
+		_borderOutline.effectColor = Color.white;
+	}
+
 }

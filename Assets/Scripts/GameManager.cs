@@ -12,6 +12,8 @@ public class GameManager : MonoBehaviour
 	public NumbersManager numbersManager;
 	public DrawManager drawManager;
 	public IntersectionCollider intersectionsCollider;
+	public PlayerCanvasStyleController player1CanvasStyleController;
+	public PlayerCanvasStyleController player2CanvasStyleController;
 
 	private int _currentStageIndex = 0;
 
@@ -71,6 +73,8 @@ public class GameManager : MonoBehaviour
 		}
 		intersectionsCollider.DestroyAllBridges();
 		PlayerManager.ResetBridgesCountForPlayers();
+		player1CanvasStyleController.Reset();
+		player2CanvasStyleController.Reset();
 		_currentStageIndex = 0;
 		StartStage(_currentStageIndex);
 	}

@@ -670,6 +670,8 @@ MonoBehaviour:
   numbersManager: {fileID: 1190940371}
   drawManager: {fileID: 332824309}
   intersectionsCollider: {fileID: 1081907911}
+  player1CanvasStyleController: {fileID: 173756114}
+  player2CanvasStyleController: {fileID: 534066288}
   _endGameScreen: {fileID: 1756744962}
 --- !u!4 &394712256
 Transform:
