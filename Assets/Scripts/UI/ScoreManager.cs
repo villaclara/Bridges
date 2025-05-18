@@ -26,7 +26,7 @@ public class ScoreManager : MonoBehaviour
 			Destroy(gameObject);
 		}
 
-		PlayerManager.OnAddedBridgeToPlayer += RedrawText;
+		PlayerManager.OnPlayerBridgesChanged += RedrawText;
 	}
 
 	private void RedrawText()

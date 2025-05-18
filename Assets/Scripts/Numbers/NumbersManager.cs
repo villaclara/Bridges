@@ -64,7 +64,8 @@ public class NumbersManager : MonoBehaviour, IGameStage
 		CreateNumber(null);
 	}
 
-	public void DestroyAllNumbers()
+
+	public void ResetStage()
 	{
 		foreach (var number in _numbersToDelete)
 		{

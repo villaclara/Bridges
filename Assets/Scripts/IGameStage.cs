@@ -14,4 +14,9 @@ public interface IGameStage
 	/// Event is called when the conditions are met to stop executing (stage has come to end).
 	/// </summary>
 	event Action OnStageExecutionCompleted;
+
+	/// <summary>
+	/// Resets all values to default, clears lists etc to restart the game.
+	/// </summary>
+	void ResetStage();
 }

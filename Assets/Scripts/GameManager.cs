@@ -65,10 +65,12 @@ public class GameManager : MonoBehaviour
 
 	public void ResetAll()
 	{
-		numbersManager.DestroyAllNumbers();
-		drawManager.DestroyAllLines();
-		PlayerManager.player1.BridgesCount = 0;
-		PlayerManager.player2.BridgesCount = 0;
+		foreach (var stage in _stages)
+		{
+			stage.ResetStage();
+		}
+		intersectionsCollider.DestroyAllBridges();
+		PlayerManager.ResetBridgesCountForPlayers();
 		_currentStageIndex = 0;
 		StartStage(_currentStageIndex);
 	}

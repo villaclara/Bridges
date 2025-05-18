@@ -34,15 +34,15 @@ public class DrawManager : MonoBehaviour, IGameStage
 
 	void Start()
 	{
-		_cam = Camera.main;
-		_numbers = NumbersList.GetInstance();
+		//_cam = Camera.main;
+		//_numbers = NumbersList.GetInstance();
 
-		// Set first turn randomly
-		uint seed = (uint)System.Environment.TickCount;
-		if (seed == 0) seed = 1;
-		var rnd = new Unity.Mathematics.Random(seed).NextBool();
-		PlayerManager.SetupFirstTurn(rnd);
-		Debug.Log($"First turn - {PlayerManager.playerTurn}");
+		//// Set first turn randomly
+		//uint seed = (uint)System.Environment.TickCount;
+		//if (seed == 0) seed = 1;
+		//var rnd = new Unity.Mathematics.Random(seed).NextBool();
+		//PlayerManager.SetupFirstTurn(rnd);
+		//Debug.Log($"First turn - {PlayerManager.playerTurn}");
 	}
 
 	// Update is called once per frame
@@ -167,6 +167,17 @@ public class DrawManager : MonoBehaviour, IGameStage
 	{
 		//_canDraw = true;
 		gameObject.SetActive(true);
+		this.enabled = true;
+
+		_cam = Camera.main;
+		_numbers = NumbersList.GetInstance();
+
+		// Set first turn randomly
+		uint seed = (uint)System.Environment.TickCount;
+		if (seed == 0) seed = 1;
+		var rnd = new Unity.Mathematics.Random(seed).NextBool();
+		PlayerManager.SetupFirstTurn(rnd);
+		Debug.Log($"First turn - {PlayerManager.playerTurn}");
 	}
 
 	private bool IfPointInsideCurrentNumber(Vector2 point) =>
@@ -185,12 +196,11 @@ public class DrawManager : MonoBehaviour, IGameStage
 		(point.x >= _previousColliderPos.x - IntersectionCollider.Radius * 2) && (point.x <= _previousColliderPos.x + IntersectionCollider.Radius * 2)
 					&& (point.y >= _previousColliderPos.y - IntersectionCollider.Radius * 2) && (point.y <= _previousColliderPos.y + IntersectionCollider.Radius * 2);
 
-	public void DestroyAllLines()
+	public void ResetStage()
 	{
 		foreach (var line in _linesToDelete)
 		{
 			Destroy(line);
 		}
 	}
-
 }

@@ -12,7 +12,7 @@ public class PlayerManager : MonoBehaviour
 	public static PlayerManager Instance { get; private set; }
 
 	public static event Action OnPlayerTurnSwitch;
-	public static event Action OnAddedBridgeToPlayer;
+	public static event Action OnPlayerBridgesChanged;
 
 	private void Awake()
 	{
@@ -54,6 +54,13 @@ public class PlayerManager : MonoBehaviour
 	public static void AddBridgeToPlayer(IPlayerModel player, int count = 1)
 	{
 		player.BridgesCount += count;
-		OnAddedBridgeToPlayer?.Invoke();
+		OnPlayerBridgesChanged?.Invoke();
+	}
+
+	public static void ResetBridgesCountForPlayers()
+	{
+		player1.BridgesCount = 0;
+		player2.BridgesCount = 0;
+		OnPlayerBridgesChanged?.Invoke();
 	}
 }
