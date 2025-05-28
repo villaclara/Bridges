@@ -70,7 +70,12 @@ public class DrawManager : MonoBehaviour, IGameStage
 				// check positions
 				if (IfPointInsideCurrentNumber(mousePos))
 				{
-					_currentLine = Instantiate(_linePrefab, mousePos, Quaternion.identity);
+					SpinningCircleHelper.DisableSpinningCircle(_numbers.Current, false);
+                    SpinningCircleHelper.DisableSpinningCircle(_numbers.Next, true);
+					//TODO
+					//remove spinning circle after this for better resource management
+
+                    _currentLine = Instantiate(_linePrefab, mousePos, Quaternion.identity);
 					_linesToDelete.Add(_currentLine.gameObject);
 					if (PlayerManager.playerTurn == PlayerTurn.P1_Turn)
 					{

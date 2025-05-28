@@ -89,7 +89,8 @@ public class NumberScript : MonoBehaviour
 			OnDragEnded?.Invoke(
 				new NumberModel(value,
 								new Vector2(transform.position.x, transform.position.y),
-								childCircle.radius * childObj.transform.lossyScale.x)); // here to get real radius in World space
+								childCircle.radius * childObj.transform.lossyScale.x, 
+								gameObject)); // here to get real radius in World space
 		}
 	}
 

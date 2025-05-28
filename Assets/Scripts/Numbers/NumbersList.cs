@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.RuleTile.TilingRuleOutput;
 
 /// <summary>
 /// Class, which is exposed to managers to get current, next etc Numbers.
@@ -22,15 +23,17 @@ public class NumbersList
 
 	public bool MoveNext()
 	{
-		_currentIndex++;
+		SpinningCircleHelper.DisableSpinningCircle(Next, false);
+        _currentIndex++;
 		if (_currentIndex >= _numbers.Count - 1)
 		{
 			return false;
 		}
 
 		this.Current = _numbers[_currentIndex];
-		this.Next = _numbers[_currentIndex + 1];
-		return true;
+        this.Next = _numbers[_currentIndex + 1];
+        SpinningCircleHelper.DisableSpinningCircle(Current, true);
+        return true;
 	}
 
 	public NumberModel Current { get; private set; }
@@ -38,10 +41,17 @@ public class NumbersList
 
 	public void Setup()
 	{
-		this.Current = _numbers[0];
-		this.Next = _numbers[1];
+		Current = _numbers[0];
+		Next = _numbers[1];
 		_currentIndex = 0;
-	}
+        UnityEngine.Transform childTransform = Current.NumberObject.transform.Find("spinningCircle");
+        if (childTransform != null)
+        {
+            var childGameObject = childTransform.gameObject;
+            childGameObject.SetActive(true);
+        }
+
+    }
 
 	public void Add(NumberModel number)
 	{
@@ -61,10 +71,12 @@ public class NumberModel
 	public Vector2 Position { get; }
 	public float Radius { get; }
 
-	public NumberModel(int number, Vector2 position, float radius)
+	public GameObject NumberObject { get; }
+	public NumberModel(int number, Vector2 position, float radius, GameObject numberObject)
 	{
 		Value = number;
 		Position = position;
 		Radius = radius;
+		NumberObject = numberObject;	
 	}
 }

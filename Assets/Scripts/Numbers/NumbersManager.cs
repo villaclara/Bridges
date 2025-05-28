@@ -1,4 +1,4 @@
-using System;
+	using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -19,12 +19,15 @@ public class NumbersManager : MonoBehaviour, IGameStage
 	public event Action OnStageExecutionCompleted;
 
 	private readonly List<GameObject> _numbersToDelete = new();
+	private NumberScript prevCircle = null;
 
 	private void CreateNumber(NumberModel model = null)
 	{
+
 		if (model is not null)
 		{
 			_numbersList.Add(model);
+
 		}
 
 		if (_currentNumber > GlobalVars.NUMBERS_COUNT)
@@ -36,10 +39,12 @@ public class NumbersManager : MonoBehaviour, IGameStage
 			_playerDrawingText.gameObject.SetActive(false);
 			OnStageExecutionCompleted?.Invoke();
 			Debug.Log("Numbermanager after completed calling invoke.");
-			return;
+			SpinningCircleHelper.DisableSpinningCircle(model, false);
+            return;
 		}
-
-		var current = Instantiate(numberPrefab, NumberScript.DefaultPosition, Quaternion.identity);
+        SpinningCircleHelper.DisableSpinningCircle(model, false);
+        var current = Instantiate(numberPrefab, NumberScript.DefaultPosition, Quaternion.identity);
+		prevCircle = current;
 		_numbersToDelete.Add(current.gameObject);
 		var textObject = current.transform.GetComponentInChildren<TextMeshPro>();
 		textObject.text = _currentNumber.ToString();
@@ -64,7 +69,7 @@ public class NumbersManager : MonoBehaviour, IGameStage
 		CreateNumber(null);
 	}
 
-
+	
 	public void ResetStage()
 	{
 		foreach (var number in _numbersToDelete)
