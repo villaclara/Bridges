@@ -15,7 +15,7 @@ public class PlayerCanvasStyleController : MonoBehaviour
 	private void Awake()
 	{
 		_borderOutline = GetComponentInChildren<Outline>();
-		_borderOutline.effectColor = new Color32(255, 255, 255, 0);
+		_borderOutline.effectColor = _playerId == 1 ? new Color32(139, 78, 217, 255) : new Color32(12, 138, 122, 255);
 
 		PlayerManager.OnPlayerTurnSwitch += PlayerManager_OnPlayerTurnSwitch;
 
