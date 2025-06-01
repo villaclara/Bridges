@@ -15,7 +15,7 @@ public class PlayerCanvasStyleController : MonoBehaviour
 	private void Awake()
 	{
 		_borderOutline = GetComponentInChildren<Outline>();
-		_borderOutline.effectColor = Color.white;
+		_borderOutline.effectColor = new Color32(255, 255, 255, 0);
 
 		PlayerManager.OnPlayerTurnSwitch += PlayerManager_OnPlayerTurnSwitch;
 
@@ -30,19 +30,18 @@ public class PlayerCanvasStyleController : MonoBehaviour
 			_ => () => { Debug.LogWarning($"{nameof(PlayerManager_OnPlayerTurnSwitch)} - pattern matching switch not found"); }
 		};
 		a?.Invoke();
-
 	}
 
 
 	// Changes the outline color if P1 turn
 	// So green for P1, white for P2
 	private void ChangeOutline_forP1() =>
-		_borderOutline.effectColor = _playerId == 1 ? Color.green : Color.white;
+		_borderOutline.effectColor = _playerId == 1 ? new Color32(139, 78, 217, 255) : new Color32(255, 255, 255, 0);
 
 	// Changes the outline color if P2 turn
 	// So geen for P2, white for P1
 	private void ChangeOutline_forP2() =>
-		_borderOutline.effectColor = _playerId == 1 ? Color.white : Color.green;
+		_borderOutline.effectColor = _playerId == 1 ? new Color32(255, 255, 255, 0) : new Color32(12, 138, 122, 255);
 
 	public void Reset()
 	{
