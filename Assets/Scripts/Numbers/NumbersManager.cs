@@ -36,7 +36,8 @@ public class NumbersManager : MonoBehaviour, IGameStage
 
 			_numbersList.Setup();
 			gameObject.SetActive(false);
-			_playerDrawingText.gameObject.SetActive(false);
+			//_playerDrawingText.gameObject.SetActive(false);
+			_playerDrawingText.text = "              ";
 			OnStageExecutionCompleted?.Invoke();
 			Debug.Log("Numbermanager after completed calling invoke.");
 			SpinningCircleHelper.DisableSpinningCircle(model, false);
@@ -60,11 +61,8 @@ public class NumbersManager : MonoBehaviour, IGameStage
 	{
 		gameObject.SetActive(true);
 
-		uint seed = (uint)System.Environment.TickCount;
-		if (seed == 0) seed = 1;
-		var rnd = new Unity.Mathematics.Random(seed).NextInt2();
 		var rnd1 = new System.Random().Next(1, 3);
-		_playerDrawingText.text = $"Player {rnd1} drawing";
+		_playerDrawingText.text = $"P{rnd1} is drawing";
 		_playerDrawingText.gameObject.SetActive(true);
 		CreateNumber(null);
 	}

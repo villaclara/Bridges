@@ -31,7 +31,7 @@ public class ScoreManager : MonoBehaviour
 
 	private void RedrawText()
 	{
-		_p1ScoreText.text = $"Player 1 - {PlayerManager.player1.BridgesCount}";
-		_p2ScoreText.text = $"Player 2 - {PlayerManager.player2.BridgesCount}";
+		_p1ScoreText.text = $"P1 - {PlayerManager.player1.BridgesCount}";
+		_p2ScoreText.text = $"P2 - {PlayerManager.player2.BridgesCount}";
 	}
 }
