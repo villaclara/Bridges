@@ -432,7 +432,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -9151307150387244180, guid: 83f503f3e1f2c9146b0f0f48b1bf1f53, type: 2}
+  - {fileID: 1521497025123154295, guid: b812f55c5def5c240a6b58044d5025b0, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -476,8 +476,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 00
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 83f503f3e1f2c9146b0f0f48b1bf1f53, type: 2}
-  m_sharedMaterial: {fileID: -9151307150387244180, guid: 83f503f3e1f2c9146b0f0f48b1bf1f53, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: b812f55c5def5c240a6b58044d5025b0, type: 2}
+  m_sharedMaterial: {fileID: 1521497025123154295, guid: b812f55c5def5c240a6b58044d5025b0, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -603,6 +603,18 @@ PrefabInstance:
     - target: {fileID: 5397081474752303097, guid: 9f015fe300e370c4e9eb0c9b7a2499f7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6990930727080202086, guid: 9f015fe300e370c4e9eb0c9b7a2499f7, type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6990930727080202086, guid: 9f015fe300e370c4e9eb0c9b7a2499f7, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6990930727080202086, guid: 9f015fe300e370c4e9eb0c9b7a2499f7, type: 3}
+      propertyPath: m_Color.r
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

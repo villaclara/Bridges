@@ -10,9 +10,23 @@ public class spinningCircle : MonoBehaviour
 	private float alpha = 0.3f;
 	private bool fadingOut = true;
 
+	private SpriteRenderer _renderer;
 
-	void Update()
+	private void Awake()
 	{
+		_renderer = GetComponent<SpriteRenderer>();
+	}
+
+	private void Update()
+	{
+		_renderer.color = PlayerManager.playerTurn switch
+		{
+			PlayerTurn.P1_Turn => new Color32(139, 78, 217, 255),
+			PlayerTurn.P2_Turn => new Color32(12, 159, 140, 255),
+			_ => new Color32(176, 255, 0, 255)
+		};
+
+
 		transform.Rotate(Vector3.forward, spinSpeed * Time.deltaTime);
 
 		// Fade logic
