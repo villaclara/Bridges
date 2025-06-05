@@ -3,9 +3,9 @@ using UnityEngine;
 
 public class PlayerManager : MonoBehaviour
 {
-	public readonly static IPlayerModel player1 = new PlayerModel(1, "#b58950");
+	public readonly static IPlayerModel player1 = new PlayerModel(1, "#A259FF");
 
-	public readonly static IPlayerModel player2 = new PlayerModel(2, "#6c94d4");
+	public readonly static IPlayerModel player2 = new PlayerModel(2, "#00BFA6");
 
 	public static PlayerTurn playerTurn;
 
@@ -40,6 +40,7 @@ public class PlayerManager : MonoBehaviour
 			player2.IsMyTurn = !isPlayer1First;
 			playerTurn = PlayerTurn.P2_Turn;
 		}
+		Debug.Log($"count of subs of playermanager - {OnPlayerTurnSwitch?.GetInvocationList().Length ?? 0}");
 		OnPlayerTurnSwitch?.Invoke();
 	}
 
