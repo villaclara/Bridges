@@ -75,7 +75,7 @@ public class DrawManager : MonoBehaviour, IGameStage
 					//TODO
 					//remove spinning circle after this for better resource management
 
-                    _currentLine = Instantiate(_linePrefab, mousePos, Quaternion.identity);
+                    _currentLine = Instantiate(_linePrefab, new Vector3(mousePos.x, mousePos.y, -4), Quaternion.identity);
 					_linesToDelete.Add(_currentLine.gameObject);
 					if (PlayerManager.playerTurn == PlayerTurn.P1_Turn)
 					{

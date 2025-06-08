@@ -10,6 +10,11 @@ public class IntersectionCollider : MonoBehaviour
 	[SerializeField]
 	private PlayerManager _playerManager;
 
+	[SerializeField]
+	private Sprite p1Sprite;
+	[SerializeField]
+	private Sprite p2Sprite;
+
 	private bool _canPlaceBridge = true;
 	public static float Radius;
 
@@ -27,21 +32,23 @@ public class IntersectionCollider : MonoBehaviour
 		if (_canPlaceBridge && collision.CompareTag("Line"))
 		{
 			//Debug.Log("Line collision, can place bridge");
-			var bridge = Instantiate(Bridge, transform.position, Quaternion.identity);
+			var bridge = Instantiate(Bridge, new Vector3(transform.position.x, transform.position.y, -5), Quaternion.identity);
 			_bridgesToDelete.Add(bridge);
 			Action a = PlayerManager.playerTurn switch
 			{
 				PlayerTurn.P1_Turn => () =>
 				{
 					bridge.GetComponent<BridgeScript>().currentPlayer = PlayerManager.player1;
-					SetBridgeColor(bridge, PlayerManager.player1.ColorHEX);
+					//SetBridgeColor(bridge, PlayerManager.player1.ColorHEX);
+					ChangeSpriteOfBridge(bridge, p1Sprite);
 					PlayerManager.AddBridgeToPlayer(PlayerManager.player1, 1);
 				}
 				,
 				PlayerTurn.P2_Turn => () =>
 				{
 					bridge.GetComponent<BridgeScript>().currentPlayer = PlayerManager.player2;
-					SetBridgeColor(bridge, PlayerManager.player2.ColorHEX);
+					//SetBridgeColor(bridge, PlayerManager.player2.ColorHEX);
+					ChangeSpriteOfBridge(bridge, p2Sprite);
 					PlayerManager.AddBridgeToPlayer(PlayerManager.player2, 1);
 				}
 				,
@@ -106,6 +113,11 @@ public class IntersectionCollider : MonoBehaviour
 			bridge.GetComponent<SpriteRenderer>().color = newcolor;
 			Debug.Log($"set bridge color - {newcolor}");
 		}
+	}
+
+	private void ChangeSpriteOfBridge(GameObject bridge, Sprite sprite)
+	{
+		bridge.GetComponent<SpriteRenderer>().sprite = sprite;
 	}
 
 	public void DestroyAllBridges()

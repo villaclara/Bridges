@@ -1897,6 +1897,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Bridge: {fileID: 3074071656345859991, guid: 629cdaa9282644141980a31a5ed16c3f, type: 3}
   _playerManager: {fileID: 1592495949}
+  p1Sprite: {fileID: -814359663423278849, guid: 387630b4ab4d5c74091fecffe4ebbb30, type: 3}
+  p2Sprite: {fileID: 4507289196342391612, guid: b90025cfc55656e4d941e6a0002fe330, type: 3}
 --- !u!1 &1137583207
 GameObject:
   m_ObjectHideFlags: 0
