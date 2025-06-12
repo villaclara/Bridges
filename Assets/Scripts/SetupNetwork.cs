@@ -10,12 +10,14 @@ using Unity.Services.Relay;
 using UnityEngine;
 using TMPro;
 using System;
+using System.Text.RegularExpressions;
 
 public class SetupNetwork : MonoBehaviour
 {
 
 	public TextMeshProUGUI createdJoinCode;
 	public TextMeshProUGUI clientJoinCode;
+	public TextMeshProUGUI IsJoinedClient;
 
 
 
@@ -53,23 +55,25 @@ public class SetupNetwork : MonoBehaviour
 	/// <param name="joinCode">Join Code for session.</param>
 	public void StartClientRelay()
 	{
-		string joincode = createdJoinCode.text.Trim();
+		string joincode = Regex.Replace(clientJoinCode.text, @"[\u200B-\u200D\uFEFF]", "").Trim();
 		if (string.IsNullOrEmpty(joincode))
 		{
 			Debug.Log($"Client join empty - {joincode}");
 		}
-		_ = JoinClientAsync();
+		_ = JoinClientAsync(joincode);
 	}
 	// one more function because we need to await the results
-	private async Task JoinClientAsync()
+	private async Task JoinClientAsync(string joincode)
 	{
 		try
 		{
-			bool result = await StartClientWithRelay(clientJoinCode.text, "wss");
+			bool result = await StartClientWithRelay(joincode, "wss");
+			IsJoinedClient.text = result ? "Client Joined" : "Error when joining";
 		}
 		catch (Exception ex)
 		{
 			Debug.Log($"Exception when joining - {ex.Message}");
+			IsJoinedClient.text = "Catch error when joining. " + ex.Message;
 		}
 	}
 	private async Task<bool> StartClientWithRelay(string joinCode, string connectionType)
