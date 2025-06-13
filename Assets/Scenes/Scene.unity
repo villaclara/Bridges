@@ -1368,10 +1368,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1921603067}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 199.42293, y: -431.67993}
+  m_SizeDelta: {x: 0, y: 190.05498}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &572324299
 MonoBehaviour:
@@ -1393,7 +1393,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Room Code: '
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: b812f55c5def5c240a6b58044d5025b0, type: 2}
   m_sharedMaterial: {fileID: 1521497025123154295, guid: b812f55c5def5c240a6b58044d5025b0, type: 2}
@@ -1504,10 +1504,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1921603067}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 199.42293, y: -241.62497}
+  m_SizeDelta: {x: 398.84586, y: 241.62497}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &581886701
 MonoBehaviour:
@@ -2050,9 +2050,9 @@ RectTransform:
   - {fileID: 524357547}
   m_Father: {fileID: 1036467156}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 249.76291, y: -121.15961}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &799454378
@@ -2387,7 +2387,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   createdJoinCode: {fileID: 572324299}
   clientJoinCode: {fileID: 1926179966}
-  IsJoinedClient: {fileID: 1458922624}
+  connectionStatusText: {fileID: 1458922624}
 --- !u!114 &1036467158
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3023,8 +3023,8 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 394712254}
         m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: 
-        m_Mode: 1
+        m_MethodName: SetActive
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -3145,9 +3145,9 @@ RectTransform:
   - {fileID: 1188617565}
   m_Father: {fileID: 1036467156}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 249.76291, y: -78.719864}
   m_SizeDelta: {x: 300, y: 70}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &1314112642
@@ -3300,7 +3300,7 @@ MonoBehaviour:
   m_DisconnectTimeoutMS: 30000
   ConnectionData:
     Address: 127.0.0.1
-    Port: 7777
+    Port: 8080
     ServerListenAddress: 127.0.0.1
   DebugSimulator:
     PacketDelayMS: 0
@@ -3393,9 +3393,9 @@ RectTransform:
   - {fileID: 770425241}
   m_Father: {fileID: 1036467156}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 249.76291, y: -233.59933}
   m_SizeDelta: {x: 300, y: 70}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &1401522613
@@ -3911,7 +3911,7 @@ GameObject:
   - component: {fileID: 1458922625}
   - component: {fileID: 1458922624}
   m_Layer: 5
-  m_Name: IsJoinedClient
+  m_Name: ConnectionStatus
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3937,7 +3937,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Room Code: '
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: b812f55c5def5c240a6b58044d5025b0, type: 2}
   m_sharedMaterial: {fileID: 1521497025123154295, guid: b812f55c5def5c240a6b58044d5025b0, type: 2}
@@ -4030,10 +4030,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1921603067}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 199.42293, y: -621.7349}
+  m_SizeDelta: {x: 0, y: 190.05498}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!1 &1481140500
 GameObject:
@@ -5161,6 +5161,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1921603067}
   - component: {fileID: 1921603068}
+  - component: {fileID: 1921603069}
+  - component: {fileID: 1921603070}
   m_Layer: 5
   m_Name: TextGroup
   m_TagString: Untagged
@@ -5216,6 +5218,40 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &1921603069
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1921603066}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 1447073056
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+--- !u!114 &1921603070
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1921603066}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f798b8ff96fb48a4da9e42a12556cdae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  connectionStatusText: {fileID: 1458922624}
 --- !u!1 &1926179964
 GameObject:
   m_ObjectHideFlags: 0
@@ -5455,7 +5491,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1981080028
 RectTransform:
   m_ObjectHideFlags: 0

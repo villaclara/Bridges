@@ -15,12 +15,9 @@ using System.Text.RegularExpressions;
 public class SetupNetwork : MonoBehaviour
 {
 
-	public TextMeshProUGUI createdJoinCode;
-	public TextMeshProUGUI clientJoinCode;
-	public TextMeshProUGUI IsJoinedClient;
-
-
-
+	[SerializeField] private TextMeshProUGUI createdJoinCode;
+	[SerializeField] private TextMeshProUGUI clientJoinCode;
+	[SerializeField] private TextMeshProUGUI connectionStatusText;
 
 	/// <summary>
 	/// Start Host with Relay.
@@ -44,6 +41,7 @@ public class SetupNetwork : MonoBehaviour
 		var joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
 		Debug.Log($"joincode - " + joinCode);
 		createdJoinCode.text = "Room Code - " + joinCode;
+		connectionStatusText.text = "Room Created. Waiting for players...";
 		return NetworkManager.Singleton.StartHost() ? joinCode : null;
 	}
 
@@ -65,15 +63,16 @@ public class SetupNetwork : MonoBehaviour
 	// one more function because we need to await the results
 	private async Task JoinClientAsync(string joincode)
 	{
+		bool connectResult = false;
 		try
 		{
-			bool result = await StartClientWithRelay(joincode, "wss");
-			IsJoinedClient.text = result ? "Client Joined" : "Error when joining";
+			connectResult = await StartClientWithRelay(joincode, "wss");
+			connectionStatusText.text = "Joining...";
 		}
 		catch (Exception ex)
 		{
 			Debug.Log($"Exception when joining - {ex.Message}");
-			IsJoinedClient.text = "Catch error when joining. " + ex.Message;
+			connectionStatusText.text = "Error when joining.";
 		}
 	}
 	private async Task<bool> StartClientWithRelay(string joinCode, string connectionType)
@@ -87,7 +86,7 @@ public class SetupNetwork : MonoBehaviour
 		var allocation = await RelayService.Instance.JoinAllocationAsync(joinCode);
 		NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(new RelayServerData(allocation, connectionType));
 		NetworkManager.Singleton.GetComponent<UnityTransport>().UseWebSockets = true;
-		return !string.IsNullOrEmpty(joinCode) && NetworkManager.Singleton.StartClient();
+		return NetworkManager.Singleton.StartClient();
 	}
 
 }
