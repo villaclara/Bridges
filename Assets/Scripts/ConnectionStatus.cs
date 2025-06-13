@@ -12,6 +12,8 @@ public class ConnectionStatus : NetworkBehaviour
 {
 	[SerializeField] private TextMeshProUGUI connectionStatusText;
 
+	public GameObject LoadingScreen;
+	public GameObject GameManager;
 
 	// NetworkVariable to sync the status message across clients
 	private NetworkVariable<FixedString128Bytes> statusMessage = new NetworkVariable<FixedString128Bytes>(
@@ -46,11 +48,27 @@ public class ConnectionStatus : NetworkBehaviour
 
 	private void OnClientConnected(ulong clientId)
 	{
+		// Only Host/Server handles starting the game
+		if (!IsHost && !IsServer)
+			return;
+
 		// Only update the status if a client has connected (and we're the server)
 		if (NetworkManager.Singleton.ConnectedClients.Count >= 2) // Host + 1 client = 2 or more connected
 		{
 			// Update the NetworkVariable, which will synchronize to all clients
 			statusMessage.Value = "Client Connected.";
+
+			StartGameOnClientRpc();
 		}
+	}
+
+	[Rpc(SendTo.ClientsAndHost)]
+	private void StartGameOnClientRpc()
+	{
+		Debug.Log("Starting game in Client!");
+
+		// Optional: Start on host
+		LoadingScreen.SetActive(false);
+		GameManager.SetActive(true);
 	}
 }
