@@ -1,6 +1,7 @@
 	using System;
 using System.Collections.Generic;
 using TMPro;
+using Unity.Netcode;
 using UnityEngine;
 
 public class NumbersManager : MonoBehaviour, IGameStage
@@ -44,17 +45,19 @@ public class NumbersManager : MonoBehaviour, IGameStage
             return;
 		}
         SpinningCircleHelper.DisableSpinningCircle(model, false);
-        var current = Instantiate(numberPrefab, NumberScript.DefaultPosition, Quaternion.identity);
-		prevCircle = current;
-		_numbersToDelete.Add(current.gameObject);
-		var textObject = current.transform.GetComponentInChildren<TextMeshPro>();
-		textObject.text = _currentNumber.ToString();
-		current.gameObject.SetActive(true);
-		current.value = _currentNumber;
-		_currentNumber++;
 
-		// call CreateNumber again when drag ended.
-		current.OnDragEnded = CreateNumber;
+		if(GameManager.gameMode == GameMode.Multiplayer)
+		{
+			if (NetworkManager.Singleton.IsHost)
+			{
+				InstantiateNewNumber(spawnNetworkObject: true);
+			}
+		}
+		else
+		{
+			InstantiateNewNumber(spawnNetworkObject: false);
+		}
+
 	}
 
 	public void ExecuteStage()
@@ -77,6 +80,27 @@ public class NumbersManager : MonoBehaviour, IGameStage
 
 		_currentNumber = 1;
 		_numbersList.RemoveAll();
+	}
+
+	private void InstantiateNewNumber(bool spawnNetworkObject)
+	{
+		var current = Instantiate(numberPrefab, NumberScript.DefaultPosition, Quaternion.identity);
+		prevCircle = current;
+		_numbersToDelete.Add(current.gameObject);
+		var textObject = current.transform.GetComponentInChildren<TextMeshPro>();
+		textObject.text = _currentNumber.ToString();
+		current.gameObject.SetActive(true);
+		current.value = _currentNumber;
+		_currentNumber++;
+
+		// call CreateNumber again when drag ended.
+		current.OnDragEnded = CreateNumber;
+
+		// only if multiplayer active we spawn and send network object
+		if (spawnNetworkObject)
+		{
+			current.GetComponent<NetworkObject>().Spawn();
+		}
 	}
 }
 

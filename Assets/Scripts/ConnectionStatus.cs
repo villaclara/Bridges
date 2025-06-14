@@ -70,5 +70,6 @@ public class ConnectionStatus : NetworkBehaviour
 		// Optional: Start on host
 		LoadingScreen.SetActive(false);
 		GameManager.SetActive(true);
+		GameManager.GetComponent<GameManager>().SetGameMode(isOnline: true);
 	}
 }

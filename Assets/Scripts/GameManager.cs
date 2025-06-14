@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+	[Header("Game Mode")]
+	[SerializeField] private bool _isOnline;
+
+	public static GameMode gameMode = GameMode.Local;
+
 	// List of all stages of the game flow (setup numbers, draw lines, end).
 	[SerializeField]
 	private List<IGameStage> _stages = new();
@@ -79,6 +84,17 @@ public class GameManager : MonoBehaviour
 		StartStage(_currentStageIndex);
 	}
 
+	public void SetGameMode(bool isOnline)
+	{
+		this._isOnline = isOnline;
+		gameMode = this._isOnline ? GameMode.Multiplayer : GameMode.Local;
+	}
+
+}
 
 
+public enum GameMode
+{
+	Local = 0,
+	Multiplayer = 1
 }
