@@ -23,7 +23,7 @@ public class spinningCircle : MonoBehaviour
 		{
 			PlayerTurn.P1_Turn => new Color32(139, 78, 217, 255),
 			PlayerTurn.P2_Turn => new Color32(12, 159, 140, 255),
-			_ => new Color32(176, 255, 0, 255)
+			_ => new Color32(47, 107, 67, 255)
 		};
 
 

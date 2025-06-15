@@ -4,16 +4,21 @@ using UnityEngine;
 
 public static class SpinningCircleHelper
 {
-    public static void DisableSpinningCircle(NumberModel numberModel, bool value)
+    public static void DisableSpinningCircleForNumberModel(NumberModel numberModel, bool value)
     {
         if (numberModel != null)
         {
-            Transform childTransform = numberModel.NumberObject.transform.Find("spinningCircle");
-            if (childTransform != null)
-            {
-                var childGameObject = childTransform.gameObject;
-                childGameObject.SetActive(value);
-            }
+            DisableSpinningCircleForNumberGO(numberModel.NumberObject, value);
         }
     }
+
+    public static void DisableSpinningCircleForNumberGO(GameObject gameObject, bool value)
+    {
+		Transform childTransform = gameObject.transform.Find("spinningCircle");
+		if (childTransform != null)
+		{
+			var childGameObject = childTransform.gameObject;
+			childGameObject.SetActive(value);
+		}
+	}
 }

@@ -1,7 +1,9 @@
 using System;
+using TMPro;
+using Unity.Netcode;
 using UnityEngine;
 
-public class NumberScript : MonoBehaviour
+public class NumberScript : NetworkBehaviour
 {
 	public static readonly Vector3 DefaultPosition = new(0f, 0f, -2f);   // if 0z - the black border is not visible
 
@@ -38,10 +40,26 @@ public class NumberScript : MonoBehaviour
 	// Start is called before the first frame update
 	private void Start()
 	{
-		_cam = Camera.main;
-		_circleRenderer = GetComponentInChildren<SpriteRenderer>();
-		_circleRenderer.color = Color.yellow;
-		OnIsAllowedToStopDragChanged += SetColorIfAllowedToDrop;
+		// If we are the client, not Host, we only watch the numbers to be drawn.
+		if (GameManager.gameMode == GameMode.Multiplayer && !IsOwner && !IsHost)
+		{
+			Debug.Log($"NumberScript Start in MP in Client !Host");
+			_circleRenderer = GetComponentInChildren<SpriteRenderer>();
+			_circleRenderer.color = Color.white;
+			SpinningCircleHelper.DisableSpinningCircleForNumberGO(gameObject, false);
+			_isEnabled = false;
+		}
+
+		// if we ARE host OR the game is Local
+		// We position numbers manually and subscribe to event to change color of number.
+		else
+		{
+			Debug.Log($"NumberScript Start in Host or Local");
+			_cam = Camera.main;
+			_circleRenderer = GetComponentInChildren<SpriteRenderer>();
+			_circleRenderer.color = Color.yellow;
+			OnIsAllowedToStopDragChanged += SetColorIfAllowedToDrop;
+		}
 	}
 
 	// Update is called once per frame
@@ -89,7 +107,7 @@ public class NumberScript : MonoBehaviour
 			OnDragEnded?.Invoke(
 				new NumberModel(value,
 								new Vector2(transform.position.x, transform.position.y),
-								childCircle.radius * childObj.transform.lossyScale.x, 
+								childCircle.radius * childObj.transform.lossyScale.x,
 								gameObject)); // here to get real radius in World space
 		}
 	}
@@ -150,5 +168,4 @@ public class NumberScript : MonoBehaviour
 			? new Color32(60, 143, 79, 255)
 			: new Color32(255, 0, 0, 255);
 	}
-
 }

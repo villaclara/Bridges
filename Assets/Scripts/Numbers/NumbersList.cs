@@ -23,7 +23,7 @@ public class NumbersList
 
 	public bool MoveNext()
 	{
-		SpinningCircleHelper.DisableSpinningCircle(Next, false);
+		SpinningCircleHelper.DisableSpinningCircleForNumberModel(Next, false);
         _currentIndex++;
 		if (_currentIndex >= _numbers.Count - 1)
 		{
@@ -32,7 +32,7 @@ public class NumbersList
 
 		this.Current = _numbers[_currentIndex];
         this.Next = _numbers[_currentIndex + 1];
-        SpinningCircleHelper.DisableSpinningCircle(Current, true);
+        SpinningCircleHelper.DisableSpinningCircleForNumberModel(Current, true);
         return true;
 	}
 

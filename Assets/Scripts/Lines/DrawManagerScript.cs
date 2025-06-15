@@ -70,8 +70,8 @@ public class DrawManager : MonoBehaviour, IGameStage
 				// check positions
 				if (IfPointInsideCurrentNumber(mousePos))
 				{
-					SpinningCircleHelper.DisableSpinningCircle(_numbers.Current, false);
-                    SpinningCircleHelper.DisableSpinningCircle(_numbers.Next, true);
+					SpinningCircleHelper.DisableSpinningCircleForNumberModel(_numbers.Current, false);
+                    SpinningCircleHelper.DisableSpinningCircleForNumberModel(_numbers.Next, true);
 					//TODO
 					//remove spinning circle after this for better resource management
 

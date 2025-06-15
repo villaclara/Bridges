@@ -41,10 +41,10 @@ public class NumbersManager : MonoBehaviour, IGameStage
 			_playerDrawingText.text = "              ";
 			OnStageExecutionCompleted?.Invoke();
 			Debug.Log("Numbermanager after completed calling invoke.");
-			SpinningCircleHelper.DisableSpinningCircle(model, false);
+			SpinningCircleHelper.DisableSpinningCircleForNumberModel(model, false);
             return;
 		}
-        SpinningCircleHelper.DisableSpinningCircle(model, false);
+        SpinningCircleHelper.DisableSpinningCircleForNumberModel(model, false);
 
 		if(GameManager.gameMode == GameMode.Multiplayer)
 		{
@@ -89,9 +89,8 @@ public class NumbersManager : MonoBehaviour, IGameStage
 		_numbersToDelete.Add(current.gameObject);
 		var textObject = current.transform.GetComponentInChildren<TextMeshPro>();
 		textObject.text = _currentNumber.ToString();
-		current.gameObject.SetActive(true);
 		current.value = _currentNumber;
-		_currentNumber++;
+		current.gameObject.SetActive(true);
 
 		// call CreateNumber again when drag ended.
 		current.OnDragEnded = CreateNumber;
@@ -100,7 +99,9 @@ public class NumbersManager : MonoBehaviour, IGameStage
 		if (spawnNetworkObject)
 		{
 			current.GetComponent<NetworkObject>().Spawn();
+			current.GetComponent<SetNumberValue>().SetNumberValueText(_currentNumber.ToString());
 		}
+		_currentNumber++;
 	}
 }
 
