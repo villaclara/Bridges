@@ -883,6 +883,7 @@ MonoBehaviour:
   Bridge: {fileID: 3074071656345859991, guid: 629cdaa9282644141980a31a5ed16c3f, type: 3}
   _intersectionCollider: {fileID: 1081907907}
   _playerManager: {fileID: 1592495949}
+  _stageSetup: {fileID: 1921603071}
   _isDrawing: 0
   _isDrawingToNextCompleted: 1
 --- !u!4 &332824310
@@ -2987,6 +2988,7 @@ MonoBehaviour:
   _currentNumber: 1
   numberPrefab: {fileID: 2986627317527075612, guid: 75c63ce642cf5974fa9fc20dc8ffe3cb, type: 3}
   _playerDrawingText: {fileID: 76885448}
+  _stageSetup: {fileID: 1921603071}
 --- !u!4 &1190940372
 Transform:
   m_ObjectHideFlags: 0
@@ -5513,6 +5515,7 @@ GameObject:
   - component: {fileID: 1921603068}
   - component: {fileID: 1921603069}
   - component: {fileID: 1921603070}
+  - component: {fileID: 1921603071}
   m_Layer: 5
   m_Name: TextGroup
   m_TagString: Untagged
@@ -5604,6 +5607,21 @@ MonoBehaviour:
   connectionStatusText: {fileID: 1458922624}
   LoadingScreen: {fileID: 1981080027}
   GameManager: {fileID: 394712254}
+--- !u!114 &1921603071
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1921603066}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9e3acfac16a5cf43801c4ee76182d99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameManager: {fileID: 394712254}
+  numbersManager: {fileID: 1190940370}
+  drawManager: {fileID: 332824308}
 --- !u!1 &1926179964
 GameObject:
   m_ObjectHideFlags: 0

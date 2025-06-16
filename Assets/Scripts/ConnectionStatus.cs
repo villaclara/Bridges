@@ -33,6 +33,7 @@ public class ConnectionStatus : NetworkBehaviour
 	// Change the status
 	private void OnStatusChanged(FixedString128Bytes oldValue, FixedString128Bytes newValue)
 	{
+		Debug.Log("On sstatus changed");
 		if (connectionStatusText != null)
 			connectionStatusText.text = newValue.ToString();
 	}

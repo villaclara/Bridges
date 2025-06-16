@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 public class DrawManager : MonoBehaviour, IGameStage
@@ -10,6 +11,7 @@ public class DrawManager : MonoBehaviour, IGameStage
 	[SerializeField] private GameObject _intersectionCollider;
 	[SerializeField] private NumbersList _numbers;
 	[SerializeField] private PlayerManager _playerManager;
+	[SerializeField] private MP_StageSetup _stageSetup;
 
 	[SerializeField]
 	private bool _isDrawing = false;
@@ -31,6 +33,8 @@ public class DrawManager : MonoBehaviour, IGameStage
 	/// <inheritdoc/>
 	/// </summary>
 	public event Action OnStageExecutionCompleted;
+
+	public event Action<Vector2> OnNewPosAddedToLine;
 
 	void Start()
 	{
@@ -76,6 +80,10 @@ public class DrawManager : MonoBehaviour, IGameStage
 					//remove spinning circle after this for better resource management
 
                     _currentLine = Instantiate(_linePrefab, new Vector3(mousePos.x, mousePos.y, -4), Quaternion.identity);
+					if(GameManager.gameMode == GameMode.Multiplayer && NetworkManager.Singleton.IsHost)
+					{
+						_currentLine.GetComponent<NetworkObject>().Spawn();
+					}
 					_linesToDelete.Add(_currentLine.gameObject);
 					if (PlayerManager.playerTurn == PlayerTurn.P1_Turn)
 					{
@@ -117,6 +125,13 @@ public class DrawManager : MonoBehaviour, IGameStage
 			_currentLine.SetPosition(mousePos);
 			_intersectionCollider.transform.position = mousePos;
 
+			if(GameManager.gameMode == GameMode.Multiplayer && NetworkManager.Singleton.IsHost)
+			{
+				//OnNewPosAddedToLine?.Invoke(mousePos);
+				Debug.Log($"Call before MP LINE");
+				_currentLine.GetComponent<MP_Line>().SetNewValueToPoint(mousePos);
+			}
+
 			if (IfPointPreciselyInsideNextNumber(mousePos))
 			{
 				_isDrawingToNextCompleted = true;
@@ -151,7 +166,16 @@ public class DrawManager : MonoBehaviour, IGameStage
 				{
 					Debug.Log("Execution ended");
 					this.enabled = false;
-					OnStageExecutionCompleted?.Invoke();
+					//OnStageExecutionCompleted?.Invoke();
+
+					if (GameManager.gameMode == GameMode.Multiplayer)
+					{
+						_stageSetup.SetEndGameRpc();
+					}
+					else
+					{
+						InvokeStageEnd();
+					}
 				}
 			}
 
@@ -207,5 +231,10 @@ public class DrawManager : MonoBehaviour, IGameStage
 		{
 			Destroy(line);
 		}
+	}
+
+	public void InvokeStageEnd()
+	{
+		OnStageExecutionCompleted?.Invoke();
 	}
 }

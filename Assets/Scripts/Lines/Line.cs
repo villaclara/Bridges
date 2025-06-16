@@ -14,7 +14,6 @@ public class Line : MonoBehaviour
 		_collider.transform.position -= transform.position; //to make collider points the same as line points
 	}
 
-
 	public void SetLineColor(string colorHEX)
 	{
 		if (ColorUtility.TryParseHtmlString(colorHEX, out Color newcolor))

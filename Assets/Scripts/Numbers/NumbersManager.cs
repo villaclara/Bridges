@@ -22,6 +22,8 @@ public class NumbersManager : MonoBehaviour, IGameStage
 	private readonly List<GameObject> _numbersToDelete = new();
 	private NumberScript prevCircle = null;
 
+	[SerializeField] private MP_StageSetup _stageSetup;
+
 	private void CreateNumber(NumberModel model = null)
 	{
 
@@ -39,7 +41,15 @@ public class NumbersManager : MonoBehaviour, IGameStage
 			gameObject.SetActive(false);
 			//_playerDrawingText.gameObject.SetActive(false);
 			_playerDrawingText.text = "              ";
-			OnStageExecutionCompleted?.Invoke();
+			//OnStageExecutionCompleted?.Invoke();
+			if(GameManager.gameMode == GameMode.Multiplayer)
+			{
+				_stageSetup.SetDrawStageRpc();
+			}
+			else
+			{
+				InvokeStageEnd();
+			}
 			Debug.Log("Numbermanager after completed calling invoke.");
 			SpinningCircleHelper.DisableSpinningCircleForNumberModel(model, false);
             return;
@@ -102,6 +112,11 @@ public class NumbersManager : MonoBehaviour, IGameStage
 			current.GetComponent<SetNumberValue>().SetNumberValueText(_currentNumber.ToString());
 		}
 		_currentNumber++;
+	}
+
+	public void InvokeStageEnd()
+	{
+		OnStageExecutionCompleted?.Invoke();
 	}
 }
 
