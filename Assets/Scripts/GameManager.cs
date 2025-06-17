@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using TMPro;
+using Unity.Netcode;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -72,6 +73,8 @@ public class GameManager : MonoBehaviour
 
 	public void ResetAll()
 	{
+		Debug.Log($"IsHost - {NetworkManager.Singleton.IsHost}, IcLient - {NetworkManager.Singleton.IsClient}");
+		Debug.Log($"Reset All called");
 		foreach (var stage in _stages)
 		{
 			stage.ResetStage();

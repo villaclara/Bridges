@@ -28,6 +28,8 @@ public class PlayerManager : MonoBehaviour
 
 	public static void SetupFirstTurn(bool isPlayer1First)
 	{
+		// TODO - Remove fake setup first turn
+		isPlayer1First = true;
 		if (isPlayer1First)
 		{
 			player1.IsMyTurn = isPlayer1First;

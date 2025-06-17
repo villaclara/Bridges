@@ -9,17 +9,17 @@ public class MP_Line : NetworkBehaviour
 	//[SerializeField] private GameObject _drawManager;
 	[SerializeField] private Line _line;
 
-	NetworkVariable<Vector2> points = new();
+	private NetworkVariable<Vector2> point = new();
 
 	private void Start()
 	{
-		points.OnValueChanged += OnValueChanged;
+		point.OnValueChanged += OnValueChanged;
 		//_drawManager.GetComponent<DrawManager>().OnNewPosAddedToLine += OnNewPosAddedToLine;
 	}
 
 	private void OnNewPosAddedToLine(Vector2 obj)
 	{
-		points.Value = obj;
+		point.Value = obj;
 	}
 
 	private void OnValueChanged(Vector2 previousValue, Vector2 newValue)
@@ -27,14 +27,14 @@ public class MP_Line : NetworkBehaviour
 		Debug.Log($"OnLineValueChanged - {newValue}, IsOwner - {IsOwner}");
 		if(!IsOwner)
 		{
-			_line.SetPosition(points.Value);
+			_line.SetPosition(point.Value);
 		}
 	}
 	
 	public void SetNewValueToPoint(Vector2 point)
 	{
 		Debug.Log($"Set New value to point called");
-		points.Value = point;
+		this.point.Value = point;
 	}
 	
 }

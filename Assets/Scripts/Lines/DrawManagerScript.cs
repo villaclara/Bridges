@@ -2,9 +2,12 @@ using System;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class DrawManager : MonoBehaviour, IGameStage
 {
+
+	#region fields
 	private Camera _cam;
 	[SerializeField] private Line _linePrefab;
 	[SerializeField] public GameObject Bridge;
@@ -36,6 +39,10 @@ public class DrawManager : MonoBehaviour, IGameStage
 
 	public event Action<Vector2> OnNewPosAddedToLine;
 
+	public DrawMessenger drawMessenger;
+
+	#endregion fields
+
 	void Start()
 	{
 		//_cam = Camera.main;
@@ -52,6 +59,18 @@ public class DrawManager : MonoBehaviour, IGameStage
 	// Update is called once per frame
 	void Update()
 	{
+		if(GameManager.gameMode == GameMode.Multiplayer && PlayerManager.playerTurn == PlayerTurn.P2_Turn && NetworkManager.Singleton.IsHost)
+		{
+			Debug.Log($"P2 Turn, Host return");
+			return;
+		}
+
+		if (GameManager.gameMode == GameMode.Multiplayer && PlayerManager.playerTurn == PlayerTurn.P1_Turn && !NetworkManager.Singleton.IsHost)
+		{
+			Debug.Log($"P1 turn, Client return");
+			return;
+		}
+
 		// Check if mouse is not over the screen.
 		// xz chu norm tyt.
 		Vector3 mousePos1 = Input.mousePosition;
@@ -76,13 +95,19 @@ public class DrawManager : MonoBehaviour, IGameStage
 				{
 					SpinningCircleHelper.DisableSpinningCircleForNumberModel(_numbers.Current, false);
                     SpinningCircleHelper.DisableSpinningCircleForNumberModel(_numbers.Next, true);
-					//TODO
-					//remove spinning circle after this for better resource management
+					//TODO - remove spinning circle after this for better resource management
 
                     _currentLine = Instantiate(_linePrefab, new Vector3(mousePos.x, mousePos.y, -4), Quaternion.identity);
-					if(GameManager.gameMode == GameMode.Multiplayer && NetworkManager.Singleton.IsHost)
+					if(GameManager.gameMode == GameMode.Multiplayer)
 					{
-						_currentLine.GetComponent<NetworkObject>().Spawn();
+						if(NetworkManager.Singleton.IsHost)
+						{
+							_currentLine.GetComponent<NetworkObject>().Spawn();
+						}
+						else
+						{
+
+						}
 					}
 					_linesToDelete.Add(_currentLine.gameObject);
 					if (PlayerManager.playerTurn == PlayerTurn.P1_Turn)
@@ -192,6 +217,7 @@ public class DrawManager : MonoBehaviour, IGameStage
 		}
 	}
 
+	#region StageExecution
 	public void ExecuteStage()
 	{
 		//_canDraw = true;
@@ -209,6 +235,24 @@ public class DrawManager : MonoBehaviour, IGameStage
 		Debug.Log($"First turn - {PlayerManager.playerTurn}");
 	}
 
+	public void ResetStage()
+	{
+		foreach (var line in _linesToDelete)
+		{
+			Destroy(line);
+		}
+	}
+
+	public void InvokeStageEnd()
+	{
+		OnStageExecutionCompleted?.Invoke();
+	}
+
+
+	#endregion StageExecution
+
+	#region CheckPoints secion
+
 	private bool IfPointInsideCurrentNumber(Vector2 point) =>
 		(point.x >= _numbers.Current.Position.x - _numbers.Current.Radius) && (point.x <= _numbers.Current.Position.x + _numbers.Current.Radius)
 				&& (point.y >= _numbers.Current.Position.y - _numbers.Current.Radius) && (point.y <= _numbers.Current.Position.y + _numbers.Current.Radius);
@@ -225,16 +269,7 @@ public class DrawManager : MonoBehaviour, IGameStage
 		(point.x >= _previousColliderPos.x - IntersectionCollider.Radius * 2) && (point.x <= _previousColliderPos.x + IntersectionCollider.Radius * 2)
 					&& (point.y >= _previousColliderPos.y - IntersectionCollider.Radius * 2) && (point.y <= _previousColliderPos.y + IntersectionCollider.Radius * 2);
 
-	public void ResetStage()
-	{
-		foreach (var line in _linesToDelete)
-		{
-			Destroy(line);
-		}
-	}
+	#endregion CheckPoints section
 
-	public void InvokeStageEnd()
-	{
-		OnStageExecutionCompleted?.Invoke();
-	}
+
 }

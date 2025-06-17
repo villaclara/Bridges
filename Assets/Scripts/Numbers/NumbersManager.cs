@@ -24,12 +24,29 @@ public class NumbersManager : MonoBehaviour, IGameStage
 
 	[SerializeField] private MP_StageSetup _stageSetup;
 
+	public NumberMessenger numberMessenger;
+
+	private void Awake()
+	{
+		numberMessenger.SetNumbersListReference(_numbersList);
+	}
+
 	private void CreateNumber(NumberModel model = null)
 	{
-
+		Debug.Log($"CreateNumber called - model - {model?.Value}, isHost - {NetworkManager.Singleton.IsHost}, IsClient - {NetworkManager.Singleton.IsClient}");
 		if (model is not null)
 		{
-			_numbersList.Add(model);
+			// If MP then we pass the created Number Model to all clients to add to their respective _numbersList.
+			if(GameManager.gameMode == GameMode.Multiplayer)
+			{
+				var no = model.NumberObject.GetComponent<NetworkObject>();
+				numberMessenger.AddNumberToList(model.Value, model.Position, model.Radius, no.NetworkObjectId);
+			}
+			// local normal behavior.
+			else
+			{
+				_numbersList.Add(model);
+			}
 
 		}
 
@@ -44,6 +61,7 @@ public class NumbersManager : MonoBehaviour, IGameStage
 			//OnStageExecutionCompleted?.Invoke();
 			if(GameManager.gameMode == GameMode.Multiplayer)
 			{
+				numberMessenger.SetupNumbersList();
 				_stageSetup.SetDrawStageRpc();
 			}
 			else
@@ -75,7 +93,7 @@ public class NumbersManager : MonoBehaviour, IGameStage
 		gameObject.SetActive(true);
 
 		var rnd1 = new System.Random().Next(1, 3);
-		_playerDrawingText.text = $"P{rnd1} is drawing";
+		_playerDrawingText.text = $"P1 is drawing";
 		_playerDrawingText.gameObject.SetActive(true);
 		CreateNumber(null);
 	}
@@ -109,7 +127,8 @@ public class NumbersManager : MonoBehaviour, IGameStage
 		if (spawnNetworkObject)
 		{
 			current.GetComponent<NetworkObject>().Spawn();
-			current.GetComponent<SetNumberValue>().SetNumberValueText(_currentNumber.ToString());
+			//current.GetComponent<SetNumberValue>().SetNumberValueText(_currentNumber.ToString());
+			current.GetComponent<MP_Number>().SetNumberValueInClient(_currentNumber);
 		}
 		_currentNumber++;
 	}

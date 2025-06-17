@@ -65,8 +65,18 @@ public class NumberScript : NetworkBehaviour
 	// Update is called once per frame
 	private void Update()
 	{
+		Debug.Log($"IsOwner - {IsOwner}");
+		// if we are client we listening to host moving the number
+		// TODO - Do we need Update in NumbersScript Client code? 
+		// When the Host still calls Rpc to add in client in NumbersManager
+		// If not needed - call this.enabled = false in Start on Client side.
+		if(GameManager.gameMode == GameMode.Multiplayer && !NetworkManager.Singleton.IsHost)
+		{
+			Debug.Log($"number position - {transform.position}, value - {value}");
+		}
 		if (!_isDragging)
 		{
+			Debug.Log($"IsDragging false - IsClient - {NetworkManager.Singleton.IsClient}, IsHost - {NetworkManager.Singleton.IsHost}");
 			return;
 		}
 
@@ -98,6 +108,13 @@ public class NumberScript : NetworkBehaviour
 			this.enabled = false; // disable script after drag ends
 			_isEnabled = false;     // disable OnMouseDown registering event
 
+
+			// disabling Update() calls on both client and host.
+			if(GameManager.gameMode == GameMode.Multiplayer && IsOwner && IsHost)
+			{
+				DisableNumberUpdateRpc();
+			}
+
 			var childObj = transform.GetChild(0); // get Circle object
 			var childCircle = childObj.GetComponent<CircleCollider2D>(); // index 1 because the parent itself has collider and it also counts
 			Debug.Log($"parent scale - {transform.localScale}, name - {name}");
@@ -112,6 +129,7 @@ public class NumberScript : NetworkBehaviour
 		}
 	}
 
+	
 	private void OnMouseDown()
 	{
 		// do not perform any movement when the Number is already placed on grid.
@@ -167,5 +185,16 @@ public class NumberScript : NetworkBehaviour
 		_circleRenderer.color = isAllowedToDrop
 			? new Color32(60, 143, 79, 255)
 			: new Color32(255, 0, 0, 255);
+	}
+
+
+	/// <summary>
+	/// Disables the Update() calls on clients and host as well after the number.
+	/// Is called after the host stops moving a number.
+	/// </summary>
+	[Rpc(SendTo.ClientsAndHost)]
+	private void DisableNumberUpdateRpc()
+	{
+		this.enabled = false;
 	}
 }
