@@ -54,11 +54,18 @@ public class DrawManager : MonoBehaviour, IGameStage
 		//var rnd = new Unity.Mathematics.Random(seed).NextBool();
 		//PlayerManager.SetupFirstTurn(rnd);
 		//Debug.Log($"First turn - {PlayerManager.playerTurn}");
+
+		drawMessenger.SetNumbersListReference(_numbers);
+
+		Debug.Log($"Numbers Current - {_numbers.Current.Value}, Next - {_numbers.Next.Value}");
+		Debug.Log($"Start end called in Drawmanager, numbers - {_numbers ?? null}");
+
 	}
 
 	// Update is called once per frame
 	void Update()
 	{
+		Debug.Log($"Update DrawManager - {PlayerManager.playerTurn}");
 		if(GameManager.gameMode == GameMode.Multiplayer && PlayerManager.playerTurn == PlayerTurn.P2_Turn && NetworkManager.Singleton.IsHost)
 		{
 			Debug.Log($"P2 Turn, Host return");
@@ -97,17 +104,38 @@ public class DrawManager : MonoBehaviour, IGameStage
                     SpinningCircleHelper.DisableSpinningCircleForNumberModel(_numbers.Next, true);
 					//TODO - remove spinning circle after this for better resource management
 
-                    _currentLine = Instantiate(_linePrefab, new Vector3(mousePos.x, mousePos.y, -4), Quaternion.identity);
+					// Instantiating line in MP
 					if(GameManager.gameMode == GameMode.Multiplayer)
 					{
+						// Host creates line and spawns Network Object
 						if(NetworkManager.Singleton.IsHost)
+						{
+							_currentLine = Instantiate(_linePrefab, new Vector3(mousePos.x, mousePos.y, -4), Quaternion.identity);
+							_currentLine.GetComponent<NetworkObject>().Spawn();
+						}
+						// Client asks the Host to instantiate and spawn Network Object by Rpc
+						else
+						{
+							drawMessenger.RequestServerSpawnLineNetworkObjRpc(new Vector3(mousePos.x, mousePos.y, -4));
+						}
+					}
+					
+					// Instantiating line in Local
+					else
+					{
+						_currentLine = Instantiate(_linePrefab, new Vector3(mousePos.x, mousePos.y, -4), Quaternion.identity);
+					}
+
+
+					// TODO - PRIO 1 Not working properly instantiating the line
+					if (GameManager.gameMode == GameMode.Multiplayer)
+					{
+						// Host creates line and spawns Network Object
+						if (NetworkManager.Singleton.IsHost)
 						{
 							_currentLine.GetComponent<NetworkObject>().Spawn();
 						}
-						else
-						{
-
-						}
+						
 					}
 					_linesToDelete.Add(_currentLine.gameObject);
 					if (PlayerManager.playerTurn == PlayerTurn.P1_Turn)
@@ -156,6 +184,10 @@ public class DrawManager : MonoBehaviour, IGameStage
 				Debug.Log($"Call before MP LINE");
 				_currentLine.GetComponent<MP_Line>().SetNewValueToPoint(mousePos);
 			}
+			else if (GameManager.gameMode == GameMode.Multiplayer && !NetworkManager.Singleton.IsHost)
+			{
+				drawMessenger.RequestAddVertextToLineRpc(mousePos);
+			}
 
 			if (IfPointPreciselyInsideNextNumber(mousePos))
 			{
@@ -163,6 +195,12 @@ public class DrawManager : MonoBehaviour, IGameStage
 				_isDrawing = false;
 				PlayerManager.SwitchTurns();
 				Debug.Log("HOLD - Player manager switch turne");
+
+				if(GameManager.gameMode == GameMode.Multiplayer)
+				{
+					// calls Rpc to invoke _numbers.MoveNext() on another client.
+					drawMessenger.NumbersMoveNext();
+				}
 
 				// get new values for numbers.Current and .Next
 				var isMoveNextReady = _numbers.MoveNext();
