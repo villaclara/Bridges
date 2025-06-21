@@ -56,4 +56,23 @@ public class NumberMessenger : NetworkBehaviour
         Debug.Log($"SetupNumbersListRpc called - IsOwner - {IsOwner}, IsServer - {IsServer}, IsHost - {IsHost}");
         _numbersList.Setup();
     }
+
+    /// <summary>
+    /// Disables Spinning Circle prefab from numbers object depending on parameter.
+    /// </summary>
+    /// <param name="isCurrent">If true then Numbers.Current. If false then Numbers.Next</param>
+    [Rpc(SendTo.ClientsAndHost)]
+    public void DisableSpinCircleRpc(bool isCurrent, bool showCircle)
+	{
+        if(isCurrent)
+        {
+            Debug.Log($"Calling Disable spinnig circle for current - {_numbersList.Current.Value}, IsHost - {IsHost}");
+            SpinningCircleHelper.DisableSpinningCircleForNumberModel(_numbersList.Current, showCircle);
+        }
+        else
+        {
+			Debug.Log($"Calling Disable spinnig circle for Next - {_numbersList.Current.Value}, IsHost - {IsHost}");
+			SpinningCircleHelper.DisableSpinningCircleForNumberModel(_numbersList.Next, showCircle);
+		}
+	}
 }

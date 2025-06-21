@@ -886,6 +886,7 @@ MonoBehaviour:
   _stageSetup: {fileID: 1921603071}
   _isDrawing: 0
   _isDrawingToNextCompleted: 1
+  numberMessenger: {fileID: 548413568}
   drawMessenger: {fileID: 548413569}
 --- !u!4 &332824310
 Transform:

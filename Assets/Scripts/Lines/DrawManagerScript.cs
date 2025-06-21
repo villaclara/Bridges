@@ -39,6 +39,7 @@ public class DrawManager : MonoBehaviour, IGameStage
 
 	public event Action<Vector2> OnNewPosAddedToLine;
 
+	public NumberMessenger numberMessenger;
 	public DrawMessenger drawMessenger;
 
 	#endregion fields
@@ -100,13 +101,13 @@ public class DrawManager : MonoBehaviour, IGameStage
 				// check positions
 				if (IfPointInsideCurrentNumber(mousePos))
 				{
-					SpinningCircleHelper.DisableSpinningCircleForNumberModel(_numbers.Current, false);
-                    SpinningCircleHelper.DisableSpinningCircleForNumberModel(_numbers.Next, true);
-					//TODO - remove spinning circle after this for better resource management
+					
 
 					// Instantiating line in MP
 					if(GameManager.gameMode == GameMode.Multiplayer)
 					{
+						numberMessenger.DisableSpinCircleRpc(isCurrent: true, showCircle: false);
+						numberMessenger.DisableSpinCircleRpc(isCurrent: false, showCircle: true);
 						// Host creates line and spawns Network Object
 						if(NetworkManager.Singleton.IsHost)
 						{
@@ -124,6 +125,11 @@ public class DrawManager : MonoBehaviour, IGameStage
 					// Local gameplay, nothing changes
 					else
 					{
+						SpinningCircleHelper.DisableSpinningCircleForNumberModel(_numbers.Current, false);
+						SpinningCircleHelper.DisableSpinningCircleForNumberModel(_numbers.Next, true);
+						//TODO - remove spinning circle after this for better resource management
+
+
 						_currentLine = Instantiate(_linePrefab, new Vector3(mousePos.x, mousePos.y, -4), Quaternion.identity);
 					}
 
@@ -228,8 +234,31 @@ public class DrawManager : MonoBehaviour, IGameStage
 			if (IfPointInsideNextNumber(mousePos))
 			{
 				_isDrawingToNextCompleted = true;
-				PlayerManager.SwitchTurns();
-				Debug.Log("RELEASE  - Player manager switch turne");
+				_isDrawing = false;
+
+				if (GameManager.gameMode == GameMode.Local)
+				{
+					PlayerManager.SwitchTurns();
+				}
+				Debug.Log("RELEASE - Player manager switch turne");
+
+				if (GameManager.gameMode == GameMode.Multiplayer)
+				{
+					if (NetworkManager.Singleton.IsHost)
+					{
+						PlayerManager.SwitchTurns();
+
+						// calls Rpc to invoke _numbers.MoveNext() on another client.
+					}
+					else
+					{
+						drawMessenger.RequestPlayerTurnSwitchRpc();
+					}
+
+					// passing the Host parameter to decide and make call MoveNext on ANOTHER client. 
+					// Because below we invoke it locally to have the boolean var of end game condition.
+					drawMessenger.NumbersMoveNext(NetworkManager.Singleton.IsHost);
+				}
 
 				// get new values for numbers.Current and .Next
 				var isMoveNextReady = _numbers.MoveNext();
