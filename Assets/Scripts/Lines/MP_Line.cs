@@ -24,7 +24,7 @@ public class MP_Line : NetworkBehaviour
 
 	private void OnValueChanged(Vector2 previousValue, Vector2 newValue)
 	{
-		Debug.Log($"OnLineValueChanged - {newValue}, IsOwner - {IsOwner}");
+		//Debug.Log($"OnLineValueChanged - {newValue}, IsOwner - {IsOwner}");
 		if(!IsOwner)
 		{
 			_line.SetPosition(point.Value);

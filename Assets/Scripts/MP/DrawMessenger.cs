@@ -19,16 +19,26 @@ public class DrawMessenger : NetworkBehaviour
 	/// <summary>
 	/// Sends Rpc to another client to invoke _numbers.MoveNext() to update numbers.Current and numbers.Next.
 	/// </summary>
-	public void NumbersMoveNext()
+	public void NumbersMoveNext(bool isHost)
 	{
-		NumbersMoveNextRpc();
+		NumbersMoveNextRpc(isHost);
 	}
 
-	[Rpc(SendTo.NotOwner)]
-	private void NumbersMoveNextRpc()
+	[Rpc(SendTo.ClientsAndHost)]
+	private void NumbersMoveNextRpc(bool sentFromHost)
 	{
-		_numbers.MoveNext();
+		// If we sent from Host then we only want to invoke on Client.
+		if(sentFromHost && !IsHost)
+		{
+			_numbers.MoveNext();
+			Debug.Log($"In RPC Numbers move - IsHost - {IsHost}, IsClient - {IsClient}, Numbers Current - {_numbers.Current.Value}");
+		}
+		// else if we sent from Client then only invoke on Host.
+		else if(!sentFromHost && IsHost)
+		{
+			_numbers.MoveNext();
 		Debug.Log($"In RPC Numbers move - IsHost - {IsHost}, IsClient - {IsClient}, Numbers Current - {_numbers.Current.Value}");
+		}
 	}
 
 
@@ -44,7 +54,7 @@ public class DrawMessenger : NetworkBehaviour
 			return;
 		}
 		var newLine = Instantiate(_linePrefab, position, Quaternion.identity);
-		newLine.GetComponent<NetworkObject>().Spawn();
+		//newLine.GetComponent<NetworkObject>().Spawn();
 		_currentLine = newLine;
 	}
 
@@ -66,5 +76,17 @@ public class DrawMessenger : NetworkBehaviour
 		}
 
 		_currentLine.SetPosition(position);
+	}
+
+	[Rpc(SendTo.Server)]
+	public void RequestPlayerTurnSwitchRpc()
+	{
+		if (!IsServer)
+		{
+			return;
+		}
+		Debug.Log($"In host Reqeust to switch turns");
+		PlayerManager.SwitchTurns();
+		Debug.Log($"In host After switching turns - {PlayerManager.playerTurn}");
 	}
 }

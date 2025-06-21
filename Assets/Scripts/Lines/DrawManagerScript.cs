@@ -117,27 +117,18 @@ public class DrawManager : MonoBehaviour, IGameStage
 						else
 						{
 							drawMessenger.RequestServerSpawnLineNetworkObjRpc(new Vector3(mousePos.x, mousePos.y, -4));
+							_currentLine = Instantiate(_linePrefab, new Vector3(mousePos.x, mousePos.y, -4), Quaternion.identity);
 						}
 					}
-					
-					// Instantiating line in Local
+
+					// Local gameplay, nothing changes
 					else
 					{
 						_currentLine = Instantiate(_linePrefab, new Vector3(mousePos.x, mousePos.y, -4), Quaternion.identity);
 					}
 
-
-					// TODO - PRIO 1 Not working properly instantiating the line
-					if (GameManager.gameMode == GameMode.Multiplayer)
-					{
-						// Host creates line and spawns Network Object
-						if (NetworkManager.Singleton.IsHost)
-						{
-							_currentLine.GetComponent<NetworkObject>().Spawn();
-						}
-						
-					}
 					_linesToDelete.Add(_currentLine.gameObject);
+					Debug.Log($"Lines do delete count - {_linesToDelete.Count}");
 					if (PlayerManager.playerTurn == PlayerTurn.P1_Turn)
 					{
 						_currentLine.SetLineColor(PlayerManager.player1.ColorHEX);
@@ -193,17 +184,34 @@ public class DrawManager : MonoBehaviour, IGameStage
 			{
 				_isDrawingToNextCompleted = true;
 				_isDrawing = false;
-				PlayerManager.SwitchTurns();
+				
+				if(GameManager.gameMode == GameMode.Local)
+				{
+					PlayerManager.SwitchTurns();
+				}
 				Debug.Log("HOLD - Player manager switch turne");
 
 				if(GameManager.gameMode == GameMode.Multiplayer)
 				{
-					// calls Rpc to invoke _numbers.MoveNext() on another client.
-					drawMessenger.NumbersMoveNext();
+					if(NetworkManager.Singleton.IsHost)
+					{
+						PlayerManager.SwitchTurns();
+
+						// calls Rpc to invoke _numbers.MoveNext() on another client.
+					}
+					else
+					{
+						drawMessenger.RequestPlayerTurnSwitchRpc();
+					}
+
+					// passing the Host parameter to decide and make call MoveNext on ANOTHER client. 
+					// Because below we invoke it locally to have the boolean var of end game condition.
+					drawMessenger.NumbersMoveNext(NetworkManager.Singleton.IsHost);
 				}
 
 				// get new values for numbers.Current and .Next
 				var isMoveNextReady = _numbers.MoveNext();
+				Debug.Log($"After numbers Movenext, isMoveNextREady - {isMoveNextReady}");
 				if (!isMoveNextReady)
 				{
 					Debug.Log("Execution ended");

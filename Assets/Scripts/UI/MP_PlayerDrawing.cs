@@ -57,6 +57,7 @@ public class MP_PlayerDrawing : NetworkBehaviour
 		};
 		//PlayerManager.playerTurn = PlayerManager.playerTurn;
 		_isP1Turn.Value = PlayerManager.playerTurn == PlayerTurn.P1_Turn;
+		Debug.Log($"new IsP1Turn - {_isP1Turn}");	
 		Debug.Log($"OnPlayerTurnSwitch - {PlayerManager.playerTurn}");
 	}
 }

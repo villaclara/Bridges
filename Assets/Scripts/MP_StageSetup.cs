@@ -20,7 +20,7 @@ public class MP_StageSetup : NetworkBehaviour
 	[Rpc(SendTo.ClientsAndHost)]
 	public void SetEndGameRpc()
 	{
-		numbersManager.GetComponent<DrawManager>().InvokeStageEnd();
+		drawManager.GetComponent<DrawManager>().InvokeStageEnd();
 		drawManager.SetActive(false);
 	}
 
