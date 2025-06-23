@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 2668243898872563654}
   m_Layer: 0
   m_Name: NumberContainer
-  m_TagString: Untagged
+  m_TagString: Number
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -52,7 +52,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3551381222
+  GlobalObjectIdHash: 3779975107
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -181,6 +181,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textValue: {fileID: 1114484223879162007}
+  gameObj: {fileID: 0}
 --- !u!1 &2556919314243186249
 GameObject:
   m_ObjectHideFlags: 0

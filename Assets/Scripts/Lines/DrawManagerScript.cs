@@ -100,24 +100,23 @@ public class DrawManager : MonoBehaviour, IGameStage
 				// check positions
 				if (IfPointInsideCurrentNumber(mousePos))
 				{
-					
-
 					// Instantiating line in MP
 					if(GameManager.gameMode == GameMode.Multiplayer)
 					{
 						numberMessenger.DisableSpinCircleRpc(isCurrent: true, showCircle: false);
 						numberMessenger.DisableSpinCircleRpc(isCurrent: false, showCircle: true);
-						// Host creates line and spawns Network Object
+						
+						_currentLine = Instantiate(_linePrefab, new Vector3(mousePos.x, mousePos.y, -4), Quaternion.identity);
 						if(NetworkManager.Singleton.IsHost)
 						{
-							_currentLine = Instantiate(_linePrefab, new Vector3(mousePos.x, mousePos.y, -4), Quaternion.identity);
+							// Host spawns Network Object line to be dispayed in Client.
 							_currentLine.GetComponent<NetworkObject>().Spawn();
+							_currentLine.GetComponent<MP_Line>().RequestLineColorChangeOnClientRpc();
 						}
-						// Client asks the Host to instantiate and spawn Network Object by Rpc
 						else
 						{
-							drawMessenger.RequestServerSpawnLineNetworkObjRpc(new Vector3(mousePos.x, mousePos.y, -4));
-							_currentLine = Instantiate(_linePrefab, new Vector3(mousePos.x, mousePos.y, -4), Quaternion.identity);
+							// Client asks the Host to instantiate and spawn Line only on Server (on Client we already have one).
+							drawMessenger.RequestServerSpawnLineOnServerRpc(new Vector3(mousePos.x, mousePos.y, -4));
 						}
 					}
 
@@ -127,8 +126,6 @@ public class DrawManager : MonoBehaviour, IGameStage
 						SpinningCircleHelper.DisableSpinningCircleForNumberModel(_numbers.Current, false);
 						SpinningCircleHelper.DisableSpinningCircleForNumberModel(_numbers.Next, true);
 						//TODO - remove spinning circle after this for better resource management
-
-
 						_currentLine = Instantiate(_linePrefab, new Vector3(mousePos.x, mousePos.y, -4), Quaternion.identity);
 					}
 
@@ -176,12 +173,12 @@ public class DrawManager : MonoBehaviour, IGameStage
 
 			if(GameManager.gameMode == GameMode.Multiplayer && NetworkManager.Singleton.IsHost)
 			{
-				//OnNewPosAddedToLine?.Invoke(mousePos);
-				Debug.Log($"Call before MP LINE");
+				// Spawn net point of Line on Network Object to display on Client side.
 				_currentLine.GetComponent<MP_Line>().SetNewValueToPoint(mousePos);
 			}
 			else if (GameManager.gameMode == GameMode.Multiplayer && !NetworkManager.Singleton.IsHost)
 			{
+				// Spawn new point of Line ONLY localy on Host.
 				drawMessenger.RequestAddVertextToLineRpc(mousePos);
 			}
 
@@ -196,13 +193,12 @@ public class DrawManager : MonoBehaviour, IGameStage
 				}
 				Debug.Log("HOLD - Player manager switch turne");
 
+
 				if(GameManager.gameMode == GameMode.Multiplayer)
 				{
 					if(NetworkManager.Singleton.IsHost)
 					{
 						PlayerManager.SwitchTurns();
-
-						// calls Rpc to invoke _numbers.MoveNext() on another client.
 					}
 					else
 					{
@@ -246,8 +242,6 @@ public class DrawManager : MonoBehaviour, IGameStage
 					if (NetworkManager.Singleton.IsHost)
 					{
 						PlayerManager.SwitchTurns();
-
-						// calls Rpc to invoke _numbers.MoveNext() on another client.
 					}
 					else
 					{

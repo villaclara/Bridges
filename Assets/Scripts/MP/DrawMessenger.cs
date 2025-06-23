@@ -48,11 +48,12 @@ public class DrawMessenger : NetworkBehaviour
 
 
 	/// <summary>
-	/// Sends to the Server request to instantiate new line object and spawn Network Object.
+	/// Sends to the Server request to instantiate new line only Locally and set color of P2.
+	/// The Line of Client is spawned locally on Client side too.
 	/// </summary>
 	/// <param name="position"></param>
 	[Rpc(SendTo.Server)]
-	public void RequestServerSpawnLineNetworkObjRpc(Vector3 position)
+	public void RequestServerSpawnLineOnServerRpc(Vector3 position)
 	{
 		if (!IsServer)
 		{
@@ -61,11 +62,13 @@ public class DrawMessenger : NetworkBehaviour
 		var newLine = Instantiate(_linePrefab, position, Quaternion.identity);
 		//newLine.GetComponent<NetworkObject>().Spawn();
 		_currentLine = newLine;
+		// Set line color of P2 localy only on Server.
+		_currentLine.SetLineColor(PlayerManager.player2.ColorHEX);
 	}
 
 	/// <summary>
 	/// Sends to the Server request to Add new position to the current Line.
-	/// Current line is private var set in <see cref="RequestServerSpawnLineNetworkObjRpc(Vector3)"/>.
+	/// Current line is private var set in <see cref="RequestServerSpawnLineOnServerRpc(Vector3)"/>.
 	/// </summary>
 	[Rpc(SendTo.Server)]
 	public void RequestAddVertextToLineRpc(Vector3 position)

@@ -17,11 +17,6 @@ public class MP_Line : NetworkBehaviour
 		//_drawManager.GetComponent<DrawManager>().OnNewPosAddedToLine += OnNewPosAddedToLine;
 	}
 
-	private void OnNewPosAddedToLine(Vector2 obj)
-	{
-		point.Value = obj;
-	}
-
 	private void OnValueChanged(Vector2 previousValue, Vector2 newValue)
 	{
 		//Debug.Log($"OnLineValueChanged - {newValue}, IsOwner - {IsOwner}");
@@ -31,10 +26,27 @@ public class MP_Line : NetworkBehaviour
 		}
 	}
 	
+	/// <summary>
+	/// Adds new point to Line Network Object (to represent on Client).
+	/// </summary>
+	/// <param name="point"></param>
 	public void SetNewValueToPoint(Vector2 point)
 	{
 		Debug.Log($"Set New value to point called");
 		this.point.Value = point;
 	}
-	
+
+	/// <summary>
+	/// Sets the Line color of P1 (Purple) on the Client side using Network Object line with Server.
+	/// </summary>
+	[Rpc(SendTo.ClientsAndHost)]
+	public void RequestLineColorChangeOnClientRpc()
+	{
+		if (IsServer)
+		{
+			return;
+		}
+		GetComponent<Line>().SetLineColor(PlayerManager.player1.ColorHEX);
+	}
+
 }
