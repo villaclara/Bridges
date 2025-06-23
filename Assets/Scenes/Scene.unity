@@ -1421,6 +1421,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _linePrefab: {fileID: 8401890018267894458, guid: 0e97d446b9c2a8d43afb2a9601416915, type: 3}
+  _bridgePrefab: {fileID: 7357020178275759893, guid: 629cdaa9282644141980a31a5ed16c3f, type: 3}
+  _bridgeSprites:
+  - {fileID: -814359663423278849, guid: 387630b4ab4d5c74091fecffe4ebbb30, type: 3}
+  - {fileID: 4507289196342391612, guid: b90025cfc55656e4d941e6a0002fe330, type: 3}
 --- !u!114 &548413570
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2714,8 +2718,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Bridge: {fileID: 3074071656345859991, guid: 629cdaa9282644141980a31a5ed16c3f, type: 3}
   _playerManager: {fileID: 1592495949}
-  p1Sprite: {fileID: -814359663423278849, guid: 387630b4ab4d5c74091fecffe4ebbb30, type: 3}
-  p2Sprite: {fileID: 4507289196342391612, guid: b90025cfc55656e4d941e6a0002fe330, type: 3}
+  _p1Sprite: {fileID: -814359663423278849, guid: 387630b4ab4d5c74091fecffe4ebbb30, type: 3}
+  _p2Sprite: {fileID: 4507289196342391612, guid: b90025cfc55656e4d941e6a0002fe330, type: 3}
+  drawMessenger: {fileID: 548413569}
 --- !u!1 &1137583207
 GameObject:
   m_ObjectHideFlags: 0

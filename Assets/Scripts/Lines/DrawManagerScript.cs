@@ -37,7 +37,6 @@ public class DrawManager : MonoBehaviour, IGameStage
 	/// </summary>
 	public event Action OnStageExecutionCompleted;
 
-	public event Action<Vector2> OnNewPosAddedToLine;
 
 	public NumberMessenger numberMessenger;
 	public DrawMessenger drawMessenger;

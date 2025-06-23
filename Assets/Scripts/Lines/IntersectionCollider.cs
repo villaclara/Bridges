@@ -1,25 +1,28 @@
 using System;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class IntersectionCollider : MonoBehaviour
 {
-	[SerializeField]
 	public GameObject Bridge;
 
 	[SerializeField]
 	private PlayerManager _playerManager;
 
 	[SerializeField]
-	private Sprite p1Sprite;
+	private Sprite _p1Sprite;
 	[SerializeField]
-	private Sprite p2Sprite;
+	private Sprite _p2Sprite;
 
 	private bool _canPlaceBridge = true;
 	public static float Radius;
 
 
 	private readonly List<GameObject> _bridgesToDelete = new();
+
+	public DrawMessenger drawMessenger;
 
 	private void Awake()
 	{
@@ -31,8 +34,22 @@ public class IntersectionCollider : MonoBehaviour
 	{
 		if (_canPlaceBridge && collision.CompareTag("Line"))
 		{
+			GameObject bridge;
+
+			bridge = Instantiate(Bridge, new Vector3(transform.position.x, transform.position.y, -5), Quaternion.identity);
+
+			if(GameManager.gameMode == GameMode.Multiplayer)
+			{
+				if(NetworkManager.Singleton.IsHost)
+				{
+					bridge.GetComponent<NetworkObject>().Spawn();
+				}
+				else
+				{
+					drawMessenger.RequestInstantiateBridgeOnServerRpc(new Vector3(transform.position.x, transform.position.y, -5));
+				}
+			}
 			//Debug.Log("Line collision, can place bridge");
-			var bridge = Instantiate(Bridge, new Vector3(transform.position.x, transform.position.y, -5), Quaternion.identity);
 			_bridgesToDelete.Add(bridge);
 			Action a = PlayerManager.playerTurn switch
 			{
@@ -40,7 +57,7 @@ public class IntersectionCollider : MonoBehaviour
 				{
 					bridge.GetComponent<BridgeScript>().currentPlayer = PlayerManager.player1;
 					//SetBridgeColor(bridge, PlayerManager.player1.ColorHEX);
-					ChangeSpriteOfBridge(bridge, p1Sprite);
+					ChangeSpriteOfBridge(bridge, _p1Sprite);
 					PlayerManager.AddBridgeToPlayer(PlayerManager.player1, 1);
 				}
 				,
@@ -48,7 +65,7 @@ public class IntersectionCollider : MonoBehaviour
 				{
 					bridge.GetComponent<BridgeScript>().currentPlayer = PlayerManager.player2;
 					//SetBridgeColor(bridge, PlayerManager.player2.ColorHEX);
-					ChangeSpriteOfBridge(bridge, p2Sprite);
+					ChangeSpriteOfBridge(bridge, _p2Sprite);
 					PlayerManager.AddBridgeToPlayer(PlayerManager.player2, 1);
 				}
 				,
@@ -56,7 +73,7 @@ public class IntersectionCollider : MonoBehaviour
 			};
 			a.Invoke();
 
-			Debug.Log($"Plyayer ({PlayerManager.player1.Id} - score - {PlayerManager.player1.BridgesCount})");
+				Debug.Log($"Plyayer ({PlayerManager.player1.Id} - score - {PlayerManager.player1.BridgesCount})");
 			Debug.Log($"Plyayer ({PlayerManager.player2.Id} - score - {PlayerManager.player2.BridgesCount})");
 			//GlobalVars.score += 1;
 		}
@@ -69,16 +86,8 @@ public class IntersectionCollider : MonoBehaviour
 			{
 				Action a = PlayerManager.playerTurn switch
 				{
-					PlayerTurn.P1_Turn => () =>
-					{
-						PlayerManager.AddBridgeToPlayer(PlayerManager.player1, 5);
-					}
-					,
-					PlayerTurn.P2_Turn => () =>
-					{
-						PlayerManager.AddBridgeToPlayer(PlayerManager.player2, 5);
-					}
-					,
+					PlayerTurn.P1_Turn => () => PlayerManager.AddBridgeToPlayer(PlayerManager.player1, 5),
+					PlayerTurn.P2_Turn => () => PlayerManager.AddBridgeToPlayer(PlayerManager.player2, 5),
 					_ => () => Debug.Log($"Switch player turn did not find proper value")
 				};
 				a.Invoke();
@@ -106,18 +115,27 @@ public class IntersectionCollider : MonoBehaviour
 		}
 	}
 
-	private void SetBridgeColor(GameObject bridge, string colorHEX)
-	{
-		if (ColorUtility.TryParseHtmlString(colorHEX, out Color newcolor))
-		{
-			bridge.GetComponent<SpriteRenderer>().color = newcolor;
-			Debug.Log($"set bridge color - {newcolor}");
-		}
-	}
-
 	private void ChangeSpriteOfBridge(GameObject bridge, Sprite sprite)
 	{
 		bridge.GetComponent<SpriteRenderer>().sprite = sprite;
+
+		// Change sprite in Multiplayer
+		if(GameManager.gameMode == GameMode.Multiplayer)
+		{
+			if(NetworkManager.Singleton.IsHost)
+			{
+				// If we Host then we spawn Network Object bridge
+				// And change on client the network object sprite.
+				bridge.GetComponent<BridgeScript>().RequestBridgeSpriteChangeRpc();
+			}
+			else
+			{
+				// If we client then we send request to DrawMessenger
+				// DrawMessenger has reference to LOCAL object of Bridge in Host
+				// And in Host we change the sprite locally.
+				drawMessenger.RequestBridgeSpriteChangeRpc();
+			}
+		}
 	}
 
 	public void DestroyAllBridges()

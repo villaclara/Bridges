@@ -9,7 +9,12 @@ public class DrawMessenger : NetworkBehaviour
 	private NumbersList _numbers;
 
 	[SerializeField] private Line _linePrefab;
+	[SerializeField] private BridgeScript _bridgePrefab;
 	private Line _currentLine;
+	private BridgeScript _currentBridge;
+
+	[SerializeField]
+	private List<Sprite> _bridgeSprites;
 
 	public void SetNumbersListReference(NumbersList numbersList)
 	{
@@ -88,5 +93,28 @@ public class DrawMessenger : NetworkBehaviour
 		Debug.Log($"In host Reqeust to switch turns");
 		PlayerManager.SwitchTurns();
 		Debug.Log($"In host After switching turns - {PlayerManager.playerTurn}");
+	}
+
+	[Rpc(SendTo.Server)]
+	public void RequestInstantiateBridgeOnServerRpc(Vector3 position)
+	{
+		if (!IsServer)
+		{
+			return;
+		}
+		_currentBridge = Instantiate(_bridgePrefab, position, Quaternion.identity);
+	}
+
+	/// <summary>
+	/// Changes the sprite of bridge locally only on Host.
+	/// </summary>
+	[Rpc(SendTo.Server)]
+	public void RequestBridgeSpriteChangeRpc()
+	{
+		if(!IsServer)
+		{
+			return;
+		}
+			_currentBridge.GetComponent<SpriteRenderer>().sprite = _bridgeSprites[1];
 	}
 }
