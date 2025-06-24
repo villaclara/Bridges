@@ -27,13 +27,18 @@ public class IntersectionCollider : MonoBehaviour
 	private void Awake()
 	{
 		Radius = GetComponent<CircleCollider2D>().radius;
+		Debug.Log($"_canplacebridge in AWAKE {_canPlaceBridge}");
 	}
 
 	// TODO - Count other bridges, do not count self bridge
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
+		Debug.Log($"Intersection Collider - OnTriggerEnter - {collision.gameObject.name}, tag {collision.gameObject.tag}, _canplacebridge - {_canPlaceBridge}");
+		Debug.Log($"Inters Collider - On Trigger Enter - Ishost - {NetworkManager.Singleton.IsHost}, IsClient - {NetworkManager.Singleton.IsClient}, ");
 		if (_canPlaceBridge && collision.CompareTag("Line"))
 		{
+			Debug.Log("Line collision, can place bridge");
+
 			GameObject bridge;
 
 			bridge = Instantiate(Bridge, new Vector3(transform.position.x, transform.position.y, -5), Quaternion.identity);
@@ -49,7 +54,6 @@ public class IntersectionCollider : MonoBehaviour
 					drawMessenger.RequestInstantiateBridgeOnServerRpc(new Vector3(transform.position.x, transform.position.y, -5));
 				}
 			}
-			//Debug.Log("Line collision, can place bridge");
 			_bridgesToDelete.Add(bridge);
 			Action a = PlayerManager.playerTurn switch
 			{
@@ -79,7 +83,7 @@ public class IntersectionCollider : MonoBehaviour
 		}
 		else if (collision.CompareTag("Bridge"))
 		{
-			//Debug.Log("Can not place bidge");
+			Debug.Log("Can not place bidge in Bridge tag");
 			_canPlaceBridge = false;
 
 			if (!collision.GetComponent<BridgeScript>().currentPlayer.IsMyTurn)
@@ -98,12 +102,13 @@ public class IntersectionCollider : MonoBehaviour
 
 
 		}
-
 		else if (collision.CompareTag("Number"))
 		{
-			//Debug.Log("Can not place bidge");
+			Debug.Log("Can not place bidge in Nnunmber Tag");
 			_canPlaceBridge = false;
+			return;
 		}
+
 	}
 
 	private void OnTriggerExit2D(Collider2D collision)
@@ -112,6 +117,7 @@ public class IntersectionCollider : MonoBehaviour
 		{
 			//Debug.Log("Can place bidge");
 			_canPlaceBridge = true;
+			Debug.Log($"Inters Collider - ONTriggerEXIT collisiion - {collision.gameObject.name}, tag {collision.gameObject.tag},  canplacebridge - {_canPlaceBridge}");
 		}
 	}
 

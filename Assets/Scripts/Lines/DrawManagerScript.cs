@@ -142,7 +142,11 @@ public class DrawManager : MonoBehaviour, IGameStage
 						Debug.Log($"Current turn P2 - set color to - {PlayerManager.player2.ColorHEX}");
 					}
 					Debug.Log($"current turn - {PlayerManager.playerTurn}");
+
+					// disabling-enabling collider to reset its position to not call the OnCollision() Methods
+					_intersectionCollider.GetComponent<CircleCollider2D>().enabled = false;
 					_intersectionCollider.transform.position = mousePos;
+					_intersectionCollider.GetComponent<CircleCollider2D>().enabled = true;
 
 					_isDrawing = true;
 					_isDrawingToNextCompleted = false;

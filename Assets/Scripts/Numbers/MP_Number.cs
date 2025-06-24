@@ -11,7 +11,6 @@ public class MP_Number : NetworkBehaviour
 {
     public TextMeshPro textValue;
 
-    public GameObject gameObj;
     //public void SetNumberValueText(string text)
     //{
     //    if(NetworkManager.Singleton.IsHost)
