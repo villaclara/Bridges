@@ -26,6 +26,7 @@ public class ScoreManager : MonoBehaviour
 			Destroy(gameObject);
 		}
 
+		// TOOD - Check if we need this in multiplayer. As in MP we already subscribe in MP_PlayerDrawing
 		PlayerManager.OnPlayerBridgesChanged += RedrawText;
 	}
 

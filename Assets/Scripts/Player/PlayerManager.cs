@@ -56,6 +56,7 @@ public class PlayerManager : MonoBehaviour
 
 	public static void AddBridgeToPlayer(IPlayerModel player, int count = 1)
 	{
+		Debug.Log($"Player - {player.Id}, count to add - {count}");
 		player.BridgesCount += count;
 		OnPlayerBridgesChanged?.Invoke();
 	}

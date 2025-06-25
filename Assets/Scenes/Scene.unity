@@ -1438,6 +1438,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _playerDrawingTMP: {fileID: 76885448}
+  _p1TextTMP: {fileID: 584713810}
+  _p2TextTMP: {fileID: 700795959}
 --- !u!1 &572324297
 GameObject:
   m_ObjectHideFlags: 0

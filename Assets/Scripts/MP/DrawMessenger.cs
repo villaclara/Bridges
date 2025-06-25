@@ -118,6 +118,38 @@ public class DrawMessenger : NetworkBehaviour
 		{
 			return;
 		}
-			_currentBridge.GetComponent<SpriteRenderer>().sprite = _bridgeSprites[1];
+		_currentBridge.GetComponent<SpriteRenderer>().sprite = _bridgeSprites[1];
+	}
+
+	/// <summary>
+	/// Sends the request to Server to call PlayerManager.AddBridgeToPlayer. 
+	/// It will trigger event OnBridgesCountChanges and it will set the Bridges count on both Clients.
+	/// </summary>
+	[Rpc(SendTo.Server)]
+	public void RequestAddBridgeToPlayerOnServerRpc(bool isP1, int count)
+	{
+		if (!IsServer)
+		{
+			return;
+		}
+
+		var player = isP1 ? PlayerManager.player1 : PlayerManager.player2;
+		PlayerManager.AddBridgeToPlayer(player, count);
+	}
+
+	/// <summary>
+	/// Sends request to Server to assign currentPlayer field of BridgeScript. To keep track which player owns the bridge. 
+	/// Also updates the clients.
+	/// </summary>
+	[Rpc(SendTo.Server)]
+	public void RequestSetBridgePlayerOnServerRpc(bool isP1)
+	{
+		if (!IsServer)
+		{
+			return;
+		}
+
+		var player = isP1 ? PlayerManager.player1 : PlayerManager.player2;
+		_currentBridge.GetComponent<BridgeScript>().currentPlayer = player; 
 	}
 }

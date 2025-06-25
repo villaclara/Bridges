@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.Rendering.Universal;
 
 public class IntersectionCollider : MonoBehaviour
 {
@@ -60,22 +59,49 @@ public class IntersectionCollider : MonoBehaviour
 				PlayerTurn.P1_Turn => () =>
 				{
 					bridge.GetComponent<BridgeScript>().currentPlayer = PlayerManager.player1;
-					//SetBridgeColor(bridge, PlayerManager.player1.ColorHEX);
+
+					// Assign currentPlayer field of BridgeScript to P1 on Server (will update the Client too).
+					// This is needed to keep track of which bridge is assigned to which player.
+					if (NetworkManager.Singleton.IsHost)
+					{
+						bridge.GetComponent<BridgeScript>().RequestSetCurrentPlayerRpc(true);
+					}
+					else
+					{
+						// Ask to add reference to currentPlayer in local copy of Server (in Client we do it above).
+						drawMessenger.RequestSetBridgePlayerOnServerRpc(true);
+					}
 					ChangeSpriteOfBridge(bridge, _p1Sprite);
-					PlayerManager.AddBridgeToPlayer(PlayerManager.player1, 1);
+					AddBridgeToPlayer(PlayerManager.player1, 1);
 				}
 				,
 				PlayerTurn.P2_Turn => () =>
 				{
 					bridge.GetComponent<BridgeScript>().currentPlayer = PlayerManager.player2;
-					//SetBridgeColor(bridge, PlayerManager.player2.ColorHEX);
+
+					// Assign currentPlayer field of BridgeScript to P1 on Server (will update the Client too).
+					// This is needed to keep track of which bridge is assigned to which player.
+					if (NetworkManager.Singleton.IsHost)
+					{
+						bridge.GetComponent<BridgeScript>().RequestSetCurrentPlayerRpc(isP1: false);
+					}
+					else
+					{
+						// Ask to add reference to currentPlayer in local copy of Server (in Client we do it above).
+						drawMessenger.RequestSetBridgePlayerOnServerRpc(isP1: false);
+					}
 					ChangeSpriteOfBridge(bridge, _p2Sprite);
-					PlayerManager.AddBridgeToPlayer(PlayerManager.player2, 1);
+					AddBridgeToPlayer(PlayerManager.player2, 1);
 				}
 				,
 				_ => () => Debug.Log($"Switch player turn did not find proper value")
 			};
 			a.Invoke();
+
+			Debug.Log($"PlayerTurn - {PlayerManager.playerTurn}");
+			Debug.Log($"P1 - {PlayerManager.player1.IsMyTurn}");
+			Debug.Log($"P2 - {PlayerManager.player2.IsMyTurn}");
+			Debug.Log($"Current Player Bridge Is My TUrn - {bridge.GetComponent<BridgeScript>().currentPlayer.IsMyTurn}");	
 
 				Debug.Log($"Plyayer ({PlayerManager.player1.Id} - score - {PlayerManager.player1.BridgesCount})");
 			Debug.Log($"Plyayer ({PlayerManager.player2.Id} - score - {PlayerManager.player2.BridgesCount})");
@@ -86,12 +112,15 @@ public class IntersectionCollider : MonoBehaviour
 			Debug.Log("Can not place bidge in Bridge tag");
 			_canPlaceBridge = false;
 
+			Debug.Log($"PlayerTurn In collision Bridge  - {PlayerManager.playerTurn}");
+			Debug.Log($"Current Player collision Is My TUrn - {collision.GetComponent<BridgeScript>().currentPlayer.IsMyTurn}");
+
 			if (!collision.GetComponent<BridgeScript>().currentPlayer.IsMyTurn)
 			{
 				Action a = PlayerManager.playerTurn switch
 				{
-					PlayerTurn.P1_Turn => () => PlayerManager.AddBridgeToPlayer(PlayerManager.player1, 5),
-					PlayerTurn.P2_Turn => () => PlayerManager.AddBridgeToPlayer(PlayerManager.player2, 5),
+					PlayerTurn.P1_Turn => () => AddBridgeToPlayer(PlayerManager.player1, 5),
+					PlayerTurn.P2_Turn => () => AddBridgeToPlayer(PlayerManager.player2, 5),
 					_ => () => Debug.Log($"Switch player turn did not find proper value")
 				};
 				a.Invoke();
@@ -142,6 +171,22 @@ public class IntersectionCollider : MonoBehaviour
 				drawMessenger.RequestBridgeSpriteChangeRpc();
 			}
 		}
+	}
+
+	private void AddBridgeToPlayer(IPlayerModel player, int count)
+	{
+		if(GameManager.gameMode == GameMode.Multiplayer)
+		{
+			if (!NetworkManager.Singleton.IsHost)
+			{
+				// request add bridge on server
+				drawMessenger.RequestAddBridgeToPlayerOnServerRpc(player.Id == 1, count);
+				return;
+			}
+		}
+
+		// Invoke if local and if Server in Multiplayer
+		PlayerManager.AddBridgeToPlayer(player, count);
 	}
 
 	public void DestroyAllBridges()
