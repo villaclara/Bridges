@@ -57,14 +57,13 @@ public class DrawMessenger : NetworkBehaviour
 		}	
 	}
 
-
 	/// <summary>
 	/// Sends to the Server request to instantiate new line only Locally and set color of P2.
 	/// The Line of Client is spawned locally on Client side too.
 	/// </summary>
 	/// <param name="position"></param>
 	[Rpc(SendTo.Server)]
-	public void RequestServerSpawnLineOnServerRpc(Vector3 position)
+	public void RequestInstantiateLineOnServerRpc(Vector3 position)
 	{
 		if (!IsServer)
 		{
@@ -75,14 +74,15 @@ public class DrawMessenger : NetworkBehaviour
 		_currentLine = newLine;
 		// Set line color of P2 localy only on Server.
 		_currentLine.SetLineColor(PlayerManager.player2.ColorHEX);
+		GlobalVars.linesToDelete.Add(_currentLine.gameObject);
 	}
 
 	/// <summary>
 	/// Sends to the Server request to Add new position to the current Line.
-	/// Current line is private var set in <see cref="RequestServerSpawnLineOnServerRpc(Vector3)"/>.
+	/// Current line is private var set in <see cref="RequestInstantiateLineOnServerRpc(Vector3)"/>.
 	/// </summary>
 	[Rpc(SendTo.Server)]
-	public void RequestAddVertextToLineRpc(Vector3 position)
+	public void RequestAddVertextToLineOnServerRpc(Vector3 position)
 	{
 		if (!IsServer)
 		{
@@ -98,7 +98,7 @@ public class DrawMessenger : NetworkBehaviour
 	}
 
 	[Rpc(SendTo.Server)]
-	public void RequestPlayerTurnSwitchRpc()
+	public void RequestServerPlayerTurnSwitchRpc()
 	{
 		if (!IsServer)
 		{
@@ -117,6 +117,7 @@ public class DrawMessenger : NetworkBehaviour
 			return;
 		}
 		_currentBridge = Instantiate(_bridgePrefab, position, Quaternion.identity);
+		GlobalVars.bridgesToDelete.Add(_currentBridge.gameObject);
 	}
 
 	/// <summary>
@@ -137,7 +138,7 @@ public class DrawMessenger : NetworkBehaviour
 	/// It will trigger event OnBridgesCountChanges and it will set the Bridges count on both Clients.
 	/// </summary>
 	[Rpc(SendTo.Server)]
-	public void RequestAddBridgeToPlayerOnServerRpc(bool isP1, int count)
+	public void RequestAddBridgeCountToPlayerOnServerRpc(bool isP1, int count)
 	{
 		if (!IsServer)
 		{
@@ -153,7 +154,7 @@ public class DrawMessenger : NetworkBehaviour
 	/// Also updates the clients.
 	/// </summary>
 	[Rpc(SendTo.Server)]
-	public void RequestSetBridgePlayerOnServerRpc(bool isP1)
+	public void RequestAssingBridgeToPlayerOnServerRpc(bool isP1)
 	{
 		if (!IsServer)
 		{

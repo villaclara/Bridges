@@ -123,7 +123,8 @@ public class DrawManager : MonoBehaviour, IGameStage
 						else
 						{
 							// Client asks the Host to instantiate and spawn Line only on Server (on Client we already have one).
-							drawMessenger.RequestServerSpawnLineOnServerRpc(new Vector3(mousePos.x, mousePos.y, -4));
+							drawMessenger.RequestInstantiateLineOnServerRpc(new Vector3(mousePos.x, mousePos.y, -4));
+							//_linesToDelete.Add(line.gameObject);
 						}
 					}
 
@@ -136,8 +137,9 @@ public class DrawManager : MonoBehaviour, IGameStage
 						_currentLine = Instantiate(_linePrefab, new Vector3(mousePos.x, mousePos.y, -4), Quaternion.identity);
 					}
 
-					_linesToDelete.Add(_currentLine.gameObject);
-					Debug.Log($"Lines do delete count - {_linesToDelete.Count}");
+					GlobalVars.linesToDelete.Add(_currentLine.gameObject);
+					//_linesToDelete.Add(_currentLine.gameObject);
+					Debug.Log($"Lines do delete count - {GlobalVars.linesToDelete.Count}");
 					if (PlayerManager.playerTurn == PlayerTurn.P1_Turn)
 					{
 						_currentLine.SetLineColor(PlayerManager.player1.ColorHEX);
@@ -190,7 +192,7 @@ public class DrawManager : MonoBehaviour, IGameStage
 			else if (GameManager.gameMode == GameMode.Multiplayer && !NetworkManager.Singleton.IsHost)
 			{
 				// Spawn new point of Line ONLY localy on Host.
-				drawMessenger.RequestAddVertextToLineRpc(mousePos);
+				drawMessenger.RequestAddVertextToLineOnServerRpc(mousePos);
 			}
 
 			if (IfPointPreciselyInsideNextNumber(mousePos))
@@ -213,7 +215,7 @@ public class DrawManager : MonoBehaviour, IGameStage
 					}
 					else
 					{
-						drawMessenger.RequestPlayerTurnSwitchRpc();
+						drawMessenger.RequestServerPlayerTurnSwitchRpc();
 					}
 
 					// passing the Host parameter to decide and make call MoveNext on ANOTHER client. 
@@ -257,7 +259,7 @@ public class DrawManager : MonoBehaviour, IGameStage
 					}
 					else
 					{
-						drawMessenger.RequestPlayerTurnSwitchRpc();
+						drawMessenger.RequestServerPlayerTurnSwitchRpc();
 					}
 
 					// passing the Host parameter to decide and make call MoveNext on ANOTHER client. 
@@ -319,7 +321,7 @@ public class DrawManager : MonoBehaviour, IGameStage
 
 	public void ResetStage()
 	{
-		foreach (var line in _linesToDelete)
+		foreach (var line in GlobalVars.linesToDelete)
 		{
 			Destroy(line);
 		}

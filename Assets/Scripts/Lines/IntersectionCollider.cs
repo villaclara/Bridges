@@ -53,7 +53,9 @@ public class IntersectionCollider : MonoBehaviour
 					drawMessenger.RequestInstantiateBridgeOnServerRpc(new Vector3(transform.position.x, transform.position.y, -5));
 				}
 			}
-			_bridgesToDelete.Add(bridge);
+
+			GlobalVars.bridgesToDelete.Add(bridge);
+			//_bridgesToDelete.Add(bridge);
 			Action a = PlayerManager.playerTurn switch
 			{
 				PlayerTurn.P1_Turn => () =>
@@ -69,7 +71,7 @@ public class IntersectionCollider : MonoBehaviour
 					else
 					{
 						// Ask to add reference to currentPlayer in local copy of Server (in Client we do it above).
-						drawMessenger.RequestSetBridgePlayerOnServerRpc(true);
+						drawMessenger.RequestAssingBridgeToPlayerOnServerRpc(true);
 					}
 					ChangeSpriteOfBridge(bridge, _p1Sprite);
 					AddBridgeToPlayer(PlayerManager.player1, 1);
@@ -88,7 +90,7 @@ public class IntersectionCollider : MonoBehaviour
 					else
 					{
 						// Ask to add reference to currentPlayer in local copy of Server (in Client we do it above).
-						drawMessenger.RequestSetBridgePlayerOnServerRpc(isP1: false);
+						drawMessenger.RequestAssingBridgeToPlayerOnServerRpc(isP1: false);
 					}
 					ChangeSpriteOfBridge(bridge, _p2Sprite);
 					AddBridgeToPlayer(PlayerManager.player2, 1);
@@ -180,7 +182,7 @@ public class IntersectionCollider : MonoBehaviour
 			if (!NetworkManager.Singleton.IsHost)
 			{
 				// request add bridge on server
-				drawMessenger.RequestAddBridgeToPlayerOnServerRpc(player.Id == 1, count);
+				drawMessenger.RequestAddBridgeCountToPlayerOnServerRpc(player.Id == 1, count);
 				return;
 			}
 		}
@@ -191,7 +193,7 @@ public class IntersectionCollider : MonoBehaviour
 
 	public void DestroyAllBridges()
 	{
-		foreach (var bridge in _bridgesToDelete)
+		foreach (var bridge in GlobalVars.bridgesToDelete)
 		{
 			Destroy(bridge);
 		}
