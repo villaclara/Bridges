@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
@@ -15,6 +16,12 @@ public class DrawMessenger : NetworkBehaviour
 
 	[SerializeField]
 	private List<Sprite> _bridgeSprites;
+
+	/// <summary>
+	/// Is invoked when using _numbers.MoveNext() returns false, meaning its endgame.
+	/// Is invoked on another client (we invoke on local client in <see cref="DrawManager"/> script.
+	/// </summary>
+	public event Action NumbersMoveNextReturnFalse;
 
 	public void SetNumbersListReference(NumbersList numbersList)
 	{
@@ -35,15 +42,19 @@ public class DrawMessenger : NetworkBehaviour
 		// If we sent from Host then we only want to invoke on Client.
 		if(sentFromHost && !IsHost)
 		{
-			_numbers.MoveNext();
-			Debug.Log($"In RPC Numbers move - IsHost - {IsHost}, IsClient - {IsClient}, Numbers Current - {_numbers.Current.Value}");
+			if (!_numbers.MoveNext())
+			{
+				NumbersMoveNextReturnFalse?.Invoke();
+			}
 		}
 		// else if we sent from Client then only invoke on Host.
 		else if(!sentFromHost && IsHost)
 		{
-			_numbers.MoveNext();
-		Debug.Log($"In RPC Numbers move - IsHost - {IsHost}, IsClient - {IsClient}, Numbers Current - {_numbers.Current.Value}");
-		}
+			if (!_numbers.MoveNext())
+			{
+				NumbersMoveNextReturnFalse?.Invoke();
+			}
+		}	
 	}
 
 

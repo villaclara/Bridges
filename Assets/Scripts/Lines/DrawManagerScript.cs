@@ -55,11 +55,18 @@ public class DrawManager : MonoBehaviour, IGameStage
 		//PlayerManager.SetupFirstTurn(rnd);
 		//Debug.Log($"First turn - {PlayerManager.playerTurn}");
 
+		drawMessenger.NumbersMoveNextReturnFalse += DrawMessenger_NumbersMoveNextReturnFalse;
 		drawMessenger.SetNumbersListReference(_numbers);
 
 		Debug.Log($"Numbers Current - {_numbers.Current.Value}, Next - {_numbers.Next.Value}");
 		Debug.Log($"Start end called in Drawmanager, numbers - {_numbers ?? null}");
 
+	}
+
+	private void DrawMessenger_NumbersMoveNextReturnFalse()
+	{
+		this.enabled = false;
+		OnStageExecutionCompleted?.Invoke();
 	}
 
 	// Update is called once per frame
@@ -214,15 +221,16 @@ public class DrawManager : MonoBehaviour, IGameStage
 					drawMessenger.NumbersMoveNext(NetworkManager.Singleton.IsHost);
 				}
 
-				// get new values for numbers.Current and .Next
-				var isMoveNextReady = _numbers.MoveNext();
-				Debug.Log($"After numbers Movenext, isMoveNextREady - {isMoveNextReady}");
-				if (!isMoveNextReady)
-				{
-					Debug.Log("Execution ended");
-					this.enabled = false;
-					OnStageExecutionCompleted?.Invoke();
-				}
+
+					// get new values for numbers.Current and .Next
+					var isMoveNextReady = _numbers.MoveNext();
+					Debug.Log($"After numbers Movenext, isMoveNextREady - {isMoveNextReady}");
+					if (!isMoveNextReady)
+					{
+						Debug.Log("Execution ended");
+						this.enabled = false;
+						OnStageExecutionCompleted?.Invoke();
+					}
 			}
 		}
 
@@ -256,6 +264,8 @@ public class DrawManager : MonoBehaviour, IGameStage
 					// Because below we invoke it locally to have the boolean var of end game condition.
 					drawMessenger.NumbersMoveNext(NetworkManager.Singleton.IsHost);
 				}
+
+				
 
 				// get new values for numbers.Current and .Next
 				var isMoveNextReady = _numbers.MoveNext();
