@@ -27,13 +27,11 @@ public class DefaultButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 	}
 	public void OnPointerDown(PointerEventData eventData)
 	{
-		Debug.Log("Touch started (finger down or mouse down)");
 		transform.localScale = Vector3.one * 0.95f; // "Pressed" effect
 	}
 
 	public void OnPointerUp(PointerEventData eventData)
 	{
-		Debug.Log("Touch ended (finger lifted or mouse up)");
 		transform.localScale = Vector3.one; // Reset scale
 		//imgComp.color = _originalColor;
 	}

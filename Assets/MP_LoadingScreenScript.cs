@@ -52,21 +52,21 @@ public class MP_LoadingScreenScript : MonoBehaviour
         
 	private void OnExitButtonClick()
 	{
+        Debug.Log("ON EXIT BUTTON CLICK");
         _network.Shutdown();
-        gameObject.SetActive(false);
 	}
 
 	private async void OnHostButtonClick()
     {
-        //      _hostGameButton.gameObject.GetComponent<Image>().color = GlobalVars.DARKER_GREEN_BUTTON_COLOR;
-        //      _hostGameButton.interactable = false;
-        //      _hostGameButton.GetComponent<DefaultButton>().enabled = false;
+		//      _hostGameButton.gameObject.GetComponent<Image>().color = GlobalVars.DARKER_GREEN_BUTTON_COLOR;
+		//      _hostGameButton.interactable = false;
+		//      _hostGameButton.GetComponent<DefaultButton>().enabled = false;
 
-        //      _joinGameButton.gameObject.GetComponent<Image>().color = Color.grey;
-        //_joinGameButton.interactable = false;
-        //      _joinGameButton.GetComponent<DefaultButton>().enabled = false;
+		//      _joinGameButton.gameObject.GetComponent<Image>().color = Color.grey;
+		//_joinGameButton.interactable = false;
+		//      _joinGameButton.GetComponent<DefaultButton>().enabled = false;
 
-        _connectionStatus.text = string.Empty;
+		_connectionStatus.text = string.Empty;
 		_hostGameButton.gameObject.GetComponent<DefaultButton>().SetPressed();
 		_joinGameButton.gameObject.GetComponent<DefaultButton>().SetDisabled();
 
@@ -78,7 +78,10 @@ public class MP_LoadingScreenScript : MonoBehaviour
         {
             _roomCodeImg.enabled = true;
             _roomCodeTMP.enabled = true;
-        }
+
+			_connectionStatus.text = "Connected 1/2.";
+
+		}
 		else
 		{
 			_roomCodeImg.enabled = false;
@@ -102,7 +105,6 @@ public class MP_LoadingScreenScript : MonoBehaviour
 
 		_spinner.SetActive(true);
         var isConnected = await _network.StartClientRelay();
-		_spinner.SetActive(false);
 
         if(isConnected)
         {
@@ -110,6 +112,8 @@ public class MP_LoadingScreenScript : MonoBehaviour
         }
         else
         {
+			_spinner.SetActive(false);
+
 			_roomCodeImg.enabled = false;
 			_roomCodeTMP.enabled = false;
 
@@ -120,6 +124,7 @@ public class MP_LoadingScreenScript : MonoBehaviour
 			_joinGameButton.GetComponent<Image>().color = GlobalVars.DEFAULT_GREEN_BUTTON_COLOR;
 			_joinGameButton.interactable = true;
 			_joinGameButton.GetComponent<DefaultButton>().enabled = true;
+
 		}
 	}
 }

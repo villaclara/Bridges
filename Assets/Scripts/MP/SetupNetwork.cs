@@ -56,7 +56,7 @@ public class SetupNetwork : MonoBehaviour
 			var joinCode = await RelayService.Instance.GetJoinCodeAsync(_hostRelayAllocation.AllocationId);
 			Debug.Log($"joincode - " + joinCode);
 			createdJoinCode.text = "Room Code - " + joinCode;
-			connectionStatusText.text = "Waiting for players...";
+			//connectionStatusText.text = "Waiting for players...";
 			_spinner.SetActive(false);
 			return NetworkManager.Singleton.StartHost() ? joinCode : null;
 		}
@@ -80,7 +80,7 @@ public class SetupNetwork : MonoBehaviour
 		{
 			Debug.Log($"Client join empty - {joincode}");
 		}
-		//connectionStatusText.text = "Joining...";
+		connectionStatusText.text = "Joining...";
 		var result = await JoinClientAsync(joincode);
 		return result;
 	}
@@ -118,6 +118,5 @@ public class SetupNetwork : MonoBehaviour
 	public void Shutdown()
 	{
 		NetworkManager.Singleton.Shutdown();
-		gameObject.SetActive(false);
 	}
 }

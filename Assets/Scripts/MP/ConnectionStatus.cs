@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using TMPro;
 using Unity.Collections;
 using Unity.Netcode;
@@ -47,7 +48,7 @@ public class ConnectionStatus : NetworkBehaviour
 		}
 	}
 
-	private void OnClientConnected(ulong clientId)
+	private async void OnClientConnected(ulong clientId)
 	{
 		// Only Host/Server handles starting the game
 		if (!IsHost && !IsServer)
@@ -57,8 +58,9 @@ public class ConnectionStatus : NetworkBehaviour
 		if (NetworkManager.Singleton.ConnectedClients.Count >= 2) // Host + 1 client = 2 or more connected
 		{
 			// Update the NetworkVariable, which will synchronize to all clients
-			statusMessage.Value = "Client Connected.";
+			statusMessage.Value = "Connected 2/2";
 
+			await Task.Delay(1000);
 			StartGameOnClientRpc();
 		}
 	}

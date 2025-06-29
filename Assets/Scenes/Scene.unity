@@ -1215,7 +1215,7 @@ MonoBehaviour:
   Bridge: {fileID: 3074071656345859991, guid: 629cdaa9282644141980a31a5ed16c3f, type: 3}
   _intersectionCollider: {fileID: 1081907907}
   _playerManager: {fileID: 1592495949}
-  _stageSetup: {fileID: 1921603071}
+  _stageSetup: {fileID: 548413573}
   _isDrawing: 0
   _isDrawingToNextCompleted: 1
   numberMessenger: {fileID: 548413568}
@@ -1686,6 +1686,8 @@ GameObject:
   - component: {fileID: 548413569}
   - component: {fileID: 548413570}
   - component: {fileID: 548413571}
+  - component: {fileID: 548413573}
+  - component: {fileID: 548413572}
   m_Layer: 0
   m_Name: NetworkMessenger
   m_TagString: Untagged
@@ -1789,6 +1791,36 @@ MonoBehaviour:
   clientJoinCode: {fileID: 1926179966}
   connectionStatusText: {fileID: 1458922624}
   _spinner: {fileID: 164613697}
+--- !u!114 &548413572
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 548413565}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f798b8ff96fb48a4da9e42a12556cdae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  connectionStatusText: {fileID: 1458922624}
+  LoadingScreen: {fileID: 1981080027}
+  GameManager: {fileID: 394712254}
+--- !u!114 &548413573
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 548413565}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9e3acfac16a5cf43801c4ee76182d99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameManager: {fileID: 394712254}
+  numbersManager: {fileID: 1190940370}
+  drawManager: {fileID: 332824308}
 --- !u!1 &572324297
 GameObject:
   m_ObjectHideFlags: 0
@@ -3020,7 +3052,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 19.1
+  m_fontSize: 22
   m_fontSizeBase: 26
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -3834,7 +3866,7 @@ MonoBehaviour:
   _currentNumber: 1
   numberPrefab: {fileID: 2986627317527075612, guid: 75c63ce642cf5974fa9fc20dc8ffe3cb, type: 3}
   _playerDrawingText: {fileID: 76885448}
-  _stageSetup: {fileID: 1921603071}
+  _stageSetup: {fileID: 548413573}
   numberMessenger: {fileID: 548413568}
 --- !u!4 &1190940372
 Transform:
@@ -5103,7 +5135,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 62.55
+  m_fontSize: 72
   m_fontSizeBase: 42
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -6098,7 +6130,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24.3
+  m_fontSize: 28
   m_fontSizeBase: 26
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -6610,7 +6642,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 19.1
+  m_fontSize: 22
   m_fontSizeBase: 26
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -6845,9 +6877,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1921603067}
   - component: {fileID: 1921603068}
-  - component: {fileID: 1921603069}
-  - component: {fileID: 1921603070}
-  - component: {fileID: 1921603071}
   m_Layer: 5
   m_Name: Group
   m_TagString: Untagged
@@ -6904,57 +6933,6 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
---- !u!114 &1921603069
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1921603066}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 1447073056
-  InScenePlacedSourceGlobalObjectIdHash: 0
-  AlwaysReplicateAsRoot: 0
-  SynchronizeTransform: 1
-  ActiveSceneSynchronization: 0
-  SceneMigrationSynchronization: 1
-  SpawnWithObservers: 1
-  DontDestroyWithOwner: 0
-  AutoObjectParentSync: 1
---- !u!114 &1921603070
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1921603066}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f798b8ff96fb48a4da9e42a12556cdae, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  connectionStatusText: {fileID: 1458922624}
-  LoadingScreen: {fileID: 1981080027}
-  GameManager: {fileID: 394712254}
---- !u!114 &1921603071
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1921603066}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c9e3acfac16a5cf43801c4ee76182d99, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gameManager: {fileID: 394712254}
-  numbersManager: {fileID: 1190940370}
-  drawManager: {fileID: 332824308}
 --- !u!1 &1926179964
 GameObject:
   m_ObjectHideFlags: 0
