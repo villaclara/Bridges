@@ -11,6 +11,7 @@ using UnityEngine;
 using TMPro;
 using System;
 using System.Text.RegularExpressions;
+using Unity.Services.Relay.Models;
 
 public class SetupNetwork : MonoBehaviour
 {
@@ -18,14 +19,25 @@ public class SetupNetwork : MonoBehaviour
 	[SerializeField] private TextMeshProUGUI createdJoinCode;
 	[SerializeField] private TextMeshProUGUI clientJoinCode;
 	[SerializeField] private TextMeshProUGUI connectionStatusText;
+	[SerializeField] private GameObject _spinner;
+
+	private Allocation _hostRelayAllocation;
+	IEnumerator<string> AnimateLoadingText()
+	{
+		yield return ".";
+		yield return "...";
+		yield return "..";
+	}
+
 
 	/// <summary>
 	/// Start Host with Relay.
 	/// Need this function as Button clicks only support VOID return type.
 	/// </summary>
-	public void StartHostRelay()
+	public async Task<bool> StartHostRelay()
 	{
-		_ = StartHostWithRelayAsync(2, "wss");
+		var createdCode = await StartHostWithRelayAsync(2, "wss");
+		return createdCode != null;
 	}
 	private async Task<string> StartHostWithRelayAsync(int maxConnections, string connectionType)
 	{
@@ -35,45 +47,59 @@ public class SetupNetwork : MonoBehaviour
 			await AuthenticationService.Instance.SignInAnonymouslyAsync();
 		}
 
-		var allocation = await RelayService.Instance.CreateAllocationAsync(maxConnections);
-		NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(new RelayServerData(allocation, connectionType));
-		NetworkManager.Singleton.GetComponent<UnityTransport>().UseWebSockets = true;
-		var joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
-		Debug.Log($"joincode - " + joinCode);
-		createdJoinCode.text = "Room Code - " + joinCode;
-		connectionStatusText.text = "Room Created. Waiting for players...";
-		return NetworkManager.Singleton.StartHost() ? joinCode : null;
+		try
+		{
+
+			_hostRelayAllocation = await RelayService.Instance.CreateAllocationAsync(maxConnections);
+			NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(new RelayServerData(_hostRelayAllocation, connectionType));
+			NetworkManager.Singleton.GetComponent<UnityTransport>().UseWebSockets = true;
+			var joinCode = await RelayService.Instance.GetJoinCodeAsync(_hostRelayAllocation.AllocationId);
+			Debug.Log($"joincode - " + joinCode);
+			createdJoinCode.text = "Room Code - " + joinCode;
+			connectionStatusText.text = "Waiting for players...";
+			_spinner.SetActive(false);
+			return NetworkManager.Singleton.StartHost() ? joinCode : null;
+		}
+		catch
+		{
+			connectionStatusText.text = "Error. Try creating room again.";
+			_spinner.SetActive(false);
+			return null;
+		}
 	}
 
 
 	/// <summary>
 	/// Start Client with Relay. 
-	/// Need this function as Button clicks only support VOID return type.
 	/// </summary>
 	/// <param name="joinCode">Join Code for session.</param>
-	public void StartClientRelay()
+	public async Task<bool> StartClientRelay()
 	{
 		string joincode = Regex.Replace(clientJoinCode.text, @"[\u200B-\u200D\uFEFF]", "").Trim();
 		if (string.IsNullOrEmpty(joincode))
 		{
 			Debug.Log($"Client join empty - {joincode}");
 		}
-		_ = JoinClientAsync(joincode);
+		//connectionStatusText.text = "Joining...";
+		var result = await JoinClientAsync(joincode);
+		return result;
 	}
 	// one more function because we need to await the results
-	private async Task JoinClientAsync(string joincode)
+	private async Task<bool> JoinClientAsync(string joincode)
 	{
 		bool connectResult = false;
 		try
 		{
 			connectResult = await StartClientWithRelay(joincode, "wss");
-			connectionStatusText.text = "Joining...";
+			return connectResult;
 		}
 		catch (Exception ex)
 		{
 			Debug.Log($"Exception when joining - {ex.Message}");
 			connectionStatusText.text = "Error when joining.";
+			return false;
 		}
+
 	}
 	private async Task<bool> StartClientWithRelay(string joinCode, string connectionType)
 	{
@@ -89,4 +115,9 @@ public class SetupNetwork : MonoBehaviour
 		return NetworkManager.Singleton.StartClient();
 	}
 
+	public void Shutdown()
+	{
+		NetworkManager.Singleton.Shutdown();
+		gameObject.SetActive(false);
+	}
 }

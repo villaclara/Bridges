@@ -13,4 +13,13 @@ public class GlobalVars
 
 	public readonly static List<GameObject> linesToDelete = new();
 	public readonly static List<GameObject> bridgesToDelete = new();
+
+
+	public readonly static Color32 DEFAULT_GREEN_BUTTON_COLOR = new Color32(0, 191, 166, 227);
+	public readonly static Color32 DARKER_GREEN_BUTTON_COLOR = new Color(
+			DEFAULT_GREEN_BUTTON_COLOR.r * GlobalVars.DARKER_MULTIPLYER / 256,
+			DEFAULT_GREEN_BUTTON_COLOR.g * GlobalVars.DARKER_MULTIPLYER / 256,
+			DEFAULT_GREEN_BUTTON_COLOR.b * GlobalVars.DARKER_MULTIPLYER / 256,
+			DEFAULT_GREEN_BUTTON_COLOR.a);
+	public const float DARKER_MULTIPLYER = 0.8f;
 }

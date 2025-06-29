@@ -33,7 +33,7 @@ public class MP_PlayerDrawing : NetworkBehaviour
 	private void OnP2BridgesCountChanged(int previousValue, int newValue)
 	{
 		Debug.Log($"Prev - {previousValue}, new - {newValue}");
-		// TODO - Check if this needed too.
+		// TODO - Check if this needed too. Do not redraw text when value has changed.
 		// Do not redraw text when the value has not changed. Not sure if it is actually needed.
 		if(previousValue == newValue)
 		{

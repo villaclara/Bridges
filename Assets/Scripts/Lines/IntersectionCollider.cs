@@ -29,7 +29,6 @@ public class IntersectionCollider : MonoBehaviour
 		Debug.Log($"_canplacebridge in AWAKE {_canPlaceBridge}");
 	}
 
-	// TODO - Count other bridges, do not count self bridge
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
 		Debug.Log($"Intersection Collider - OnTriggerEnter - {collision.gameObject.name}, tag {collision.gameObject.tag}, _canplacebridge - {_canPlaceBridge}");
