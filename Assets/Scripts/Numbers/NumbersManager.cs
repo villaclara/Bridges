@@ -37,7 +37,7 @@ public class NumbersManager : MonoBehaviour, IGameStage
 		if (model is not null)
 		{
 			// If MP then we pass the created Number Model to all clients to add to their respective _numbersList.
-			if(GameManager.gameMode == GameMode.Multiplayer)
+			if(GameManager.GameMode == GameMode.Multiplayer)
 			{
 				var no = model.NumberObject.GetComponent<NetworkObject>();
 				numberMessenger.AddNumberToList(model.Value, model.Position, model.Radius, no.NetworkObjectId);
@@ -59,7 +59,7 @@ public class NumbersManager : MonoBehaviour, IGameStage
 			//_playerDrawingText.gameObject.SetActive(false);
 			_playerDrawingText.text = "              ";
 			//OnStageExecutionCompleted?.Invoke();
-			if(GameManager.gameMode == GameMode.Multiplayer)
+			if(GameManager.GameMode == GameMode.Multiplayer)
 			{
 				numberMessenger.SetupNumbersList();
 				_stageSetup.SetDrawStageRpc();
@@ -74,7 +74,7 @@ public class NumbersManager : MonoBehaviour, IGameStage
 		}
         SpinningCircleHelper.DisableSpinningCircleForNumberModel(model, false);
 
-		if(GameManager.gameMode == GameMode.Multiplayer)
+		if(GameManager.GameMode == GameMode.Multiplayer)
 		{
 			if (NetworkManager.Singleton.IsHost)
 			{

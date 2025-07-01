@@ -1,14 +1,16 @@
+using System;
 using System.Collections.Generic;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
 	[Header("Game Mode")]
 	[SerializeField] private bool _isOnline;
 
-	public static GameMode gameMode = GameMode.Local;
+	public static GameMode GameMode { get; private set; } = GameMode.Local;
 
 	// List of all stages of the game flow (setup numbers, draw lines, end).
 	[SerializeField]
@@ -20,11 +22,13 @@ public class GameManager : MonoBehaviour
 	public IntersectionCollider intersectionsCollider;
 	public PlayerCanvasStyleController player1CanvasStyleController;
 	public PlayerCanvasStyleController player2CanvasStyleController;
+	public GameObject endGameScreen;
+	public GameObject localLoadingScreen;
+	public GameObject mpLoadingScreen;
 
 	private int _currentStageIndex = 0;
 
-	[SerializeField]
-	private GameObject _endGameScreen;
+	public event Action MP_RestartAsked;
 
 	// Start is called before the first frame update
 	void Start()
@@ -32,14 +36,31 @@ public class GameManager : MonoBehaviour
 		_stages.Add(numbersManager);
 		_stages.Add(drawManager);
 
-		StartStage(_currentStageIndex);
+		endGameScreen.GetComponent<EndGameScript>().RestartButtonClick += GameManager_RestartButtonClick;
 	}
 
-	void StartStage(int index)
+	/// <summary>
+	/// Starts the Action Phase. Is used for both Fresh Start and Re Start. <see cref="GameMode.Local"/> is selected by default if no parameter is specified.
+	/// </summary>
+	/// <param name="isOnline">Sets the <see cref="GameMode"/> GameMode. </param>
+	public void StartGame(bool isOnline = false)
 	{
+		// Resetting all and hiding all UI Screens
+		gameObject.SetActive(true);
+		ResetAll();
+		localLoadingScreen.SetActive(false);
+		mpLoadingScreen.SetActive(false);
+		endGameScreen.SetActive(false);
+		this._isOnline = isOnline;
+		GameMode = isOnline ? GameMode.Multiplayer : GameMode.Local;
+		StartStage(_currentStageIndex);
+	}
+	private void StartStage(int index)
+	{
+		Debug.Log($"Starting stage with index - {index}");
 		if (index >= _stages.Count)
 		{
-			_endGameScreen.SetActive(true);
+			endGameScreen.SetActive(true);
 			var playerIdWon = "Draw";
 			if (PlayerManager.player1.BridgesCount < PlayerManager.player2.BridgesCount)
 			{
@@ -49,7 +70,7 @@ public class GameManager : MonoBehaviour
 			{
 				playerIdWon = "Player 2 won. GG";
 			}
-			_endGameScreen.GetComponentsInChildren<TextMeshProUGUI>()[1].text = playerIdWon;
+			endGameScreen.GetComponentsInChildren<TextMeshProUGUI>()[1].text = playerIdWon;
 			Debug.Log("Index outside of array. End of game.");
 			return;
 		}
@@ -71,7 +92,7 @@ public class GameManager : MonoBehaviour
 		StartStage(_currentStageIndex);
 	}
 
-	public void ResetAll()
+	private void ResetAll()
 	{
 		Debug.Log($"IsHost - {NetworkManager.Singleton.IsHost}, IcLient - {NetworkManager.Singleton.IsClient}");
 		Debug.Log($"Reset All called");
@@ -84,15 +105,25 @@ public class GameManager : MonoBehaviour
 		player1CanvasStyleController.Reset();
 		player2CanvasStyleController.Reset();
 		_currentStageIndex = 0;
-		StartStage(_currentStageIndex);
+		//StartStage(_currentStageIndex);
 	}
 
-	public void SetGameMode(bool isOnline)
+	/// <summary>
+	/// Handles the Restart Button click depending on <see cref="GameMode"/> value.
+	/// </summary>
+	private void GameManager_RestartButtonClick()
 	{
-		this._isOnline = isOnline;
-		gameMode = this._isOnline ? GameMode.Multiplayer : GameMode.Local;
+		// Redirect handling ConnectionStatus for Multiplayer.
+		if (GameMode == GameMode.Multiplayer)
+		{
+			MP_RestartAsked?.Invoke();
+		}
+		// If local then simply restart.
+		else
+		{
+			StartGame();
+		}
 	}
-
 }
 
 

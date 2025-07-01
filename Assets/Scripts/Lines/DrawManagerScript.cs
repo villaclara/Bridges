@@ -73,13 +73,13 @@ public class DrawManager : MonoBehaviour, IGameStage
 	void Update()
 	{
 		Debug.Log($"Update DrawManager - {PlayerManager.playerTurn}");
-		if(GameManager.gameMode == GameMode.Multiplayer && PlayerManager.playerTurn == PlayerTurn.P2_Turn && NetworkManager.Singleton.IsHost)
+		if(GameManager.GameMode == GameMode.Multiplayer && PlayerManager.playerTurn == PlayerTurn.P2_Turn && NetworkManager.Singleton.IsHost)
 		{
 			Debug.Log($"P2 Turn, Host return");
 			return;
 		}
 
-		if (GameManager.gameMode == GameMode.Multiplayer && PlayerManager.playerTurn == PlayerTurn.P1_Turn && !NetworkManager.Singleton.IsHost)
+		if (GameManager.GameMode == GameMode.Multiplayer && PlayerManager.playerTurn == PlayerTurn.P1_Turn && !NetworkManager.Singleton.IsHost)
 		{
 			Debug.Log($"P1 turn, Client return");
 			return;
@@ -108,7 +108,7 @@ public class DrawManager : MonoBehaviour, IGameStage
 				if (IfPointInsideCurrentNumber(mousePos))
 				{
 					// Instantiating line in MP
-					if(GameManager.gameMode == GameMode.Multiplayer)
+					if(GameManager.GameMode == GameMode.Multiplayer)
 					{
 						numberMessenger.DisableSpinCircleRpc(isCurrent: true, showCircle: false);
 						numberMessenger.DisableSpinCircleRpc(isCurrent: false, showCircle: true);
@@ -184,12 +184,12 @@ public class DrawManager : MonoBehaviour, IGameStage
 			_currentLine.SetPosition(mousePos);
 			_intersectionCollider.transform.position = mousePos;
 
-			if(GameManager.gameMode == GameMode.Multiplayer && NetworkManager.Singleton.IsHost)
+			if(GameManager.GameMode == GameMode.Multiplayer && NetworkManager.Singleton.IsHost)
 			{
 				// Spawn net point of Line on Network Object to display on Client side.
 				_currentLine.GetComponent<MP_Line>().SetNewValueToPoint(mousePos);
 			}
-			else if (GameManager.gameMode == GameMode.Multiplayer && !NetworkManager.Singleton.IsHost)
+			else if (GameManager.GameMode == GameMode.Multiplayer && !NetworkManager.Singleton.IsHost)
 			{
 				// Spawn new point of Line ONLY localy on Host.
 				drawMessenger.RequestAddVertextToLineOnServerRpc(mousePos);
@@ -200,14 +200,14 @@ public class DrawManager : MonoBehaviour, IGameStage
 				_isDrawingToNextCompleted = true;
 				_isDrawing = false;
 				
-				if(GameManager.gameMode == GameMode.Local)
+				if(GameManager.GameMode == GameMode.Local)
 				{
 					PlayerManager.SwitchTurns();
 				}
 				Debug.Log("HOLD - Player manager switch turne");
 
 
-				if(GameManager.gameMode == GameMode.Multiplayer)
+				if(GameManager.GameMode == GameMode.Multiplayer)
 				{
 					if(NetworkManager.Singleton.IsHost)
 					{
@@ -245,13 +245,13 @@ public class DrawManager : MonoBehaviour, IGameStage
 				_isDrawingToNextCompleted = true;
 				_isDrawing = false;
 
-				if (GameManager.gameMode == GameMode.Local)
+				if (GameManager.GameMode == GameMode.Local)
 				{
 					PlayerManager.SwitchTurns();
 				}
 				Debug.Log("RELEASE - Player manager switch turne");
 
-				if (GameManager.gameMode == GameMode.Multiplayer)
+				if (GameManager.GameMode == GameMode.Multiplayer)
 				{
 					if (NetworkManager.Singleton.IsHost)
 					{
@@ -277,7 +277,7 @@ public class DrawManager : MonoBehaviour, IGameStage
 					this.enabled = false;
 					//OnStageExecutionCompleted?.Invoke();
 
-					if (GameManager.gameMode == GameMode.Multiplayer)
+					if (GameManager.GameMode == GameMode.Multiplayer)
 					{
 						_stageSetup.SetEndGameRpc();
 					}

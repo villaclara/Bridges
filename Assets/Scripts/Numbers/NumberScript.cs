@@ -41,7 +41,7 @@ public class NumberScript : NetworkBehaviour
 	private void Start()
 	{
 		// If we are the client, not Host, we only watch the numbers to be drawn.
-		if (GameManager.gameMode == GameMode.Multiplayer && !IsOwner && !IsHost)
+		if (GameManager.GameMode == GameMode.Multiplayer && !IsOwner && !IsHost)
 		{
 			Debug.Log($"NumberScript Start in MP in Client !Host");
 			_circleRenderer = GetComponentInChildren<SpriteRenderer>();
@@ -70,7 +70,7 @@ public class NumberScript : NetworkBehaviour
 		// TODO - Do we need Update in NumbersScript Client code? 
 		// When the Host still calls Rpc to add in client in NumbersManager
 		// If not needed - call this.enabled = false in Start on Client side.
-		if(GameManager.gameMode == GameMode.Multiplayer && !NetworkManager.Singleton.IsHost)
+		if(GameManager.GameMode == GameMode.Multiplayer && !NetworkManager.Singleton.IsHost)
 		{
 			Debug.Log($"number position - {transform.position}, value - {value}");
 		}
@@ -110,7 +110,7 @@ public class NumberScript : NetworkBehaviour
 
 
 			// disabling Update() calls on both client and host.
-			if(GameManager.gameMode == GameMode.Multiplayer && IsOwner && IsHost)
+			if(GameManager.GameMode == GameMode.Multiplayer && IsOwner && IsHost)
 			{
 				DisableNumberUpdateRpc();
 			}

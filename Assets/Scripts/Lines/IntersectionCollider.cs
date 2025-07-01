@@ -41,7 +41,7 @@ public class IntersectionCollider : MonoBehaviour
 
 			bridge = Instantiate(Bridge, new Vector3(transform.position.x, transform.position.y, -5), Quaternion.identity);
 
-			if(GameManager.gameMode == GameMode.Multiplayer)
+			if(GameManager.GameMode == GameMode.Multiplayer)
 			{
 				if(NetworkManager.Singleton.IsHost)
 				{
@@ -156,7 +156,7 @@ public class IntersectionCollider : MonoBehaviour
 		bridge.GetComponent<SpriteRenderer>().sprite = sprite;
 
 		// Change sprite in Multiplayer
-		if(GameManager.gameMode == GameMode.Multiplayer)
+		if(GameManager.GameMode == GameMode.Multiplayer)
 		{
 			if(NetworkManager.Singleton.IsHost)
 			{
@@ -176,7 +176,7 @@ public class IntersectionCollider : MonoBehaviour
 
 	private void AddBridgeToPlayer(IPlayerModel player, int count)
 	{
-		if(GameManager.gameMode == GameMode.Multiplayer)
+		if(GameManager.GameMode == GameMode.Multiplayer)
 		{
 			if (!NetworkManager.Singleton.IsHost)
 			{
