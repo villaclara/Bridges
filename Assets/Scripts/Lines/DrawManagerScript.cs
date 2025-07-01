@@ -66,7 +66,8 @@ public class DrawManager : MonoBehaviour, IGameStage
 	private void DrawMessenger_NumbersMoveNextReturnFalse()
 	{
 		this.enabled = false;
-		OnStageExecutionCompleted?.Invoke();
+		Debug.Log("IN NUmberMoveNeXtREturnFalse");
+		_stageSetup.SetEndGameRpc();
 	}
 
 	// Update is called once per frame
@@ -277,6 +278,7 @@ public class DrawManager : MonoBehaviour, IGameStage
 					this.enabled = false;
 					//OnStageExecutionCompleted?.Invoke();
 
+					Debug.Log($"MOVENEXT ! READY IN UPDATE DRAWMANAGER");
 					if (GameManager.GameMode == GameMode.Multiplayer)
 					{
 						_stageSetup.SetEndGameRpc();

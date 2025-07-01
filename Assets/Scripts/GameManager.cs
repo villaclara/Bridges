@@ -89,6 +89,7 @@ public class GameManager : MonoBehaviour
 
 		// start next stage
 		_currentStageIndex++;
+		Debug.Log($"Current Stage index in ONSTAGECOMPLETED - {_currentStageIndex}");
 		StartStage(_currentStageIndex);
 	}
 
@@ -124,7 +125,11 @@ public class GameManager : MonoBehaviour
 			StartGame();
 		}
 	}
+	
+
+
 }
+
 
 
 public enum GameMode

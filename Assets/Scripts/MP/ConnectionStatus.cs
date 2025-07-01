@@ -65,16 +65,21 @@ public class ConnectionStatus : NetworkBehaviour
 	/// <param name="newValue"></param>
 	private void OnRestartPlayersCountChanged(int previousValue, int newValue)
 	{
+		Debug.Log($"NEW VALUE RECEIVED - {newValue}, {previousValue}");
 		if(newValue == 1)
 		{
 			_restartPlayersCountTMP.text = "Restart - 1/2";
 		}
 		if(newValue == 2)
 		{
-			StartCoroutine(nameof(Wait1Sec));
+			Debug.Log($"new value is 2 - reasdadadsadasdada");
+			_restartPlayersCountTMP.text = "Restart - 2/2";
+			//StartCoroutine(StartGameAfterDelay());
+			//StartGameOnClientRpc();
+			StartCoroutine(StartGameAfterDelay());
+
 			// reset count for next endGameScreen.
-			_restartPlayersCount.Value = 0;
-			StartGameOnClientRpc();
+			//StartGameOnClientRpc();
 		}
 	}
 
@@ -129,8 +134,8 @@ public class ConnectionStatus : NetworkBehaviour
 
 			// TODO - Changed Task.Delay To yield return -- Not sure if it works in WEbgl
 			//await Task.Delay(1000);
-			StartCoroutine(Wait1Sec());
-			StartGameOnClientRpc();
+			StartCoroutine(StartGameAfterDelay());
+			//StartGameOnClientRpc();
 		}
 	}
 
@@ -138,7 +143,6 @@ public class ConnectionStatus : NetworkBehaviour
 	private void StartGameOnClientRpc()
 	{
 		Debug.Log("Starting game in Client!");
-
 		// Resets the 'Restart 1/2 text used in EndGameScreen
 		_restartPlayersCountTMP.text = " ";
 
@@ -146,8 +150,17 @@ public class ConnectionStatus : NetworkBehaviour
 		gameManager.GetComponent<GameManager>().StartGame(isOnline: true);
 	}
 
-	private IEnumerator Wait1Sec()
+	private IEnumerator StartGameAfterDelay()
 	{
-		yield return new WaitForSeconds(2f);
+		Debug.Log("BEFORE WAIT");
+		if(IsHost)
+		{
+			// Wait 1 sec only on Host. Client waits anyway for host to call the StartGameRpc.
+			yield return new WaitForSecondsRealtime(1f);
+			_restartPlayersCount.Value = 0;
+			StartGameOnClientRpc();
+		}
+		
+		Debug.Log("AFTER WAIT");
 	}
 }
