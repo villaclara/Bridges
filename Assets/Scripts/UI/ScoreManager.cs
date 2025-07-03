@@ -14,6 +14,9 @@ public class ScoreManager : MonoBehaviour
 	[SerializeField]
 	private TextMeshProUGUI _p2ScoreText;
 
+	private int _prevP1Score = 0;
+	private int _prevP2Score = 0;
+
 	private void Awake()
 	{
 		// singleton
@@ -33,6 +36,21 @@ public class ScoreManager : MonoBehaviour
 	private void RedrawText()
 	{
 		_p1ScoreText.text = $"P1 - {PlayerManager.player1.BridgesCount}";
+		//_p1ScoreText.gameObject.transform.parent.GetComponent<Animator>().Play("PlayerBridgesAnimation");
 		_p2ScoreText.text = $"P2 - {PlayerManager.player2.BridgesCount}";
+
+		if(PlayerManager.player1.BridgesCount != _prevP1Score)
+		{
+			Debug.Log($"P1 score not the same in REDRAW");
+			_p1ScoreText.gameObject.transform.parent.GetComponent<Animator>().Play("PlayerBridgesAnimation", -1, 0f);
+			_prevP1Score = PlayerManager.player1.BridgesCount;
+		}
+
+		if (PlayerManager.player2.BridgesCount != _prevP2Score)
+		{
+			Debug.Log($"P2 score not the same in REDRAW");
+			_p2ScoreText.gameObject.transform.parent.GetComponent<Animator>().Play("PlayerBridgesAnimation", -1, 0f);
+			_prevP2Score = PlayerManager.player2.BridgesCount;
+		}
 	}
 }

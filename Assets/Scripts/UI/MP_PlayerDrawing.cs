@@ -41,6 +41,7 @@ public class MP_PlayerDrawing : NetworkBehaviour
 		}
 		PlayerManager.player2.BridgesCount = newValue;
 		_p2TextTMP.text = $"P2 - {newValue}";
+		_p2TextTMP.gameObject.transform.parent.GetComponent<Animator>().Play("PlayerBridgesAnimation", -1, 0f);
 	}
 
 
@@ -54,6 +55,7 @@ public class MP_PlayerDrawing : NetworkBehaviour
 		}
 		PlayerManager.player1.BridgesCount = newValue;
 		_p1TextTMP.text = $"P1 - {newValue}";
+		_p1TextTMP.gameObject.transform.parent.GetComponent<Animator>().Play("PlayerBridgesAnimation", -1, 0f);
 	}
 
 	private void OnPlayerTurnChanged(bool previousValue, bool newValue)
