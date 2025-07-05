@@ -27,6 +27,7 @@ public class IntersectionCollider : MonoBehaviour
 	{
 		Radius = GetComponent<CircleCollider2D>().radius;
 		Debug.Log($"_canplacebridge in AWAKE {_canPlaceBridge}");
+		StepTimerScript.StepTimerFinished += StepTimerScript_StepTimerFinished;
 	}
 
 	private void OnTriggerEnter2D(Collider2D collision)
@@ -188,6 +189,14 @@ public class IntersectionCollider : MonoBehaviour
 
 		// Invoke if local and if Server in Multiplayer
 		PlayerManager.AddBridgeToPlayer(player, count);
+	}
+
+	/// <summary>
+	/// Adds 5 bridges to the current player if the timer has finished.
+	/// </summary>
+	private void StepTimerScript_StepTimerFinished()
+	{
+		AddBridgeToPlayer(PlayerManager.playerTurn == PlayerTurn.P1_Turn ? PlayerManager.player1 : PlayerManager.player2, 5);
 	}
 
 	public void DestroyAllBridges()

@@ -25,6 +25,7 @@ public class GameManager : MonoBehaviour
 	public GameObject endGameScreen;
 	public GameObject localLoadingScreen;
 	public GameObject mpLoadingScreen;
+	public GameObject stepTimerScript;
 
 	private int _currentStageIndex = 0;
 
@@ -61,6 +62,7 @@ public class GameManager : MonoBehaviour
 		if (index >= _stages.Count)
 		{
 			endGameScreen.SetActive(true);
+			stepTimerScript.GetComponent<StepTimerScript>().ResetTimer();
 			var playerIdWon = "Draw";
 			if (PlayerManager.player1.BridgesCount < PlayerManager.player2.BridgesCount)
 			{
@@ -106,6 +108,7 @@ public class GameManager : MonoBehaviour
 		player1CanvasStyleController.Reset();
 		player2CanvasStyleController.Reset();
 		_currentStageIndex = 0;
+		stepTimerScript.GetComponent<StepTimerScript>().ResetTimer();
 		//StartStage(_currentStageIndex);
 	}
 

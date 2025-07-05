@@ -200,75 +200,13 @@ public class DrawManager : MonoBehaviour, IGameStage
 			{
 				_isDrawingToNextCompleted = true;
 				_isDrawing = false;
-				
-				if(GameManager.GameMode == GameMode.Local)
-				{
-					PlayerManager.SwitchTurns();
-				}
-				Debug.Log("HOLD - Player manager switch turne");
-
-
-				if(GameManager.GameMode == GameMode.Multiplayer)
-				{
-					if(NetworkManager.Singleton.IsHost)
-					{
-						PlayerManager.SwitchTurns();
-					}
-					else
-					{
-						drawMessenger.RequestServerPlayerTurnSwitchRpc();
-					}
-
-					// passing the Host parameter to decide and make call MoveNext on ANOTHER client. 
-					// Because below we invoke it locally to have the boolean var of end game condition.
-					drawMessenger.NumbersMoveNext(NetworkManager.Singleton.IsHost);
-				}
-
-
-					// get new values for numbers.Current and .Next
-					var isMoveNextReady = _numbers.MoveNext();
-					Debug.Log($"After numbers Movenext, isMoveNextREady - {isMoveNextReady}");
-					if (!isMoveNextReady)
-					{
-						Debug.Log("Execution ended");
-						this.enabled = false;
-						OnStageExecutionCompleted?.Invoke();
-					}
-			}
-		}
-
-		// Release
-		if (Input.GetMouseButtonUp(0) && _isDrawing)
-		{
-			// Line is at the next number.
-			if (IfPointInsideNextNumber(mousePos))
-			{
-				_isDrawingToNextCompleted = true;
-				_isDrawing = false;
-
-				if (GameManager.GameMode == GameMode.Local)
-				{
-					PlayerManager.SwitchTurns();
-				}
-				Debug.Log("RELEASE - Player manager switch turne");
 
 				if (GameManager.GameMode == GameMode.Multiplayer)
 				{
-					if (NetworkManager.Singleton.IsHost)
-					{
-						PlayerManager.SwitchTurns();
-					}
-					else
-					{
-						drawMessenger.RequestServerPlayerTurnSwitchRpc();
-					}
-
 					// passing the Host parameter to decide and make call MoveNext on ANOTHER client. 
-					// Because below we invoke it locally to have the boolean var of end game condition.
+					// Because below we invoke it locally to have the boolean var of end game condition
 					drawMessenger.NumbersMoveNext(NetworkManager.Singleton.IsHost);
 				}
-
-				
 
 				// get new values for numbers.Current and .Next
 				var isMoveNextReady = _numbers.MoveNext();
@@ -287,6 +225,89 @@ public class DrawManager : MonoBehaviour, IGameStage
 					{
 						InvokeStageEnd();
 					}
+					return;
+				}
+
+				if (GameManager.GameMode == GameMode.Local)
+				{
+					PlayerManager.SwitchTurns();
+				}
+				Debug.Log("RELEASE - Player manager switch turne");
+
+				if (GameManager.GameMode == GameMode.Multiplayer)
+				{
+					if (NetworkManager.Singleton.IsHost)
+					{
+						PlayerManager.SwitchTurns();
+					}
+					else
+					{
+						drawMessenger.RequestServerPlayerTurnSwitchRpc();
+					}
+
+					//// passing the Host parameter to decide and make call MoveNext on ANOTHER client. 
+					//// Because below we invoke it locally to have the boolean var of end game condition.
+					//drawMessenger.NumbersMoveNext(NetworkManager.Singleton.IsHost);
+				}
+			}
+		}
+
+		// Release
+		if (Input.GetMouseButtonUp(0) && _isDrawing)
+		{
+			// Line is at the next number.
+			if (IfPointInsideNextNumber(mousePos))
+			{
+				_isDrawingToNextCompleted = true;
+				_isDrawing = false;
+
+				if(GameManager.GameMode == GameMode.Multiplayer)
+				{
+					// passing the Host parameter to decide and make call MoveNext on ANOTHER client. 
+					// Because below we invoke it locally to have the boolean var of end game condition
+					drawMessenger.NumbersMoveNext(NetworkManager.Singleton.IsHost);
+				}
+
+				// get new values for numbers.Current and .Next
+				var isMoveNextReady = _numbers.MoveNext();
+				if (!isMoveNextReady)
+				{
+					Debug.Log("Execution ended");
+					this.enabled = false;
+					//OnStageExecutionCompleted?.Invoke();
+
+					Debug.Log($"MOVENEXT ! READY IN UPDATE DRAWMANAGER");
+					if (GameManager.GameMode == GameMode.Multiplayer)
+					{
+						_stageSetup.SetEndGameRpc();
+					}
+					else
+					{
+						InvokeStageEnd();
+					}
+					return;
+				}
+
+				if (GameManager.GameMode == GameMode.Local)
+				{
+					PlayerManager.SwitchTurns();
+				}
+				Debug.Log("RELEASE - Player manager switch turne");
+
+				if (GameManager.GameMode == GameMode.Multiplayer)
+				{
+					if (NetworkManager.Singleton.IsHost)
+					{
+						PlayerManager.SwitchTurns();
+					}
+					else
+					{
+						drawMessenger.RequestServerPlayerTurnSwitchRpc();
+					}
+
+					//// passing the Host parameter to decide and make call MoveNext on ANOTHER client. 
+					//// Because below we invoke it locally to have the boolean var of end game condition.
+					//drawMessenger.NumbersMoveNext(NetworkManager.Singleton.IsHost);
 				}
 			}
 
