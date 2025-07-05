@@ -24,7 +24,10 @@ public class NumbersList
 	public bool MoveNext()
 	{
 		SpinningCircleHelper.DisableSpinningCircleForNumberModel(Next, false);
-        _currentIndex++;
+
+		// this is called to remove circle when timer ends.
+		SpinningCircleHelper.DisableSpinningCircleForNumberModel(Current, false);	
+		_currentIndex++;
 		if (_currentIndex >= _numbers.Count - 1)
 		{
 			return false;

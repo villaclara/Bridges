@@ -17,19 +17,19 @@ public class StepTimerScript : MonoBehaviour
 	{
 		PlayerManager.OnPlayerTurnSwitch += PlayerManager_OnPlayerTurnSwitch;
 		gameObject.SetActive(false);
-		Debug.Log($"Subscribed to playerturnswtich in Timer");
+		Debug.Log($"StepTImerScript - Subscribed to playerturnswtich in Timer");
 	}
 
 	private void PlayerManager_OnPlayerTurnSwitch()
 	{
-		Debug.Log($"Event triggered in StarTTimer");
+		Debug.Log($"StepTImerScript - Event triggered in StarTTimer - {nameof(PlayerManager_OnPlayerTurnSwitch)}");
 		ResetTimer();
 		StartTimer();
 	}
 
 	public void StartTimer()
     {
-		Debug.Log($"Calling StarTTimer");
+		Debug.Log($"StepTImerScript - Calling StarTTimer");
         gameObject.SetActive(true);
 		_coroutine = StartCoroutine(StartTimerEnumerator());
     }
@@ -50,7 +50,7 @@ public class StepTimerScript : MonoBehaviour
 
     private IEnumerator GetCounter()
     {
-		_currentTimer = 10;
+		_currentTimer = 5;
 
 		while (_currentTimer > 0)
 		{
@@ -61,8 +61,8 @@ public class StepTimerScript : MonoBehaviour
 		}
 
 		_timerTMP.text = "0"; // Optional
-		StepTimerFinished?.Invoke();
         gameObject.SetActive(false);
+		StepTimerFinished?.Invoke();
 		Debug.Log("Countdown finished!");
 	}
 }

@@ -24,16 +24,6 @@ public class PlayerManager : MonoBehaviour
 		{
 			Destroy(gameObject);
 		}
-
-		StepTimerScript.StepTimerFinished += StepTimerScript_StepTimerFinished;
-	}
-
-	/// <summary>
-	/// Switch turns when the timer has finished.
-	/// </summary>
-	private void StepTimerScript_StepTimerFinished()
-	{
-		SwitchTurns();
 	}
 
 	public static void SetupFirstTurn(bool isPlayer1First)
@@ -61,6 +51,7 @@ public class PlayerManager : MonoBehaviour
 		player1.IsMyTurn = !player1.IsMyTurn;
 		player2.IsMyTurn = !player2.IsMyTurn;
 		playerTurn = player1.IsMyTurn ? PlayerTurn.P1_Turn : PlayerTurn.P2_Turn;
+		Debug.Log($"PlayerManagerScript - {nameof(SwitchTurns)}, NOW TURN - {playerTurn}");
 		OnPlayerTurnSwitch?.Invoke();
 	}
 
