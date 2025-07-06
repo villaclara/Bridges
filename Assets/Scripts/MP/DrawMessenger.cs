@@ -21,7 +21,7 @@ public class DrawMessenger : NetworkBehaviour
 	/// Is invoked when using _numbers.MoveNext() returns false, meaning its endgame.
 	/// Is invoked on another client (we invoke on local client in <see cref="DrawManager"/> script.
 	/// </summary>
-	public event Action NumbersMoveNextReturnFalse;
+	public event Action NumbersMoveNextReturnedFalse;
 
 	public void SetNumbersListReference(NumbersList numbersList)
 	{
@@ -40,21 +40,21 @@ public class DrawMessenger : NetworkBehaviour
 	private void NumbersMoveNextRpc(bool sentFromHost)
 	{
 		// If we sent from Host then we only want to invoke on Client.
-		if(sentFromHost && !IsHost)
+		if (sentFromHost && !IsHost)
 		{
 			if (!_numbers.MoveNext())
 			{
-				NumbersMoveNextReturnFalse?.Invoke();
+				NumbersMoveNextReturnedFalse?.Invoke();
 			}
 		}
 		// else if we sent from Client then only invoke on Host.
-		else if(!sentFromHost && IsHost)
+		else if (!sentFromHost && IsHost)
 		{
 			if (!_numbers.MoveNext())
 			{
-				NumbersMoveNextReturnFalse?.Invoke();
+				NumbersMoveNextReturnedFalse?.Invoke();
 			}
-		}	
+		}
 	}
 
 	/// <summary>
@@ -89,7 +89,7 @@ public class DrawMessenger : NetworkBehaviour
 			return;
 		}
 
-		if(_currentLine == null)
+		if (_currentLine == null)
 		{
 			return;
 		}
@@ -126,7 +126,7 @@ public class DrawMessenger : NetworkBehaviour
 	[Rpc(SendTo.Server)]
 	public void RequestBridgeSpriteChangeRpc()
 	{
-		if(!IsServer)
+		if (!IsServer)
 		{
 			return;
 		}
@@ -162,6 +162,6 @@ public class DrawMessenger : NetworkBehaviour
 		}
 
 		var player = isP1 ? PlayerManager.player1 : PlayerManager.player2;
-		_currentBridge.GetComponent<BridgeScript>().currentPlayer = player; 
+		_currentBridge.GetComponent<BridgeScript>().currentPlayer = player;
 	}
 }

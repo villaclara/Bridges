@@ -18,12 +18,19 @@ public class StepTimerScript : MonoBehaviour
 	{
 		PlayerManager.OnPlayerTurnSwitch += PlayerManager_OnPlayerTurnSwitch;
 		gameObject.SetActive(false);
+
+		// Subscribig to playerTurn change in Multiplayer Network Variable to handle Timer.
+		// However in Host the PlayerManager_OnPlayerTurnSwitch() (the Timer reset and start) will be called twice. But who cares?
+		MP_PlayerDrawing.OnPlayerTurnChangedInMPNetworkVar += PlayerManager_OnPlayerTurnSwitch;
 		Debug.Log($"StepTImerScript - Subscribed to playerturnswtich in Timer");
 	}
 
-	private void PlayerManager_OnPlayerTurnSwitch()
+	/// <summary>
+	/// Stops current and starts new timer.
+	/// </summary>
+	public void PlayerManager_OnPlayerTurnSwitch()
 	{
-		Debug.Log($"StepTImerScript - Event triggered in StarTTimer - {nameof(PlayerManager_OnPlayerTurnSwitch)}");
+		Debug.LogWarning($"StepTImerScript - Event triggered in StarTTimer - {nameof(PlayerManager_OnPlayerTurnSwitch)}");
 		ResetTimer();
 		StartTimer();
 	}
@@ -49,6 +56,9 @@ public class StepTimerScript : MonoBehaviour
         yield return GetCounter();
     }
 
+	/// <summary>
+	/// Uses <see cref="WaitForSeconds"/> to get timer. Executes <see cref="StepTimerFinished"/> if timer finished.
+	/// </summary>
     private IEnumerator GetCounter()
     {
 		_currentTimer = GlobalVars.TURN_TIMER_VALUE_SECONDS;
@@ -60,25 +70,20 @@ public class StepTimerScript : MonoBehaviour
 			yield return new WaitForSeconds(1f);
 			_currentTimer--;
 		}
+		Debug.LogWarning($"GetCounter Timer Method reached 0");
 
 		_timerTMP.text = "0"; // Optional
         gameObject.SetActive(false);
-		
+
 		// TODO - Switch turns in Multiplayer and refresh Step Timer on Client.
 		// Also when game ends with timer elapsed the client receives last AddBrigdeToPlayer but the End screen does not count this.
-		if (GameManager.GameMode == GameMode.Multiplayer)
-		{
-			if (NetworkManager.Singleton.IsHost)
-			{
-				StepTimerFinished?.Invoke();
-			}
-		}
-		else
-		{
-			StepTimerFinished?.Invoke();
-		}
-
-
+		
+		Debug.LogWarning($"Invoking StepTimerFinished");
+		
+		// Invoking the Finished Event. 
+		// In MP - then subscribers (Host and Client) decide who calls MoveNext based on PlayerManager.playerTurn.
+		// In Local - nothing needed, it works.
+		StepTimerFinished?.Invoke();
 		Debug.Log("Countdown finished!");
 	}
 }

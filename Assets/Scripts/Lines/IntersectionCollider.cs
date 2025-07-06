@@ -196,7 +196,24 @@ public class IntersectionCollider : MonoBehaviour
 	/// </summary>
 	private void StepTimerScript_StepTimerFinished()
 	{
-		AddBridgeToPlayer(PlayerManager.playerTurn == PlayerTurn.P1_Turn ? PlayerManager.player1 : PlayerManager.player2, 5);
+		Debug.LogWarning($"IntersectionCollider - Invoke Timer end.");
+		if(GameManager.GameMode == GameMode.Local)
+		{
+			AddBridgeToPlayer(PlayerManager.playerTurn == PlayerTurn.P1_Turn ? PlayerManager.player1 : PlayerManager.player2, 5);
+			return;
+		}
+
+		// Deciding who should call method
+		if (PlayerManager.playerTurn == PlayerTurn.P1_Turn && NetworkManager.Singleton.IsHost)
+		{
+			// Is P1 and Host
+			AddBridgeToPlayer(PlayerManager.player1, 5);
+		}
+		else if (PlayerManager.playerTurn == PlayerTurn.P2_Turn && !NetworkManager.Singleton.IsHost)
+		{
+			// Is P2 and Client
+			AddBridgeToPlayer(PlayerManager.player2, 5);
+		}
 	}
 
 	public void DestroyAllBridges()

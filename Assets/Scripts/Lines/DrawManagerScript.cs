@@ -55,7 +55,7 @@ public class DrawManager : MonoBehaviour, IGameStage
 		//PlayerManager.SetupFirstTurn(rnd);
 		//Debug.Log($"First turn - {PlayerManager.playerTurn}");
 
-		drawMessenger.NumbersMoveNextReturnFalse += DrawMessenger_NumbersMoveNextReturnFalse;
+		drawMessenger.NumbersMoveNextReturnedFalse += DrawMessenger_NumbersMoveNextReturnFalse;
 		drawMessenger.SetNumbersListReference(_numbers);
 
 		StepTimerScript.StepTimerFinished += StepTimerScript_StepTimerFinished;
@@ -70,10 +70,22 @@ public class DrawManager : MonoBehaviour, IGameStage
 	/// </summary>
 	private void StepTimerScript_StepTimerFinished()
 	{
-		Debug.Log($"DrawMangerScript - ON event triggered Timer end in Drawmanager sub");
+		// TOOD - Here is invoked only on Host. Need to invoke in client too.
+		Debug.LogWarning($"DrawMangerScript - ON event triggered Timer end in Drawmanager sub");
 		_isDrawing = false;
 		_isDrawingToNextCompleted = true;
-		NumbersMoveNext_and_PlayerSwitchTurns();
+
+		// Deciding who should call method
+		if (PlayerManager.playerTurn == PlayerTurn.P1_Turn && NetworkManager.Singleton.IsHost)
+		{
+			// Is P1 and Host
+			NumbersMoveNext_and_PlayerSwitchTurns();
+		}
+		else if (PlayerManager.playerTurn == PlayerTurn.P2_Turn && !NetworkManager.Singleton.IsHost)
+		{
+			// Is P2 and Client
+			NumbersMoveNext_and_PlayerSwitchTurns();
+		}
 	}
 
 	private void DrawMessenger_NumbersMoveNextReturnFalse()

@@ -20,6 +20,8 @@ public class MP_PlayerDrawing : NetworkBehaviour
 	private NetworkVariable<int> _p1Bridges = new();
 	private NetworkVariable<int> _p2Bridges = new();
 
+	public static event Action OnPlayerTurnChangedInMPNetworkVar;
+
 	private void Start()
 	{
 		_playerDrawingChanged.OnValueChanged += OnValueChanged;
@@ -66,6 +68,7 @@ public class MP_PlayerDrawing : NetworkBehaviour
 		// Changing the values in Clients to reflect actual value of player turn.
 		PlayerManager.player1.IsMyTurn = PlayerManager.playerTurn == PlayerTurn.P1_Turn;
 		PlayerManager.player2.IsMyTurn = PlayerManager.playerTurn == PlayerTurn.P2_Turn;
+		OnPlayerTurnChangedInMPNetworkVar?.Invoke();
 		Debug.Log($"OnPlayerTurnChanged in isHost - {IsHost}, isClient - {IsClient}, newvalueText - {newValue}, newValuebool - {PlayerManager.playerTurn}");
 	}
 
