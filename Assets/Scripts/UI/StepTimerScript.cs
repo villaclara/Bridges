@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.Netcode;
 using UnityEngine;
 
 public class StepTimerScript : MonoBehaviour
@@ -62,7 +63,22 @@ public class StepTimerScript : MonoBehaviour
 
 		_timerTMP.text = "0"; // Optional
         gameObject.SetActive(false);
-		StepTimerFinished?.Invoke();
+		
+		// TODO - Switch turns in Multiplayer and refresh Step Timer on Client.
+		// Also when game ends with timer elapsed the client receives last AddBrigdeToPlayer but the End screen does not count this.
+		if (GameManager.GameMode == GameMode.Multiplayer)
+		{
+			if (NetworkManager.Singleton.IsHost)
+			{
+				StepTimerFinished?.Invoke();
+			}
+		}
+		else
+		{
+			StepTimerFinished?.Invoke();
+		}
+
+
 		Debug.Log("Countdown finished!");
 	}
 }
