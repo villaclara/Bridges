@@ -42,14 +42,14 @@ public class ScoreManager : MonoBehaviour
 		if(PlayerManager.player1.BridgesCount != _prevP1Score)
 		{
 			Debug.Log($"P1 score not the same in REDRAW");
-			_p1ScoreText.gameObject.transform.parent.GetComponent<Animator>().Play("PlayerBridgesAnimation", -1, 0f);
+			_p1ScoreText.gameObject.transform.parent.GetComponent<Animation>().Play("PlayerBridgesAnimation");
 			_prevP1Score = PlayerManager.player1.BridgesCount;
 		}
 
 		if (PlayerManager.player2.BridgesCount != _prevP2Score)
 		{
 			Debug.Log($"P2 score not the same in REDRAW");
-			_p2ScoreText.gameObject.transform.parent.GetComponent<Animator>().Play("PlayerBridgesAnimation", -1, 0f);
+			_p2ScoreText.gameObject.transform.parent.GetComponent<Animation>().Play("PlayerBridgesAnimation");
 			_prevP2Score = PlayerManager.player2.BridgesCount;
 		}
 	}

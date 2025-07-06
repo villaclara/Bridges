@@ -7,6 +7,8 @@ public class GlobalVars
 
 	public const int NUMBERS_COUNT = 5;
 
+	public const int TURN_TIMER_VALUE_SECONDS = 10;
+
 	public static int score = 0;
 
 	public const float LINE_CREATE_MINIMAL_RESOLUTION = 0.02f;

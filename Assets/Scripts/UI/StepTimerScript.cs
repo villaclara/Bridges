@@ -50,7 +50,7 @@ public class StepTimerScript : MonoBehaviour
 
     private IEnumerator GetCounter()
     {
-		_currentTimer = 5;
+		_currentTimer = GlobalVars.TURN_TIMER_VALUE_SECONDS;
 
 		while (_currentTimer > 0)
 		{
