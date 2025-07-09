@@ -46,7 +46,7 @@ public class NumberScript : NetworkBehaviour
 			Debug.Log($"NumberScript Start in MP in Client !Host");
 			_circleRenderer = GetComponentInChildren<SpriteRenderer>();
 			_circleRenderer.color = Color.white;
-			SpinningCircleHelper.DisableSpinningCircleForNumberGO(gameObject, false);
+			SpinningCircleHelper.SetSpinningCircleForGO(gameObject, false, false);
 			_isEnabled = false;
 		}
 
@@ -66,10 +66,7 @@ public class NumberScript : NetworkBehaviour
 	private void Update()
 	{
 		Debug.Log($"IsOwner - {IsOwner}");
-		// if we are client we listening to host moving the number
-		// TODO - Do we need Update in NumbersScript Client code? 
-		// When the Host still calls Rpc to add in client in NumbersManager
-		// If not needed - call this.enabled = false in Start on Client side.
+		// If we are client we listening to host moving the number and the Update is not even called in Client.
 		if(GameManager.GameMode == GameMode.Multiplayer && !NetworkManager.Singleton.IsHost)
 		{
 			Debug.Log($"number position - {transform.position}, value - {value}");
@@ -102,9 +99,6 @@ public class NumberScript : NetworkBehaviour
 
 			_isDragging = false;
 			_circleRenderer.color = Color.white;
-			// TODO - Disabling Update in Number after drag and release
-			// Check whats better here. No need to set enabled two different times.
-			// Maybe after adding lines it will be clear what to use.
 			this.enabled = false; // disable script after drag ends
 			_isEnabled = false;     // disable OnMouseDown registering event
 

@@ -4,21 +4,26 @@ using UnityEngine;
 
 public static class SpinningCircleHelper
 {
-    public static void DisableSpinningCircleForNumberModel(NumberModel numberModel, bool toSetActive)
+    public static void SetSpinningCircleForNumberModel(NumberModel numberModel, bool toSetActive, bool destroyThisGO = false)
     {
         if (numberModel != null)
         {
-            DisableSpinningCircleForNumberGO(numberModel.NumberObject, toSetActive);
+            SetSpinningCircleForGO(numberModel.NumberObject, toSetActive, destroyThisGO);
         }
     }
 
-    public static void DisableSpinningCircleForNumberGO(GameObject gameObject, bool toSetActive)
+    public static void SetSpinningCircleForGO(GameObject gameObject, bool toSetActive, bool destroyThisGO)
     {
 		Transform childTransform = gameObject.transform.Find("spinningCircle");
 		if (childTransform != null)
 		{
 			var childGameObject = childTransform.gameObject;
 			childGameObject.SetActive(toSetActive);
+
+            if (destroyThisGO)
+            {
+                UnityEngine.Object.Destroy(childGameObject);
+            }
 		}
 	}
 }

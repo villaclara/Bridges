@@ -211,6 +211,10 @@ public class IntersectionCollider : MonoBehaviour
 		}
 		else if (PlayerManager.playerTurn == PlayerTurn.P2_Turn && !NetworkManager.Singleton.IsHost)
 		{
+			// Is used just to be sure that when on last turn the P2 does not move line to number in time he has correct count of bridges.
+			// It has impact only on p2 local side when comparing P1.Bridges >< P2.Bridges in the Game End Screen.
+			// On Host the p2 bridges are addes with Rpc request and then Host updates the value for both players using NetworkVariable.
+			PlayerManager.player2.BridgesCount += 5;
 			// Is P2 and Client
 			AddBridgeToPlayer(PlayerManager.player2, 5);
 		}

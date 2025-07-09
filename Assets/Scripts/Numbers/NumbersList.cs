@@ -23,10 +23,10 @@ public class NumbersList
 
 	public bool MoveNext()
 	{
-		SpinningCircleHelper.DisableSpinningCircleForNumberModel(Next, false);
+		SpinningCircleHelper.SetSpinningCircleForNumberModel(Next, false);
 
 		// this is called to remove circle when timer ends.
-		SpinningCircleHelper.DisableSpinningCircleForNumberModel(Current, false);	
+		SpinningCircleHelper.SetSpinningCircleForNumberModel(Current, false, destroyThisGO: true);	
 		_currentIndex++;
 		if (_currentIndex >= _numbers.Count - 1)
 		{
@@ -35,7 +35,7 @@ public class NumbersList
 
 		this.Current = _numbers[_currentIndex];
         this.Next = _numbers[_currentIndex + 1];
-        SpinningCircleHelper.DisableSpinningCircleForNumberModel(Current, true);
+        SpinningCircleHelper.SetSpinningCircleForNumberModel(Current, true);
         return true;
 	}
 

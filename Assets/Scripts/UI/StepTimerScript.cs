@@ -70,15 +70,9 @@ public class StepTimerScript : MonoBehaviour
 			yield return new WaitForSeconds(1f);
 			_currentTimer--;
 		}
-		Debug.LogWarning($"GetCounter Timer Method reached 0");
 
 		_timerTMP.text = "0"; // Optional
         gameObject.SetActive(false);
-
-		// TODO - Switch turns in Multiplayer and refresh Step Timer on Client.
-		// Also when game ends with timer elapsed the client receives last AddBrigdeToPlayer but the End screen does not count this.
-		
-		Debug.LogWarning($"Invoking StepTimerFinished");
 		
 		// Invoking the Finished Event. 
 		// In MP - then subscribers (Host and Client) decide who calls MoveNext based on PlayerManager.playerTurn.

@@ -132,10 +132,9 @@ public class ConnectionStatus : NetworkBehaviour
 			// Update the NetworkVariable, which will synchronize to all clients
 			statusMessage.Value = "Connected 2/2";
 
-			// TODO - Changed Task.Delay To yield return -- Not sure if it works in WEbgl
+			// Task.Delay() does not work properly in WebGl.
 			//await Task.Delay(1000);
 			StartCoroutine(StartGameAfterDelay());
-			//StartGameOnClientRpc();
 		}
 	}
 

@@ -35,7 +35,6 @@ public class MP_PlayerDrawing : NetworkBehaviour
 	private void OnP2BridgesCountChanged(int previousValue, int newValue)
 	{
 		Debug.Log($"Prev - {previousValue}, new - {newValue}");
-		// TODO - Check if this needed too. Do not redraw text when value has changed.
 		// Do not redraw text when the value has not changed. Not sure if it is actually needed.
 		if(previousValue == newValue)
 		{
@@ -43,7 +42,6 @@ public class MP_PlayerDrawing : NetworkBehaviour
 		}
 		PlayerManager.player2.BridgesCount = newValue;
 		_p2TextTMP.text = $"P2 - {newValue}";
-		//_p2TextTMP.gameObject.transform.parent.GetComponent<Animator>().Play("PlayerBridgesAnimation", -1, 0f);
 		_p2TextTMP.gameObject.transform.parent.GetComponent<Animation>().Play("PlayerBridgesAnimation");
 	}
 

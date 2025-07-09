@@ -75,6 +75,12 @@ public class DrawManager : MonoBehaviour, IGameStage
 		_isDrawing = false;
 		_isDrawingToNextCompleted = true;
 
+		if(GameManager.GameMode == GameMode.Local)
+		{
+			NumbersMoveNext_and_PlayerSwitchTurns();
+			return;
+		}
+
 		// Deciding who should call method
 		if (PlayerManager.playerTurn == PlayerTurn.P1_Turn && NetworkManager.Singleton.IsHost)
 		{
@@ -136,7 +142,7 @@ public class DrawManager : MonoBehaviour, IGameStage
 					// Instantiating line in MP
 					if(GameManager.GameMode == GameMode.Multiplayer)
 					{
-						numberMessenger.DisableSpinCircleRpc(isCurrent: true, showCircle: false);
+						numberMessenger.DisableSpinCircleRpc(isCurrent: true, showCircle: false, destroyThisGO: true);
 						numberMessenger.DisableSpinCircleRpc(isCurrent: false, showCircle: true);
 						
 						_currentLine = Instantiate(_linePrefab, new Vector3(mousePos.x, mousePos.y, -4), Quaternion.identity);
@@ -157,9 +163,8 @@ public class DrawManager : MonoBehaviour, IGameStage
 					// Local gameplay, nothing changes
 					else
 					{
-						SpinningCircleHelper.DisableSpinningCircleForNumberModel(_numbers.Current, false);
-						SpinningCircleHelper.DisableSpinningCircleForNumberModel(_numbers.Next, true);
-						//TODO - remove spinning circle after this for better resource management
+						SpinningCircleHelper.SetSpinningCircleForNumberModel(_numbers.Current, false, destroyThisGO: true);
+						SpinningCircleHelper.SetSpinningCircleForNumberModel(_numbers.Next, true);
 						_currentLine = Instantiate(_linePrefab, new Vector3(mousePos.x, mousePos.y, -4), Quaternion.identity);
 					}
 

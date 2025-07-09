@@ -69,10 +69,10 @@ public class NumbersManager : MonoBehaviour, IGameStage
 				InvokeStageEnd();
 			}
 			Debug.Log("Numbermanager after completed calling invoke.");
-			SpinningCircleHelper.DisableSpinningCircleForNumberModel(model, false);
+			SpinningCircleHelper.SetSpinningCircleForNumberModel(model, false);
             return;
 		}
-        SpinningCircleHelper.DisableSpinningCircleForNumberModel(model, false);
+        SpinningCircleHelper.SetSpinningCircleForNumberModel(model, false);
 
 		if(GameManager.GameMode == GameMode.Multiplayer)
 		{

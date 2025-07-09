@@ -62,17 +62,17 @@ public class NumberMessenger : NetworkBehaviour
     /// </summary>
     /// <param name="isCurrent">If true then Numbers.Current. If false then Numbers.Next</param>
     [Rpc(SendTo.ClientsAndHost)]
-    public void DisableSpinCircleRpc(bool isCurrent, bool showCircle)
+    public void DisableSpinCircleRpc(bool isCurrent, bool showCircle, bool destroyThisGO = false)
 	{
         if(isCurrent)
         {
             Debug.Log($"Calling Disable spinnig circle for current - {_numbersList.Current.Value}, IsHost - {IsHost}");
-            SpinningCircleHelper.DisableSpinningCircleForNumberModel(_numbersList.Current, showCircle);
+            SpinningCircleHelper.SetSpinningCircleForNumberModel(_numbersList.Current, showCircle, destroyThisGO);
         }
         else
         {
 			Debug.Log($"Calling Disable spinnig circle for Next - {_numbersList.Current.Value}, IsHost - {IsHost}");
-			SpinningCircleHelper.DisableSpinningCircleForNumberModel(_numbersList.Next, showCircle);
+			SpinningCircleHelper.SetSpinningCircleForNumberModel(_numbersList.Next, showCircle, destroyThisGO);
 		}
 	}
 }

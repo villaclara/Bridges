@@ -20,8 +20,20 @@ public class MP_StageSetup : NetworkBehaviour
 	[Rpc(SendTo.ClientsAndHost)]
 	public void SetEndGameRpc()
 	{
+        // Waits 1 sec and then displays End Game Screen.
+        // Is used to set small pause and to properly update the Bridges count on Client side.
+        StartCoroutine(StartWait1sec());
+	}
+
+    private IEnumerator StartWait1sec()
+    {
+        yield return Wait1SecEnumerator();
 		drawManager.GetComponent<DrawManager>().InvokeStageEnd();
 		drawManager.SetActive(false);
 	}
 
+    private IEnumerator Wait1SecEnumerator()
+    {
+        yield return new WaitForSeconds(1);
+    }
 }
