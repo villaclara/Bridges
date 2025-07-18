@@ -26,14 +26,11 @@ public class IntersectionCollider : MonoBehaviour
 	private void Awake()
 	{
 		Radius = GetComponent<CircleCollider2D>().radius;
-		Debug.Log($"_canplacebridge in AWAKE {_canPlaceBridge}");
 		StepTimerScript.StepTimerFinished += StepTimerScript_StepTimerFinished;
 	}
 
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
-		Debug.Log($"Intersection Collider - OnTriggerEnter - {collision.gameObject.name}, tag {collision.gameObject.tag}, _canplacebridge - {_canPlaceBridge}");
-		Debug.Log($"Inters Collider - On Trigger Enter - Ishost - {NetworkManager.Singleton.IsHost}, IsClient - {NetworkManager.Singleton.IsClient}, ");
 		if (_canPlaceBridge && collision.CompareTag("Line"))
 		{
 			Debug.Log("Line collision, can place bridge");
@@ -99,23 +96,10 @@ public class IntersectionCollider : MonoBehaviour
 				_ => () => Debug.Log($"Switch player turn did not find proper value")
 			};
 			a.Invoke();
-
-			Debug.Log($"PlayerTurn - {PlayerManager.playerTurn}");
-			Debug.Log($"P1 - {PlayerManager.player1.IsMyTurn}");
-			Debug.Log($"P2 - {PlayerManager.player2.IsMyTurn}");
-			Debug.Log($"Current Player Bridge Is My TUrn - {bridge.GetComponent<BridgeScript>().currentPlayer.IsMyTurn}");	
-
-				Debug.Log($"Plyayer ({PlayerManager.player1.Id} - score - {PlayerManager.player1.BridgesCount})");
-			Debug.Log($"Plyayer ({PlayerManager.player2.Id} - score - {PlayerManager.player2.BridgesCount})");
-			//GlobalVars.score += 1;
 		}
 		else if (collision.CompareTag("Bridge"))
 		{
-			Debug.Log("Can not place bidge in Bridge tag");
 			_canPlaceBridge = false;
-
-			Debug.Log($"PlayerTurn In collision Bridge  - {PlayerManager.playerTurn}");
-			Debug.Log($"Current Player collision Is My TUrn - {collision.GetComponent<BridgeScript>().currentPlayer.IsMyTurn}");
 
 			if (!collision.GetComponent<BridgeScript>().currentPlayer.IsMyTurn)
 			{
@@ -126,16 +110,12 @@ public class IntersectionCollider : MonoBehaviour
 					_ => () => Debug.Log($"Switch player turn did not find proper value")
 				};
 				a.Invoke();
-
-				Debug.Log($"Plyayer ({PlayerManager.player1.Id} - score - {PlayerManager.player1.BridgesCount})");
-				Debug.Log($"Plyayer ({PlayerManager.player2.Id} - score - {PlayerManager.player2.BridgesCount})");
 			}
 
 
 		}
 		else if (collision.CompareTag("Number"))
 		{
-			Debug.Log("Can not place bidge in Nnunmber Tag");
 			_canPlaceBridge = false;
 			return;
 		}
@@ -146,9 +126,7 @@ public class IntersectionCollider : MonoBehaviour
 	{
 		if (collision.CompareTag("Bridge") || collision.CompareTag("Number"))
 		{
-			//Debug.Log("Can place bidge");
 			_canPlaceBridge = true;
-			Debug.Log($"Inters Collider - ONTriggerEXIT collisiion - {collision.gameObject.name}, tag {collision.gameObject.tag},  canplacebridge - {_canPlaceBridge}");
 		}
 	}
 
@@ -196,7 +174,6 @@ public class IntersectionCollider : MonoBehaviour
 	/// </summary>
 	private void StepTimerScript_StepTimerFinished()
 	{
-		Debug.LogWarning($"IntersectionCollider - Invoke Timer end.");
 		if(GameManager.GameMode == GameMode.Local)
 		{
 			AddBridgeToPlayer(PlayerManager.playerTurn == PlayerTurn.P1_Turn ? PlayerManager.player1 : PlayerManager.player2, 5);

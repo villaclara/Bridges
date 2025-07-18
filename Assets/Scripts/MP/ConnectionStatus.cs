@@ -16,6 +16,7 @@ public class ConnectionStatus : NetworkBehaviour
 	[SerializeField] private TextMeshProUGUI _restartPlayersCountTMP;
 
 	public GameObject gameManager;
+	public GameObject disconnectScreen;
 
 	// NetworkVariable to sync the status message across clients
 	private NetworkVariable<FixedString128Bytes> statusMessage = new NetworkVariable<FixedString128Bytes>(
@@ -118,6 +119,14 @@ public class ConnectionStatus : NetworkBehaviour
 		{
 			NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
 		}
+
+		NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnectCallback;
+	}
+
+	private void OnClientDisconnectCallback(ulong obj)
+	{
+		disconnectScreen.gameObject.SetActive(true);
+		NetworkManager.Singleton.Shutdown();
 	}
 
 	private void OnClientConnected(ulong clientId)

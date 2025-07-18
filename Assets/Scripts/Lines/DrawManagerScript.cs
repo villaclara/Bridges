@@ -71,7 +71,6 @@ public class DrawManager : MonoBehaviour, IGameStage
 	private void StepTimerScript_StepTimerFinished()
 	{
 		// TOOD - Here is invoked only on Host. Need to invoke in client too.
-		Debug.LogWarning($"DrawMangerScript - ON event triggered Timer end in Drawmanager sub");
 		_isDrawing = false;
 		_isDrawingToNextCompleted = true;
 
@@ -97,23 +96,19 @@ public class DrawManager : MonoBehaviour, IGameStage
 	private void DrawMessenger_NumbersMoveNextReturnFalse()
 	{
 		this.enabled = false;
-		Debug.Log("DrawMangerScript - IN NUmberMoveNeXtREturnFalse");
 		_stageSetup.SetEndGameRpc();
 	}
 
 	// Update is called once per frame
 	void Update()
 	{
-		Debug.Log($"Update DrawManager - {PlayerManager.playerTurn}");
 		if(GameManager.GameMode == GameMode.Multiplayer && PlayerManager.playerTurn == PlayerTurn.P2_Turn && NetworkManager.Singleton.IsHost)
 		{
-			Debug.Log($"P2 Turn, Host return");
 			return;
 		}
 
 		if (GameManager.GameMode == GameMode.Multiplayer && PlayerManager.playerTurn == PlayerTurn.P1_Turn && !NetworkManager.Singleton.IsHost)
 		{
-			Debug.Log($"P1 turn, Client return");
 			return;
 		}
 
@@ -156,7 +151,6 @@ public class DrawManager : MonoBehaviour, IGameStage
 						{
 							// Client asks the Host to instantiate and spawn Line only on Server (on Client we already have one).
 							drawMessenger.RequestInstantiateLineOnServerRpc(new Vector3(mousePos.x, mousePos.y, -4));
-							//_linesToDelete.Add(line.gameObject);
 						}
 					}
 
@@ -169,19 +163,14 @@ public class DrawManager : MonoBehaviour, IGameStage
 					}
 
 					GlobalVars.linesToDelete.Add(_currentLine.gameObject);
-					//_linesToDelete.Add(_currentLine.gameObject);
-					Debug.Log($"Lines do delete count - {GlobalVars.linesToDelete.Count}");
 					if (PlayerManager.playerTurn == PlayerTurn.P1_Turn)
 					{
 						_currentLine.SetLineColor(PlayerManager.player1.ColorHEX);
-						Debug.Log($"Current turn P1 - set color to - {PlayerManager.player1.ColorHEX}");
 					}
 					else
 					{
 						_currentLine.SetLineColor(PlayerManager.player2.ColorHEX);
-						Debug.Log($"Current turn P2 - set color to - {PlayerManager.player2.ColorHEX}");
 					}
-					Debug.Log($"current turn - {PlayerManager.playerTurn}");
 
 					// disabling-enabling collider to reset its position to not call the OnCollision() Methods
 					_intersectionCollider.GetComponent<CircleCollider2D>().enabled = false;
@@ -267,7 +256,6 @@ public class DrawManager : MonoBehaviour, IGameStage
 	/// </summary>
 	private void NumbersMoveNext_and_PlayerSwitchTurns()
 	{
-		Debug.Log($"DrawManagerScript - Executing {nameof(NumbersMoveNext_and_PlayerSwitchTurns)}");
 		if (GameManager.GameMode == GameMode.Multiplayer)
 		{
 			// passing the Host parameter to decide and make call MoveNext on ANOTHER client. 
@@ -279,11 +267,9 @@ public class DrawManager : MonoBehaviour, IGameStage
 		var isMoveNextReady = _numbers.MoveNext();
 		if (!isMoveNextReady)
 		{
-			Debug.Log("Execution ended");
 			this.enabled = false;
 			//OnStageExecutionCompleted?.Invoke();
 
-			Debug.Log($"MOVENEXT ! READY IN UPDATE DRAWMANAGER");
 			if (GameManager.GameMode == GameMode.Multiplayer)
 			{
 				_stageSetup.SetEndGameRpc();
@@ -327,7 +313,6 @@ public class DrawManager : MonoBehaviour, IGameStage
 		if (seed == 0) seed = 1;
 		var rnd = new Unity.Mathematics.Random(seed).NextBool();
 		PlayerManager.SetupFirstTurn(rnd);
-		Debug.Log($"First turn - {PlayerManager.playerTurn}");
 	}
 
 	public void ResetStage()

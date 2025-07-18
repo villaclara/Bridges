@@ -28,6 +28,7 @@ public class MP_LoadingScreenScript : MonoBehaviour
 		_roomCodeImg.enabled = false;
 		_roomCodeTMP.enabled = false;
 		_connectionStatus.text = " ";
+		_spinner.SetActive(false);
 
         _hostGameButton.GetComponent<Image>().color = GlobalVars.DEFAULT_GREEN_BUTTON_COLOR;
         _hostGameButton.interactable = true;

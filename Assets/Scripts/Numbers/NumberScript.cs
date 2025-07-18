@@ -43,7 +43,6 @@ public class NumberScript : NetworkBehaviour
 		// If we are the client, not Host, we only watch the numbers to be drawn.
 		if (GameManager.GameMode == GameMode.Multiplayer && !IsOwner && !IsHost)
 		{
-			Debug.Log($"NumberScript Start in MP in Client !Host");
 			_circleRenderer = GetComponentInChildren<SpriteRenderer>();
 			_circleRenderer.color = Color.white;
 			SpinningCircleHelper.SetSpinningCircleForGO(gameObject, false, false);
@@ -54,7 +53,6 @@ public class NumberScript : NetworkBehaviour
 		// We position numbers manually and subscribe to event to change color of number.
 		else
 		{
-			Debug.Log($"NumberScript Start in Host or Local");
 			_cam = Camera.main;
 			_circleRenderer = GetComponentInChildren<SpriteRenderer>();
 			_circleRenderer.color = Color.yellow;
@@ -65,15 +63,9 @@ public class NumberScript : NetworkBehaviour
 	// Update is called once per frame
 	private void Update()
 	{
-		Debug.Log($"IsOwner - {IsOwner}");
 		// If we are client we listening to host moving the number and the Update is not even called in Client.
-		if(GameManager.GameMode == GameMode.Multiplayer && !NetworkManager.Singleton.IsHost)
-		{
-			Debug.Log($"number position - {transform.position}, value - {value}");
-		}
 		if (!_isDragging)
 		{
-			Debug.Log($"IsDragging false - IsClient - {NetworkManager.Singleton.IsClient}, IsHost - {NetworkManager.Singleton.IsHost}");
 			return;
 		}
 
@@ -111,9 +103,6 @@ public class NumberScript : NetworkBehaviour
 
 			var childObj = transform.GetChild(0); // get Circle object
 			var childCircle = childObj.GetComponent<CircleCollider2D>(); // index 1 because the parent itself has collider and it also counts
-			Debug.Log($"parent scale - {transform.localScale}, name - {name}");
-			Debug.Log($"child scale - {childObj.transform.localScale}, name - {childObj.name}");
-			Debug.Log($"child radisu - {childCircle.radius * childObj.transform.lossyScale.x}");
 			// Notify Manager when drag ends
 			OnDragEnded?.Invoke(
 				new NumberModel(value,

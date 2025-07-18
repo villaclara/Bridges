@@ -34,7 +34,6 @@ public class MP_PlayerDrawing : NetworkBehaviour
 
 	private void OnP2BridgesCountChanged(int previousValue, int newValue)
 	{
-		Debug.Log($"Prev - {previousValue}, new - {newValue}");
 		// Do not redraw text when the value has not changed. Not sure if it is actually needed.
 		if(previousValue == newValue)
 		{
@@ -48,7 +47,6 @@ public class MP_PlayerDrawing : NetworkBehaviour
 
 	private void OnP1BridgesCountChanged(int previousValue, int newValue)
 	{
-		Debug.Log($"Prev - {previousValue}, new - {newValue}");
 		// Do not redraw text when the value has not changed.
 		if (previousValue == newValue)
 		{
@@ -56,7 +54,6 @@ public class MP_PlayerDrawing : NetworkBehaviour
 		}
 		PlayerManager.player1.BridgesCount = newValue;
 		_p1TextTMP.text = $"P1 - {newValue}";
-		//_p1TextTMP.gameObject.transform.parent.GetComponent<Animator>().Play("PlayerBridgesAnimation", -1, 0f);
 		_p1TextTMP.gameObject.transform.parent.GetComponent<Animation>().Play("PlayerBridgesAnimation");
 	}
 
@@ -67,13 +64,11 @@ public class MP_PlayerDrawing : NetworkBehaviour
 		PlayerManager.player1.IsMyTurn = PlayerManager.playerTurn == PlayerTurn.P1_Turn;
 		PlayerManager.player2.IsMyTurn = PlayerManager.playerTurn == PlayerTurn.P2_Turn;
 		OnPlayerTurnChangedInMPNetworkVar?.Invoke();
-		Debug.Log($"OnPlayerTurnChanged in isHost - {IsHost}, isClient - {IsClient}, newvalueText - {newValue}, newValuebool - {PlayerManager.playerTurn}");
 	}
 
 	private void OnValueChanged(FixedString64Bytes previousValue, FixedString64Bytes newValue)
 	{
 		_playerDrawingTMP.text = newValue.ToString();
-		Debug.Log($"OnValueChanged in isHost - {IsHost}, isClient - {IsClient}, newvalueText - {newValue}, newValuebool - {PlayerManager.playerTurn}");
 	}
 
 	public override void OnDestroy()
@@ -96,7 +91,6 @@ public class MP_PlayerDrawing : NetworkBehaviour
 
 	private void PlayerManager_OnPlayerBridgesChanged()
 	{
-		Debug.Log($"OnPlayerBridgesChanged - p1 ({PlayerManager.player1.BridgesCount}), p2 ({PlayerManager.player2.BridgesCount})");
 		_p1Bridges.Value = PlayerManager.player1.BridgesCount;
 		_p2Bridges.Value = PlayerManager.player2.BridgesCount;
 	}
@@ -110,7 +104,5 @@ public class MP_PlayerDrawing : NetworkBehaviour
 		};
 		//PlayerManager.playerTurn = PlayerManager.playerTurn;
 		_isP1Turn.Value = PlayerManager.playerTurn == PlayerTurn.P1_Turn;
-		Debug.Log($"new IsP1Turn - {_isP1Turn.Value}");	
-		Debug.Log($"OnPlayerTurnSwitch - {PlayerManager.playerTurn}");
 	}
 }

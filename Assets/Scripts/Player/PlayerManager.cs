@@ -42,7 +42,6 @@ public class PlayerManager : MonoBehaviour
 			player2.IsMyTurn = !isPlayer1First;
 			playerTurn = PlayerTurn.P2_Turn;
 		}
-		Debug.Log($"count of subs of playermanager - {OnPlayerTurnSwitch?.GetInvocationList().Length ?? 0}");
 		OnPlayerTurnSwitch?.Invoke();
 	}
 
@@ -51,13 +50,11 @@ public class PlayerManager : MonoBehaviour
 		player1.IsMyTurn = !player1.IsMyTurn;
 		player2.IsMyTurn = !player2.IsMyTurn;
 		playerTurn = player1.IsMyTurn ? PlayerTurn.P1_Turn : PlayerTurn.P2_Turn;
-		Debug.Log($"PlayerManagerScript - {nameof(SwitchTurns)}, NOW TURN - {playerTurn}");
 		OnPlayerTurnSwitch?.Invoke();
 	}
 
 	public static void AddBridgeToPlayer(IPlayerModel player, int count = 1)
 	{
-		Debug.Log($"Player - {player.Id}, count to add - {count}");
 		player.BridgesCount += count;
 		OnPlayerBridgesChanged?.Invoke();
 	}
