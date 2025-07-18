@@ -33,7 +33,6 @@ public class NumbersManager : MonoBehaviour, IGameStage
 
 	private void CreateNumber(NumberModel model = null)
 	{
-		Debug.Log($"CreateNumber called - model - {model?.Value}, isHost - {NetworkManager.Singleton.IsHost}, IsClient - {NetworkManager.Singleton.IsClient}");
 		if (model is not null)
 		{
 			// If MP then we pass the created Number Model to all clients to add to their respective _numbersList.
@@ -47,7 +46,6 @@ public class NumbersManager : MonoBehaviour, IGameStage
 			{
 				_numbersList.Add(model);
 			}
-
 		}
 
 		if (_currentNumber > GlobalVars.NUMBERS_COUNT)
@@ -68,7 +66,6 @@ public class NumbersManager : MonoBehaviour, IGameStage
 			{
 				InvokeStageEnd();
 			}
-			Debug.Log("Numbermanager after completed calling invoke.");
 			SpinningCircleHelper.SetSpinningCircleForNumberModel(model, false);
             return;
 		}

@@ -66,21 +66,14 @@ public class ConnectionStatus : NetworkBehaviour
 	/// <param name="newValue"></param>
 	private void OnRestartPlayersCountChanged(int previousValue, int newValue)
 	{
-		Debug.Log($"NEW VALUE RECEIVED - {newValue}, {previousValue}");
 		if(newValue == 1)
 		{
 			_restartPlayersCountTMP.text = "Restart - 1/2";
 		}
 		if(newValue == 2)
 		{
-			Debug.Log($"new value is 2 - reasdadadsadasdada");
 			_restartPlayersCountTMP.text = "Restart - 2/2";
-			//StartCoroutine(StartGameAfterDelay());
-			//StartGameOnClientRpc();
 			StartCoroutine(StartGameAfterDelay());
-
-			// reset count for next endGameScreen.
-			//StartGameOnClientRpc();
 		}
 	}
 
@@ -107,9 +100,10 @@ public class ConnectionStatus : NetworkBehaviour
 	// Change the status
 	private void OnStatusChanged(FixedString128Bytes oldValue, FixedString128Bytes newValue)
 	{
-		Debug.Log("On sstatus changed");
 		if (connectionStatusText != null)
+		{
 			connectionStatusText.text = newValue.ToString();
+		}
 	}
 
 	public override void OnNetworkSpawn()
@@ -150,7 +144,6 @@ public class ConnectionStatus : NetworkBehaviour
 	[Rpc(SendTo.ClientsAndHost)]
 	private void StartGameOnClientRpc()
 	{
-		Debug.Log("Starting game in Client!");
 		// Resets the 'Restart 1/2 text used in EndGameScreen
 		_restartPlayersCountTMP.text = " ";
 
@@ -160,7 +153,6 @@ public class ConnectionStatus : NetworkBehaviour
 
 	private IEnumerator StartGameAfterDelay()
 	{
-		Debug.Log("BEFORE WAIT");
 		if(IsHost)
 		{
 			// Wait 1 sec only on Host. Client waits anyway for host to call the StartGameRpc.
@@ -168,7 +160,5 @@ public class ConnectionStatus : NetworkBehaviour
 			_restartPlayersCount.Value = 0;
 			StartGameOnClientRpc();
 		}
-		
-		Debug.Log("AFTER WAIT");
 	}
 }

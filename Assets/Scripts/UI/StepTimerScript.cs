@@ -22,7 +22,6 @@ public class StepTimerScript : MonoBehaviour
 		// Subscribig to playerTurn change in Multiplayer Network Variable to handle Timer.
 		// However in Host the PlayerManager_OnPlayerTurnSwitch() (the Timer reset and start) will be called twice. But who cares?
 		MP_PlayerDrawing.OnPlayerTurnChangedInMPNetworkVar += PlayerManager_OnPlayerTurnSwitch;
-		Debug.Log($"StepTImerScript - Subscribed to playerturnswtich in Timer");
 	}
 
 	/// <summary>
@@ -30,14 +29,12 @@ public class StepTimerScript : MonoBehaviour
 	/// </summary>
 	public void PlayerManager_OnPlayerTurnSwitch()
 	{
-		Debug.LogWarning($"StepTImerScript - Event triggered in StarTTimer - {nameof(PlayerManager_OnPlayerTurnSwitch)}");
 		ResetTimer();
 		StartTimer();
 	}
 
 	public void StartTimer()
     {
-		Debug.Log($"StepTImerScript - Calling StarTTimer");
         gameObject.SetActive(true);
 		_coroutine = StartCoroutine(StartTimerEnumerator());
     }
@@ -78,6 +75,5 @@ public class StepTimerScript : MonoBehaviour
 		// In MP - then subscribers (Host and Client) decide who calls MoveNext based on PlayerManager.playerTurn.
 		// In Local - nothing needed, it works.
 		StepTimerFinished?.Invoke();
-		Debug.Log("Countdown finished!");
 	}
 }

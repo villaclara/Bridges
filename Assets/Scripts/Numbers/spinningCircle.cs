@@ -31,9 +31,13 @@ public class spinningCircle : MonoBehaviour
 
 		// Fade logic
 		if (fadingOut)
+		{
 			alpha -= Time.deltaTime * fadeSpeed;
+		}
 		else
+		{
 			alpha += Time.deltaTime * fadeSpeed;
+		}
 
 		// Clamp between 0 and 1
 		alpha = Mathf.Clamp01(alpha);
@@ -45,8 +49,12 @@ public class spinningCircle : MonoBehaviour
 
 		// Switch direction at bounds
 		if (alpha <= 0f)
+		{
 			fadingOut = false;
+		}
 		else if (alpha >= 1f)
+		{
 			fadingOut = true;
+		}
 	}
 }

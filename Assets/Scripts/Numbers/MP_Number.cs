@@ -11,21 +11,6 @@ public class MP_Number : NetworkBehaviour
 {
     public TextMeshPro textValue;
 
-    //public void SetNumberValueText(string text)
-    //{
-    //    if(NetworkManager.Singleton.IsHost)
-    //    {
-    //        UpdateClientRpc(text);
-    //    }
-    //}
-
-    //[Rpc(SendTo.ClientsAndHost)]
-    //private void UpdateClientRpc(string text)
-    //{
-    //    textValue.text = text;
-    //}
-
-
     public void SetNumberValueInClient(int number)
     {
         if(NetworkManager.IsHost)

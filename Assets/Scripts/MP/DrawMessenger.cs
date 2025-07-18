@@ -104,9 +104,7 @@ public class DrawMessenger : NetworkBehaviour
 		{
 			return;
 		}
-		Debug.Log($"In host Reqeust to switch turns");
 		PlayerManager.SwitchTurns();
-		Debug.Log($"In host After switching turns - {PlayerManager.playerTurn}");
 	}
 
 	[Rpc(SendTo.Server)]

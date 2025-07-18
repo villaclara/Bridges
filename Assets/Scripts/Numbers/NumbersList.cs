@@ -53,7 +53,6 @@ public class NumbersList
             var childGameObject = childTransform.gameObject;
             childGameObject.SetActive(true);
         }
-
     }
 
 	public void Add(NumberModel number)

@@ -33,7 +33,6 @@ public class DefaultButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 	public void OnPointerUp(PointerEventData eventData)
 	{
 		transform.localScale = Vector3.one; // Reset scale
-		//imgComp.color = _originalColor;
 	}
 
 	public void SetPressed()

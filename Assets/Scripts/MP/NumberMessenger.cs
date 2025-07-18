@@ -53,7 +53,6 @@ public class NumberMessenger : NetworkBehaviour
     [Rpc(SendTo.NotServer)]
     private void SetupNumbersListRpc()
     {
-        Debug.Log($"SetupNumbersListRpc called - IsOwner - {IsOwner}, IsServer - {IsServer}, IsHost - {IsHost}");
         _numbersList.Setup();
     }
 
@@ -66,12 +65,10 @@ public class NumberMessenger : NetworkBehaviour
 	{
         if(isCurrent)
         {
-            Debug.Log($"Calling Disable spinnig circle for current - {_numbersList.Current.Value}, IsHost - {IsHost}");
             SpinningCircleHelper.SetSpinningCircleForNumberModel(_numbersList.Current, showCircle, destroyThisGO);
         }
         else
         {
-			Debug.Log($"Calling Disable spinnig circle for Next - {_numbersList.Current.Value}, IsHost - {IsHost}");
 			SpinningCircleHelper.SetSpinningCircleForNumberModel(_numbersList.Next, showCircle, destroyThisGO);
 		}
 	}

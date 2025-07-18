@@ -58,7 +58,6 @@ public class GameManager : MonoBehaviour
 	}
 	private void StartStage(int index)
 	{
-		Debug.Log($"Starting stage with index - {index}");
 		if (index >= _stages.Count)
 		{
 			endGameScreen.SetActive(true);
@@ -73,7 +72,6 @@ public class GameManager : MonoBehaviour
 				playerIdWon = "Player 2 won. GG";
 			}
 			endGameScreen.GetComponentsInChildren<TextMeshProUGUI>()[1].text = playerIdWon;
-			Debug.Log("Index outside of array. End of game.");
 			return;
 		}
 
@@ -91,14 +89,11 @@ public class GameManager : MonoBehaviour
 
 		// start next stage
 		_currentStageIndex++;
-		Debug.Log($"Current Stage index in ONSTAGECOMPLETED - {_currentStageIndex}");
 		StartStage(_currentStageIndex);
 	}
 
 	private void ResetAll()
 	{
-		Debug.Log($"IsHost - {NetworkManager.Singleton.IsHost}, IcLient - {NetworkManager.Singleton.IsClient}");
-		Debug.Log($"Reset All called");
 		foreach (var stage in _stages)
 		{
 			stage.ResetStage();

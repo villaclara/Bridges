@@ -78,7 +78,7 @@ public class SetupNetwork : MonoBehaviour
 		string joincode = Regex.Replace(clientJoinCode.text, @"[\u200B-\u200D\uFEFF]", "").Trim();
 		if (string.IsNullOrEmpty(joincode))
 		{
-			Debug.Log($"Client join empty - {joincode}");
+			return false;
 		}
 		connectionStatusText.text = "Joining...";
 		var result = await JoinClientAsync(joincode);
@@ -87,10 +87,9 @@ public class SetupNetwork : MonoBehaviour
 	// one more function because we need to await the results
 	private async Task<bool> JoinClientAsync(string joincode)
 	{
-		bool connectResult = false;
 		try
 		{
-			connectResult = await StartClientWithRelay(joincode, "wss");
+			var connectResult = await StartClientWithRelay(joincode, "wss");
 			return connectResult;
 		}
 		catch (Exception ex)
