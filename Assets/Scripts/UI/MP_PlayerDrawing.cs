@@ -71,12 +71,25 @@ public class MP_PlayerDrawing : NetworkBehaviour
 		_playerDrawingTMP.text = newValue.ToString();
 	}
 
+	public override void OnNetworkDespawn()
+	{
+		_playerDrawingChanged.OnValueChanged -= OnValueChanged;
+		_p1Bridges.OnValueChanged -= OnP1BridgesCountChanged;
+		_p2Bridges.OnValueChanged -= OnP2BridgesCountChanged;
+		_isP1Turn.OnValueChanged -= OnPlayerTurnChanged;
+		PlayerManager.OnPlayerTurnSwitch -= PlayerManager_OnPlayerTurnSwitch;
+		PlayerManager.OnPlayerBridgesChanged -= PlayerManager_OnPlayerBridgesChanged;
+		base.OnNetworkDespawn();
+	}
+
 	public override void OnDestroy()
 	{
 		_playerDrawingChanged.OnValueChanged -= OnValueChanged;
 		_p1Bridges.OnValueChanged -= OnP1BridgesCountChanged;
 		_p2Bridges.OnValueChanged -= OnP2BridgesCountChanged;
 		_isP1Turn.OnValueChanged -= OnPlayerTurnChanged;
+		PlayerManager.OnPlayerTurnSwitch -= PlayerManager_OnPlayerTurnSwitch;
+		PlayerManager.OnPlayerBridgesChanged -= PlayerManager_OnPlayerBridgesChanged;
 		base.OnDestroy();
 	}
 
