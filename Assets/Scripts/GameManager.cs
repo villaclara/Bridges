@@ -100,6 +100,7 @@ public class GameManager : MonoBehaviour
 		}
 		intersectionsCollider.DestroyAllBridges();
 		PlayerManager.ResetBridgesCountForPlayers();
+		PlayerManager.playerTurn = PlayerTurn.P1_Turn;	// reset turn to p1 so he is drawing
 		player1CanvasStyleController.Reset();
 		player2CanvasStyleController.Reset();
 		_currentStageIndex = 0;
