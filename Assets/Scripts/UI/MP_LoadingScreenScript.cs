@@ -67,12 +67,12 @@ public class MP_LoadingScreenScript : MonoBehaviour
         var isStarted = await _network.StartHostRelay();
         _spinner.SetActive(false);
 
-        if(isStarted)
+		if (isStarted)
         {
             _roomCodeImg.enabled = true;
             _roomCodeTMP.enabled = true;
 
-			_connectionStatus.text = "Connected 1/2.";
+			_connectionStatus.text = "Connected 1/2";
 		}
 		else
 		{

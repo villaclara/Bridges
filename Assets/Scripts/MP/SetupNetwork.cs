@@ -114,6 +114,9 @@ public class SetupNetwork : MonoBehaviour
 		return NetworkManager.Singleton.StartClient();
 	}
 
+	/// <summary>
+	/// Disconnects from the game and calls <see cref="NetworkManager.Shutdown(bool)"/> method.
+	/// </summary>
 	public void Shutdown()
 	{
 		if (GameManager.GameMode == GameMode.Local)

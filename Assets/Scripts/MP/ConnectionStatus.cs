@@ -25,13 +25,6 @@ public class ConnectionStatus : NetworkBehaviour
 	// NetworkVariable to sync the count of players wanting to restart game in MP EndGameScreen
 	private NetworkVariable<int> _restartPlayersCount = new();
 
-	private void Start()
-	{ 
-		statusMessage.OnValueChanged += OnStatusChanged;
-		_restartPlayersCount.OnValueChanged += OnRestartPlayersCountChanged;
-		gameManager.GetComponent<GameManager>().MP_RestartAsked += ConnectionStatus_MP_RestartClick;
-	}
-
 	/// <summary>
 	/// Handles the Restart Button click on both clients.
 	/// Sets the network variable <see cref="_restartPlayersCount"/> to the value of wanting players to restart.
@@ -90,17 +83,12 @@ public class ConnectionStatus : NetworkBehaviour
 		ConnectionStatus_MP_RestartClick();
 	}
 
-	public override void OnDestroy()
-	{
-		statusMessage.OnValueChanged -= OnStatusChanged;
-		_restartPlayersCount.OnValueChanged -= OnRestartPlayersCountChanged;
-
-		base.OnDestroy();
-	}
+	
 
 	// Change the status
 	private void OnStatusChanged(FixedString128Bytes oldValue, FixedString128Bytes newValue)
 	{
+		Debug.Log($"OnstatusChanged called., newvalue - {newValue}.");
 		if (connectionStatusText != null)
 		{
 			connectionStatusText.text = newValue.ToString();
@@ -109,6 +97,10 @@ public class ConnectionStatus : NetworkBehaviour
 
 	public override void OnNetworkSpawn()
 	{
+		statusMessage.OnValueChanged += OnStatusChanged;
+		_restartPlayersCount.OnValueChanged += OnRestartPlayersCountChanged;
+		gameManager.GetComponent<GameManager>().MP_RestartAsked += ConnectionStatus_MP_RestartClick;
+
 		//When client connects, update message on server
 		if (IsServer)
 		{
@@ -120,6 +112,9 @@ public class ConnectionStatus : NetworkBehaviour
 
 	public override void OnNetworkDespawn()
 	{
+		statusMessage.OnValueChanged -= OnStatusChanged;
+		_restartPlayersCount.OnValueChanged -= OnRestartPlayersCountChanged;
+		gameManager.GetComponent<GameManager>().MP_RestartAsked -= ConnectionStatus_MP_RestartClick;
 		if (IsServer)
 		{
 			NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
@@ -166,7 +161,7 @@ public class ConnectionStatus : NetworkBehaviour
 	[Rpc(SendTo.ClientsAndHost)]
 	private void StartGameOnClientRpc()
 	{
-		// Resets the 'Restart 1/2 text used in EndGameScreen
+		// Resets the 'Restart 1/2' text used in EndGameScreen and 'Connected 1/2' text.
 		_restartPlayersCountTMP.text = " ";
 
 		//gameManager.SetActive(true);
@@ -179,7 +174,11 @@ public class ConnectionStatus : NetworkBehaviour
 		{
 			// Wait 1 sec only on Host. Client waits anyway for host to call the StartGameRpc.
 			yield return new WaitForSecondsRealtime(1f);
+
+			// Reset the network variables for next sequential game.
 			_restartPlayersCount.Value = 0;
+			statusMessage.Value = " ";
+
 			StartGameOnClientRpc();
 		}
 	}
