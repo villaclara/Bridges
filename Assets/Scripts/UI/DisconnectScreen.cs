@@ -11,6 +11,11 @@ public class DisconnectScreen : MonoBehaviour
 
 	[SerializeField]
 	private GameObject _loadingScreen;
+	[SerializeField]
+	private GameObject _mpLoadingScreen;
+	[SerializeField]
+	private GameObject _endGameScreen;
+
 
 	private void Start()
 	{
@@ -21,6 +26,8 @@ public class DisconnectScreen : MonoBehaviour
 	{
 		NetworkManager.Singleton.Shutdown();
 		_loadingScreen.SetActive(true);
+		_mpLoadingScreen.SetActive(false);
+		_endGameScreen.SetActive(false);
 		this.gameObject.SetActive(false);
 	}
 }

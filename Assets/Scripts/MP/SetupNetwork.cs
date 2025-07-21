@@ -22,13 +22,13 @@ public class SetupNetwork : MonoBehaviour
 	[SerializeField] private GameObject _spinner;
 
 	private Allocation _hostRelayAllocation;
-	IEnumerator<string> AnimateLoadingText()
-	{
-		yield return ".";
-		yield return "...";
-		yield return "..";
-	}
 
+	
+	/// <summary>
+	/// Gets the boolean value when the user disconnects if it is the CURRENT user who disconnected.
+	/// Is used in <see cref="ConnectionStatus.OnClientDisconnectCallback(ulong)"/> to determine whether to show <see cref="DisconnectScreen"/>.
+	/// </summary>
+	public static bool IsSentShutdownFromMe { get; private set; } = false;
 
 	/// <summary>
 	/// Start Host with Relay.
@@ -116,6 +116,12 @@ public class SetupNetwork : MonoBehaviour
 
 	public void Shutdown()
 	{
+		if (GameManager.GameMode == GameMode.Local)
+		{
+			return;
+		}
+
+		IsSentShutdownFromMe = true;
 		NetworkManager.Singleton.Shutdown();
 	}
 }

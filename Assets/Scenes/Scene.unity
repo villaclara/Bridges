@@ -1982,7 +1982,7 @@ MonoBehaviour:
   connectionStatusText: {fileID: 1458922624}
   _restartPlayersCountTMP: {fileID: 646566486}
   gameManager: {fileID: 394712254}
-  disconnectScreen: {fileID: 1054185861}
+  disconnectScreen: {fileID: 1054185866}
 --- !u!114 &548413573
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3192,6 +3192,18 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
+      - m_Target: {fileID: 394712255}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
+        m_MethodName: ResetAll
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
       - m_Target: {fileID: 394712254}
         m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
         m_MethodName: SetActive
@@ -3216,10 +3228,10 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
-      - m_Target: {fileID: 394712255}
-        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: ResetAll
-        m_Mode: 1
+      - m_Target: {fileID: 1756744962}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -3228,10 +3240,10 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1756744962}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
+      - m_Target: {fileID: 548413571}
+        m_TargetAssemblyTypeName: SetupNetwork, Assembly-CSharp
+        m_MethodName: Shutdown
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -3788,6 +3800,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _returnButton: {fileID: 1672884393}
   _loadingScreen: {fileID: 1666652923}
+  _mpLoadingScreen: {fileID: 1981080027}
+  _endGameScreen: {fileID: 1756744962}
 --- !u!1 &1081907907
 GameObject:
   m_ObjectHideFlags: 0

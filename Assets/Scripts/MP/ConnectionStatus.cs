@@ -16,7 +16,7 @@ public class ConnectionStatus : NetworkBehaviour
 	[SerializeField] private TextMeshProUGUI _restartPlayersCountTMP;
 
 	public GameObject gameManager;
-	public GameObject disconnectScreen;
+	public DisconnectScreen disconnectScreen;
 
 	// NetworkVariable to sync the status message across clients
 	private NetworkVariable<FixedString128Bytes> statusMessage = new NetworkVariable<FixedString128Bytes>(
@@ -94,6 +94,7 @@ public class ConnectionStatus : NetworkBehaviour
 	{
 		statusMessage.OnValueChanged -= OnStatusChanged;
 		_restartPlayersCount.OnValueChanged -= OnRestartPlayersCountChanged;
+
 		base.OnDestroy();
 	}
 
@@ -117,12 +118,33 @@ public class ConnectionStatus : NetworkBehaviour
 		NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnectCallback;
 	}
 
-	private void OnClientDisconnectCallback(ulong obj)
+	public override void OnNetworkDespawn()
 	{
-		disconnectScreen.gameObject.SetActive(true);
-		NetworkManager.Singleton.Shutdown();
+		if (IsServer)
+		{
+			NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
+		}
+		NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnectCallback;
+
+		base.OnNetworkDespawn();
 	}
 
+	private void OnClientDisconnectCallback(ulong clientId)
+	{
+		// HOST: Client has disconnected, so display only for host.
+		if (NetworkManager.Singleton.IsHost && !SetupNetwork.IsSentShutdownFromMe)
+		{
+			disconnectScreen.gameObject.SetActive(true);
+		}
+
+		// CLIENT: host has disconnected, so display only for Client.
+		if (!NetworkManager.Singleton.IsHost && !SetupNetwork.IsSentShutdownFromMe)
+		{
+			disconnectScreen.gameObject.SetActive(true);
+		}
+	}
+
+	
 	private void OnClientConnected(ulong clientId)
 	{
 		// Only Host/Server handles starting the game
