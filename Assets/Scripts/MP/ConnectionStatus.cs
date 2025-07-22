@@ -25,6 +25,37 @@ public class ConnectionStatus : NetworkBehaviour
 	// NetworkVariable to sync the count of players wanting to restart game in MP EndGameScreen
 	private NetworkVariable<int> _restartPlayersCount = new();
 
+	/// <inheritdoc/>
+	public override void OnNetworkSpawn()
+	{
+		statusMessage.OnValueChanged += OnConnectionsTextStatusChanged;
+		_restartPlayersCount.OnValueChanged += OnRestartPlayersCountChanged;
+		gameManager.GetComponent<GameManager>().MP_RestartAsked += ConnectionStatus_MP_RestartClick;
+
+		//When client connects, update message on server
+		if (IsServer)
+		{
+			NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
+		}
+
+		NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnectCallback;
+	}
+
+	/// <inheritdoc/>
+	public override void OnNetworkDespawn()
+	{
+		statusMessage.OnValueChanged -= OnConnectionsTextStatusChanged;
+		_restartPlayersCount.OnValueChanged -= OnRestartPlayersCountChanged;
+		gameManager.GetComponent<GameManager>().MP_RestartAsked -= ConnectionStatus_MP_RestartClick;
+		if (IsServer)
+		{
+			NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
+		}
+		NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnectCallback;
+
+		base.OnNetworkDespawn();
+	}
+
 	/// <summary>
 	/// Handles the Restart Button click on both clients.
 	/// Sets the network variable <see cref="_restartPlayersCount"/> to the value of wanting players to restart.
@@ -83,49 +114,24 @@ public class ConnectionStatus : NetworkBehaviour
 		ConnectionStatus_MP_RestartClick();
 	}
 
-	
-
-	// Change the status
-	private void OnStatusChanged(FixedString128Bytes oldValue, FixedString128Bytes newValue)
+	/// <summary>
+	/// Updates the <see cref="connectionStatusText"/> TMP ('Connected 1/2') in Multiplayer for both players.
+	/// </summary>
+	private void OnConnectionsTextStatusChanged(FixedString128Bytes oldValue, FixedString128Bytes newValue)
 	{
-		Debug.Log($"OnstatusChanged called., newvalue - {newValue}.");
 		if (connectionStatusText != null)
 		{
 			connectionStatusText.text = newValue.ToString();
 		}
 	}
 
-	public override void OnNetworkSpawn()
-	{
-		statusMessage.OnValueChanged += OnStatusChanged;
-		_restartPlayersCount.OnValueChanged += OnRestartPlayersCountChanged;
-		gameManager.GetComponent<GameManager>().MP_RestartAsked += ConnectionStatus_MP_RestartClick;
-
-		//When client connects, update message on server
-		if (IsServer)
-		{
-			NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
-		}
-
-		NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnectCallback;
-	}
-
-	public override void OnNetworkDespawn()
-	{
-		statusMessage.OnValueChanged -= OnStatusChanged;
-		_restartPlayersCount.OnValueChanged -= OnRestartPlayersCountChanged;
-		gameManager.GetComponent<GameManager>().MP_RestartAsked -= ConnectionStatus_MP_RestartClick;
-		if (IsServer)
-		{
-			NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
-		}
-		NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnectCallback;
-
-		base.OnNetworkDespawn();
-	}
-
+	/// <summary>
+	/// When both Client / Host receives <see cref="NetworkManager.OnClientDisconnectCallback"/> event for other player disconnected.
+	/// </summary>
+	/// <param name="clientId">Id of client who disconnected. If the Host disconnects then he will receive the id of Client (not host), because the Client actually is disconnected from lobby. </param>
 	private void OnClientDisconnectCallback(ulong clientId)
 	{
+		Debug.Log($"{nameof(OnClientDisconnectCallback)} received disconnect callback with id {clientId}");
 		// HOST: Client has disconnected, so display only for host.
 		if (NetworkManager.Singleton.IsHost && !SetupNetwork.IsSentShutdownFromMe)
 		{
@@ -138,8 +144,11 @@ public class ConnectionStatus : NetworkBehaviour
 			disconnectScreen.gameObject.SetActive(true);
 		}
 	}
-
 	
+	/// <summary>
+	/// When the client has connected to a lobby. Only Host handles the connection flow.
+	/// </summary>
+	/// <param name="clientId">If of client who connected.</param>
 	private void OnClientConnected(ulong clientId)
 	{
 		// Only Host/Server handles starting the game
@@ -158,6 +167,9 @@ public class ConnectionStatus : NetworkBehaviour
 		}
 	}
 
+	/// <summary>
+	/// <see cref="RpcAttribute"/> method to start game via <see cref="GameManager.StartGame(bool)"/> on BOTH players.
+	/// </summary>
 	[Rpc(SendTo.ClientsAndHost)]
 	private void StartGameOnClientRpc()
 	{
@@ -168,6 +180,9 @@ public class ConnectionStatus : NetworkBehaviour
 		gameManager.GetComponent<GameManager>().StartGame(isOnline: true);
 	}
 
+	/// <summary>
+	/// Enumerator to wait 1 second. Also to reset network variables to defaults.
+	/// </summary>
 	private IEnumerator StartGameAfterDelay()
 	{
 		if(IsHost)
