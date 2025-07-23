@@ -42,7 +42,9 @@ public class DrawMessenger : NetworkBehaviour
 		// If we sent from Host then we only want to invoke on Client.
 		if (sentFromHost && !IsHost)
 		{
-			if (!_numbers.MoveNext())
+			var movenext = _numbers.MoveNext();
+			Debug.Log($"Movenext - {movenext}");
+			if (!movenext)
 			{
 				NumbersMoveNextReturnedFalse?.Invoke();
 			}
@@ -50,7 +52,9 @@ public class DrawMessenger : NetworkBehaviour
 		// else if we sent from Client then only invoke on Host.
 		else if (!sentFromHost && IsHost)
 		{
-			if (!_numbers.MoveNext())
+			var movenext = _numbers.MoveNext();
+			Debug.Log($"Movenext - {movenext}");
+			if (!movenext)
 			{
 				NumbersMoveNextReturnedFalse?.Invoke();
 			}

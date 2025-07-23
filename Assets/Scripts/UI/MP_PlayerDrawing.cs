@@ -104,7 +104,6 @@ public class MP_PlayerDrawing : NetworkBehaviour
 	/// </summary>
 	private void OnPlayerTurnNetworkVariableChanged(bool previousValue, bool newValue)
 	{
-		Debug.Log($"Calling {nameof(OnPlayerTurnNetworkVariableChanged)}, with new valuue - {newValue}");
 		PlayerManager.playerTurn = newValue ? PlayerTurn.P1_Turn : PlayerTurn.P2_Turn;
 		// Changing the values in Clients to reflect actual value of player turn.
 		PlayerManager.player1.IsMyTurn = PlayerManager.playerTurn == PlayerTurn.P1_Turn;

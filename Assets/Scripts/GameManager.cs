@@ -10,12 +10,13 @@ public class GameManager : MonoBehaviour
 	[Header("Game Mode")]
 	[SerializeField] private bool _isOnline;
 
+	// List of all stages of the game flow (setup numbers, draw lines, end).
+	[SerializeField] private List<IGameStage> _stages = new();
+	private int _currentStageIndex = 0;
 	public static GameMode GameMode { get; private set; } = GameMode.Local;
 
-	// List of all stages of the game flow (setup numbers, draw lines, end).
-	[SerializeField]
-	private List<IGameStage> _stages = new();
-
+	public event Action MP_RestartAsked;
+	
 	[Header("Manager References")]
 	public NumbersManager numbersManager;
 	public DrawManager drawManager;
@@ -26,10 +27,6 @@ public class GameManager : MonoBehaviour
 	public GameObject localLoadingScreen;
 	public GameObject mpLoadingScreen;
 	public GameObject stepTimerScript;
-
-	private int _currentStageIndex = 0;
-
-	public event Action MP_RestartAsked;
 
 	// Start is called before the first frame update
 	void Start()
@@ -56,6 +53,11 @@ public class GameManager : MonoBehaviour
 		GameMode = isOnline ? GameMode.Multiplayer : GameMode.Local;
 		StartStage(_currentStageIndex);
 	}
+
+	/// <summary>
+	/// Starts the <see cref="IGameStage"/> with given index in internal array of stages.
+	/// </summary>
+	/// <param name="index">Index of stage to start.</param>
 	private void StartStage(int index)
 	{
 		if (index >= _stages.Count)
@@ -82,6 +84,9 @@ public class GameManager : MonoBehaviour
 		currentStage.ExecuteStage();
 	}
 
+	/// <summary>
+	/// Handles the logic to start next stage when previous stage was completed.
+	/// </summary>
 	private void OnStageCompleted()
 	{
 		// remove subscription
@@ -92,11 +97,15 @@ public class GameManager : MonoBehaviour
 		StartStage(_currentStageIndex);
 	}
 
+	/// <summary>
+	/// Resets all game states to defaults for a new game.
+	/// </summary>
 	private void ResetAll()
 	{
 		foreach (var stage in _stages)
 		{
 			stage.ResetStage();
+			stage.OnStageExecutionCompleted -= OnStageCompleted;
 		}
 		intersectionsCollider.DestroyAllBridges();
 		PlayerManager.ResetBridgesCountForPlayers();
@@ -105,7 +114,6 @@ public class GameManager : MonoBehaviour
 		player2CanvasStyleController.Reset();
 		_currentStageIndex = 0;
 		stepTimerScript.GetComponent<StepTimerScript>().ResetTimer();
-		//StartStage(_currentStageIndex);
 	}
 
 	/// <summary>
@@ -124,13 +132,12 @@ public class GameManager : MonoBehaviour
 			StartGame();
 		}
 	}
-	
-
-
 }
 
 
-
+/// <summary>
+/// Represents the possible game modes.
+/// </summary>
 public enum GameMode
 {
 	Local = 0,
