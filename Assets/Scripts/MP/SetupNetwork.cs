@@ -36,6 +36,7 @@ public class SetupNetwork : MonoBehaviour
 	/// </summary>
 	public async Task<bool> StartHostRelay()
 	{
+		IsSentShutdownFromMe = false;
 		var createdCode = await StartHostWithRelayAsync(2, "wss");
 		return createdCode != null;
 	}
@@ -75,6 +76,7 @@ public class SetupNetwork : MonoBehaviour
 	/// <param name="joinCode">Join Code for session.</param>
 	public async Task<bool> StartClientRelay()
 	{
+		IsSentShutdownFromMe = false;
 		string joincode = Regex.Replace(clientJoinCode.text, @"[\u200B-\u200D\uFEFF]", "").Trim();
 		if (string.IsNullOrEmpty(joincode))
 		{
