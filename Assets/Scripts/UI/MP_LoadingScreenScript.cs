@@ -22,12 +22,14 @@ public class MP_LoadingScreenScript : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _roomCodeTMP;
     [SerializeField] private Image _roomCodeImg;
     [SerializeField] private TextMeshProUGUI _connectionStatus;
+	[SerializeField] private TMP_InputField _joincode_textTMP;
 
 	private void OnEnable()
 	{
 		_roomCodeImg.enabled = false;
 		_roomCodeTMP.enabled = false;
 		_connectionStatus.text = " ";
+		_joincode_textTMP.text = "";
 		_spinner.SetActive(false);
 
         _hostGameButton.GetComponent<Image>().color = GlobalVars.DEFAULT_GREEN_BUTTON_COLOR;
