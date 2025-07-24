@@ -1,7 +1,9 @@
 using System;
+using TMPro;
+using Unity.Netcode;
 using UnityEngine;
 
-public class NumberScript : MonoBehaviour
+public class NumberScript : NetworkBehaviour
 {
 	public static readonly Vector3 DefaultPosition = new(0f, 0f, -2f);   // if 0z - the black border is not visible
 
@@ -38,15 +40,30 @@ public class NumberScript : MonoBehaviour
 	// Start is called before the first frame update
 	private void Start()
 	{
-		_cam = Camera.main;
-		_circleRenderer = GetComponentInChildren<SpriteRenderer>();
-		_circleRenderer.color = Color.yellow;
-		OnIsAllowedToStopDragChanged += SetColorIfAllowedToDrop;
+		// If we are the client, not Host, we only watch the numbers to be drawn.
+		if (GameManager.GameMode == GameMode.Multiplayer && !IsOwner && !IsHost)
+		{
+			_circleRenderer = GetComponentInChildren<SpriteRenderer>();
+			_circleRenderer.color = Color.white;
+			SpinningCircleHelper.SetSpinningCircleForGO(gameObject, false, false);
+			_isEnabled = false;
+		}
+
+		// if we ARE host OR the game is Local
+		// We position numbers manually and subscribe to event to change color of number.
+		else
+		{
+			_cam = Camera.main;
+			_circleRenderer = GetComponentInChildren<SpriteRenderer>();
+			_circleRenderer.color = Color.yellow;
+			OnIsAllowedToStopDragChanged += SetColorIfAllowedToDrop;
+		}
 	}
 
 	// Update is called once per frame
 	private void Update()
 	{
+		// If we are client we listening to host moving the number and the Update is not even called in Client.
 		if (!_isDragging)
 		{
 			return;
@@ -74,26 +91,28 @@ public class NumberScript : MonoBehaviour
 
 			_isDragging = false;
 			_circleRenderer.color = Color.white;
-			// TODO - Disabling Update in Number after drag and release
-			// Check whats better here. No need to set enabled two different times.
-			// Maybe after adding lines it will be clear what to use.
 			this.enabled = false; // disable script after drag ends
 			_isEnabled = false;     // disable OnMouseDown registering event
 
+
+			// disabling Update() calls on both client and host.
+			if(GameManager.GameMode == GameMode.Multiplayer && IsOwner && IsHost)
+			{
+				DisableNumberUpdateRpc();
+			}
+
 			var childObj = transform.GetChild(0); // get Circle object
 			var childCircle = childObj.GetComponent<CircleCollider2D>(); // index 1 because the parent itself has collider and it also counts
-			Debug.Log($"parent scale - {transform.localScale}, name - {name}");
-			Debug.Log($"child scale - {childObj.transform.localScale}, name - {childObj.name}");
-			Debug.Log($"child radisu - {childCircle.radius * childObj.transform.lossyScale.x}");
 			// Notify Manager when drag ends
 			OnDragEnded?.Invoke(
 				new NumberModel(value,
 								new Vector2(transform.position.x, transform.position.y),
-								childCircle.radius * childObj.transform.lossyScale.x, 
+								childCircle.radius * childObj.transform.lossyScale.x,
 								gameObject)); // here to get real radius in World space
 		}
 	}
 
+	
 	private void OnMouseDown()
 	{
 		// do not perform any movement when the Number is already placed on grid.
@@ -151,4 +170,14 @@ public class NumberScript : MonoBehaviour
 			: new Color32(255, 0, 0, 255);
 	}
 
+
+	/// <summary>
+	/// Disables the Update() calls on clients and host as well after the number.
+	/// Is called after the host stops moving a number.
+	/// </summary>
+	[Rpc(SendTo.ClientsAndHost)]
+	private void DisableNumberUpdateRpc()
+	{
+		this.enabled = false;
+	}
 }

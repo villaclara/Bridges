@@ -1,15 +1,20 @@
 using System;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class DrawManager : MonoBehaviour, IGameStage
 {
+
+	#region fields
 	private Camera _cam;
 	[SerializeField] private Line _linePrefab;
 	[SerializeField] public GameObject Bridge;
 	[SerializeField] private GameObject _intersectionCollider;
 	[SerializeField] private NumbersList _numbers;
 	[SerializeField] private PlayerManager _playerManager;
+	[SerializeField] private MP_StageSetup _stageSetup;
 
 	[SerializeField]
 	private bool _isDrawing = false;
@@ -32,6 +37,12 @@ public class DrawManager : MonoBehaviour, IGameStage
 	/// </summary>
 	public event Action OnStageExecutionCompleted;
 
+
+	public NumberMessenger numberMessenger;
+	public DrawMessenger drawMessenger;
+
+	#endregion fields
+
 	void Start()
 	{
 		//_cam = Camera.main;
@@ -43,11 +54,64 @@ public class DrawManager : MonoBehaviour, IGameStage
 		//var rnd = new Unity.Mathematics.Random(seed).NextBool();
 		//PlayerManager.SetupFirstTurn(rnd);
 		//Debug.Log($"First turn - {PlayerManager.playerTurn}");
+
+		drawMessenger.NumbersMoveNextReturnedFalse += DrawMessenger_NumbersMoveNextReturnFalse;
+		drawMessenger.SetNumbersListReference(_numbers);
+
+		StepTimerScript.StepTimerFinished += StepTimerScript_StepTimerFinished;
+
+		Debug.Log($"Numbers Current - {_numbers.Current.Value}, Next - {_numbers.Next.Value}");
+		Debug.Log($"Start end called in Drawmanager, numbers - {_numbers ?? null}");
+
+	}
+
+	/// <summary>
+	/// Execute NumbersMoveNext and Switch Turns when the player did not reach next number in time.
+	/// </summary>
+	private void StepTimerScript_StepTimerFinished()
+	{
+		// TOOD - Here is invoked only on Host. Need to invoke in client too.
+		_isDrawing = false;
+		_isDrawingToNextCompleted = true;
+
+		if(GameManager.GameMode == GameMode.Local)
+		{
+			NumbersMoveNext_and_PlayerSwitchTurns();
+			return;
+		}
+
+		// Deciding who should call method
+		if (PlayerManager.playerTurn == PlayerTurn.P1_Turn && NetworkManager.Singleton.IsHost)
+		{
+			// Is P1 and Host
+			NumbersMoveNext_and_PlayerSwitchTurns();
+		}
+		else if (PlayerManager.playerTurn == PlayerTurn.P2_Turn && !NetworkManager.Singleton.IsHost)
+		{
+			// Is P2 and Client
+			NumbersMoveNext_and_PlayerSwitchTurns();
+		}
+	}
+
+	private void DrawMessenger_NumbersMoveNextReturnFalse()
+	{
+		this.enabled = false;
+		_stageSetup.SetEndGameRpc();
 	}
 
 	// Update is called once per frame
 	void Update()
 	{
+		if(GameManager.GameMode == GameMode.Multiplayer && PlayerManager.playerTurn == PlayerTurn.P2_Turn && NetworkManager.Singleton.IsHost)
+		{
+			return;
+		}
+
+		if (GameManager.GameMode == GameMode.Multiplayer && PlayerManager.playerTurn == PlayerTurn.P1_Turn && !NetworkManager.Singleton.IsHost)
+		{
+			return;
+		}
+
 		// Check if mouse is not over the screen.
 		// xz chu norm tyt.
 		Vector3 mousePos1 = Input.mousePosition;
@@ -70,25 +134,48 @@ public class DrawManager : MonoBehaviour, IGameStage
 				// check positions
 				if (IfPointInsideCurrentNumber(mousePos))
 				{
-					SpinningCircleHelper.DisableSpinningCircle(_numbers.Current, false);
-                    SpinningCircleHelper.DisableSpinningCircle(_numbers.Next, true);
-					//TODO
-					//remove spinning circle after this for better resource management
+					// Instantiating line in MP
+					if(GameManager.GameMode == GameMode.Multiplayer)
+					{
+						numberMessenger.DisableSpinCircleRpc(isCurrent: true, showCircle: false, destroyThisGO: true);
+						numberMessenger.DisableSpinCircleRpc(isCurrent: false, showCircle: true);
+						
+						_currentLine = Instantiate(_linePrefab, new Vector3(mousePos.x, mousePos.y, -4), Quaternion.identity);
+						if(NetworkManager.Singleton.IsHost)
+						{
+							// Host spawns Network Object line to be dispayed in Client.
+							_currentLine.GetComponent<NetworkObject>().Spawn();
+							_currentLine.GetComponent<MP_Line>().RequestLineColorChangeOnClientRpc();
+						}
+						else
+						{
+							// Client asks the Host to instantiate and spawn Line only on Server (on Client we already have one).
+							drawMessenger.RequestInstantiateLineOnServerRpc(new Vector3(mousePos.x, mousePos.y, -4));
+						}
+					}
 
-                    _currentLine = Instantiate(_linePrefab, new Vector3(mousePos.x, mousePos.y, -4), Quaternion.identity);
-					_linesToDelete.Add(_currentLine.gameObject);
+					// Local gameplay, nothing changes
+					else
+					{
+						SpinningCircleHelper.SetSpinningCircleForNumberModel(_numbers.Current, false, destroyThisGO: true);
+						SpinningCircleHelper.SetSpinningCircleForNumberModel(_numbers.Next, true);
+						_currentLine = Instantiate(_linePrefab, new Vector3(mousePos.x, mousePos.y, -4), Quaternion.identity);
+					}
+
+					GlobalVars.linesToDelete.Add(_currentLine.gameObject);
 					if (PlayerManager.playerTurn == PlayerTurn.P1_Turn)
 					{
 						_currentLine.SetLineColor(PlayerManager.player1.ColorHEX);
-						Debug.Log($"Current turn P1 - set color to - {PlayerManager.player1.ColorHEX}");
 					}
 					else
 					{
 						_currentLine.SetLineColor(PlayerManager.player2.ColorHEX);
-						Debug.Log($"Current turn P2 - set color to - {PlayerManager.player2.ColorHEX}");
 					}
-					Debug.Log($"current turn - {PlayerManager.playerTurn}");
+
+					// disabling-enabling collider to reset its position to not call the OnCollision() Methods
+					_intersectionCollider.GetComponent<CircleCollider2D>().enabled = false;
 					_intersectionCollider.transform.position = mousePos;
+					_intersectionCollider.GetComponent<CircleCollider2D>().enabled = true;
 
 					_isDrawing = true;
 					_isDrawingToNextCompleted = false;
@@ -117,21 +204,23 @@ public class DrawManager : MonoBehaviour, IGameStage
 			_currentLine.SetPosition(mousePos);
 			_intersectionCollider.transform.position = mousePos;
 
+			if(GameManager.GameMode == GameMode.Multiplayer && NetworkManager.Singleton.IsHost)
+			{
+				// Spawn net point of Line on Network Object to display on Client side.
+				_currentLine.GetComponent<MP_Line>().SetNewValueToPoint(mousePos);
+			}
+			else if (GameManager.GameMode == GameMode.Multiplayer && !NetworkManager.Singleton.IsHost)
+			{
+				// Spawn new point of Line ONLY localy on Host.
+				drawMessenger.RequestAddVertextToLineOnServerRpc(mousePos);
+			}
+
 			if (IfPointPreciselyInsideNextNumber(mousePos))
 			{
 				_isDrawingToNextCompleted = true;
 				_isDrawing = false;
-				PlayerManager.SwitchTurns();
-				Debug.Log("HOLD - Player manager switch turne");
 
-				// get new values for numbers.Current and .Next
-				var isMoveNextReady = _numbers.MoveNext();
-				if (!isMoveNextReady)
-				{
-					Debug.Log("Execution ended");
-					this.enabled = false;
-					OnStageExecutionCompleted?.Invoke();
-				}
+				NumbersMoveNext_and_PlayerSwitchTurns();
 			}
 		}
 
@@ -142,17 +231,9 @@ public class DrawManager : MonoBehaviour, IGameStage
 			if (IfPointInsideNextNumber(mousePos))
 			{
 				_isDrawingToNextCompleted = true;
-				PlayerManager.SwitchTurns();
-				Debug.Log("RELEASE  - Player manager switch turne");
+				_isDrawing = false;
 
-				// get new values for numbers.Current and .Next
-				var isMoveNextReady = _numbers.MoveNext();
-				if (!isMoveNextReady)
-				{
-					Debug.Log("Execution ended");
-					this.enabled = false;
-					OnStageExecutionCompleted?.Invoke();
-				}
+				NumbersMoveNext_and_PlayerSwitchTurns();
 			}
 
 			// Line released somewhere, we save its position to start drawing again from it
@@ -168,6 +249,56 @@ public class DrawManager : MonoBehaviour, IGameStage
 		}
 	}
 
+	/// <summary>
+	/// Executes <see cref="NumbersList.MoveNext"/> to get Current and Next numbers to draw.
+	/// Switches player turns <see cref="PlayerManager.SwitchTurns"/>. 
+	/// Triggers <see cref="OnStageExecutionCompleted"/> in case <see cref="NumbersList.MoveNext"/> returns false.
+	/// </summary>
+	private void NumbersMoveNext_and_PlayerSwitchTurns()
+	{
+		if (GameManager.GameMode == GameMode.Multiplayer)
+		{
+			// passing the Host parameter to decide and make call MoveNext on ANOTHER client. 
+			// Because below we invoke it locally to have the boolean var of end game condition
+			drawMessenger.NumbersMoveNext(NetworkManager.Singleton.IsHost);
+		}
+
+		// get new values for numbers.Current and .Next
+		var isMoveNextReady = _numbers.MoveNext();
+		if (!isMoveNextReady)
+		{
+			this.enabled = false;
+			//OnStageExecutionCompleted?.Invoke();
+
+			if (GameManager.GameMode == GameMode.Multiplayer)
+			{
+				_stageSetup.SetEndGameRpc();
+			}
+			else
+			{
+				InvokeStageEnd();
+			}
+			return;
+		}
+
+		if (GameManager.GameMode == GameMode.Local)
+		{
+			PlayerManager.SwitchTurns();
+		}
+		else
+		{
+			if (NetworkManager.Singleton.IsHost)
+			{
+				PlayerManager.SwitchTurns();
+			}
+			else
+			{
+				drawMessenger.RequestServerPlayerTurnSwitchRpc();
+			}
+		}
+	}
+
+	#region StageExecution
 	public void ExecuteStage()
 	{
 		//_canDraw = true;
@@ -182,8 +313,25 @@ public class DrawManager : MonoBehaviour, IGameStage
 		if (seed == 0) seed = 1;
 		var rnd = new Unity.Mathematics.Random(seed).NextBool();
 		PlayerManager.SetupFirstTurn(rnd);
-		Debug.Log($"First turn - {PlayerManager.playerTurn}");
 	}
+
+	public void ResetStage()
+	{
+		foreach (var line in GlobalVars.linesToDelete)
+		{
+			Destroy(line);
+		}
+	}
+
+	public void InvokeStageEnd()
+	{
+		OnStageExecutionCompleted?.Invoke();
+	}
+
+
+	#endregion StageExecution
+
+	#region CheckPoints secion
 
 	private bool IfPointInsideCurrentNumber(Vector2 point) =>
 		(point.x >= _numbers.Current.Position.x - _numbers.Current.Radius) && (point.x <= _numbers.Current.Position.x + _numbers.Current.Radius)
@@ -201,11 +349,7 @@ public class DrawManager : MonoBehaviour, IGameStage
 		(point.x >= _previousColliderPos.x - IntersectionCollider.Radius * 2) && (point.x <= _previousColliderPos.x + IntersectionCollider.Radius * 2)
 					&& (point.y >= _previousColliderPos.y - IntersectionCollider.Radius * 2) && (point.y <= _previousColliderPos.y + IntersectionCollider.Radius * 2);
 
-	public void ResetStage()
-	{
-		foreach (var line in _linesToDelete)
-		{
-			Destroy(line);
-		}
-	}
+	#endregion CheckPoints section
+
+
 }

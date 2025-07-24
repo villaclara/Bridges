@@ -14,7 +14,6 @@ public class Line : MonoBehaviour
 		_collider.transform.position -= transform.position; //to make collider points the same as line points
 	}
 
-
 	public void SetLineColor(string colorHEX)
 	{
 		if (ColorUtility.TryParseHtmlString(colorHEX, out Color newcolor))
@@ -22,7 +21,6 @@ public class Line : MonoBehaviour
 			_renderer.material = new Material(Shader.Find("Sprites/Default"));
 			_renderer.startColor = newcolor;
 			_renderer.endColor = newcolor;
-			Debug.Log($"set color - {newcolor}");
 		}
 	}
 
@@ -47,12 +45,4 @@ public class Line : MonoBehaviour
 
 		return Vector2.Distance(_renderer.GetPosition(_renderer.positionCount - 1), pos) > GlobalVars.LINE_CREATE_MINIMAL_RESOLUTION;
 	}
-
-	//private void OnTriggerEnter2D(Collider2D collision)
-	//{
-	//    Instantiate(_bridge, collision.transform.position, Quaternion.identity);
-	//    Debug.Log(GlobalVars.score + 1);
-	//    GlobalVars.score += 1;
-	//}
-
 }

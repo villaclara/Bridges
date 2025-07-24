@@ -23,8 +23,11 @@ public class NumbersList
 
 	public bool MoveNext()
 	{
-		SpinningCircleHelper.DisableSpinningCircle(Next, false);
-        _currentIndex++;
+		SpinningCircleHelper.SetSpinningCircleForNumberModel(Next, false);
+
+		// this is called to remove circle when timer ends.
+		SpinningCircleHelper.SetSpinningCircleForNumberModel(Current, false, destroyThisGO: true);	
+		_currentIndex++;
 		if (_currentIndex >= _numbers.Count - 1)
 		{
 			return false;
@@ -32,7 +35,7 @@ public class NumbersList
 
 		this.Current = _numbers[_currentIndex];
         this.Next = _numbers[_currentIndex + 1];
-        SpinningCircleHelper.DisableSpinningCircle(Current, true);
+        SpinningCircleHelper.SetSpinningCircleForNumberModel(Current, true);
         return true;
 	}
 
@@ -50,7 +53,6 @@ public class NumbersList
             var childGameObject = childTransform.gameObject;
             childGameObject.SetActive(true);
         }
-
     }
 
 	public void Add(NumberModel number)

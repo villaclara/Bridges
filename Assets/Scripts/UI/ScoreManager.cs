@@ -14,6 +14,9 @@ public class ScoreManager : MonoBehaviour
 	[SerializeField]
 	private TextMeshProUGUI _p2ScoreText;
 
+	private int _prevP1Score = 0;
+	private int _prevP2Score = 0;
+
 	private void Awake()
 	{
 		// singleton
@@ -26,6 +29,7 @@ public class ScoreManager : MonoBehaviour
 			Destroy(gameObject);
 		}
 
+		// TOOD - Check if we need this in multiplayer. As in MP we already subscribe in MP_PlayerDrawing
 		PlayerManager.OnPlayerBridgesChanged += RedrawText;
 	}
 
@@ -33,5 +37,17 @@ public class ScoreManager : MonoBehaviour
 	{
 		_p1ScoreText.text = $"P1 - {PlayerManager.player1.BridgesCount}";
 		_p2ScoreText.text = $"P2 - {PlayerManager.player2.BridgesCount}";
+
+		if(PlayerManager.player1.BridgesCount != _prevP1Score)
+		{
+			_p1ScoreText.gameObject.transform.parent.GetComponent<Animation>().Play("PlayerBridgesAnimation");
+			_prevP1Score = PlayerManager.player1.BridgesCount;
+		}
+
+		if (PlayerManager.player2.BridgesCount != _prevP2Score)
+		{
+			_p2ScoreText.gameObject.transform.parent.GetComponent<Animation>().Play("PlayerBridgesAnimation");
+			_prevP2Score = PlayerManager.player2.BridgesCount;
+		}
 	}
 }

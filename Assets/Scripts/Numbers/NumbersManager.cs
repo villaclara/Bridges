@@ -1,6 +1,7 @@
 	using System;
 using System.Collections.Generic;
 using TMPro;
+using Unity.Netcode;
 using UnityEngine;
 
 public class NumbersManager : MonoBehaviour, IGameStage
@@ -21,13 +22,30 @@ public class NumbersManager : MonoBehaviour, IGameStage
 	private readonly List<GameObject> _numbersToDelete = new();
 	private NumberScript prevCircle = null;
 
+	[SerializeField] private MP_StageSetup _stageSetup;
+
+	public NumberMessenger numberMessenger;
+
+	private void Awake()
+	{
+		numberMessenger.SetNumbersListReference(_numbersList);
+	}
+
 	private void CreateNumber(NumberModel model = null)
 	{
-
 		if (model is not null)
 		{
-			_numbersList.Add(model);
-
+			// If MP then we pass the created Number Model to all clients to add to their respective _numbersList.
+			if(GameManager.GameMode == GameMode.Multiplayer)
+			{
+				var no = model.NumberObject.GetComponent<NetworkObject>();
+				numberMessenger.AddNumberToList(model.Value, model.Position, model.Radius, no.NetworkObjectId);
+			}
+			// local normal behavior.
+			else
+			{
+				_numbersList.Add(model);
+			}
 		}
 
 		if (_currentNumber > GlobalVars.NUMBERS_COUNT)
@@ -38,23 +56,33 @@ public class NumbersManager : MonoBehaviour, IGameStage
 			gameObject.SetActive(false);
 			//_playerDrawingText.gameObject.SetActive(false);
 			_playerDrawingText.text = "              ";
-			OnStageExecutionCompleted?.Invoke();
-			Debug.Log("Numbermanager after completed calling invoke.");
-			SpinningCircleHelper.DisableSpinningCircle(model, false);
+			//OnStageExecutionCompleted?.Invoke();
+			if(GameManager.GameMode == GameMode.Multiplayer)
+			{
+				numberMessenger.SetupNumbersList();
+				_stageSetup.SetDrawStageRpc();
+			}
+			else
+			{
+				InvokeStageEnd();
+			}
+			SpinningCircleHelper.SetSpinningCircleForNumberModel(model, false);
             return;
 		}
-        SpinningCircleHelper.DisableSpinningCircle(model, false);
-        var current = Instantiate(numberPrefab, NumberScript.DefaultPosition, Quaternion.identity);
-		prevCircle = current;
-		_numbersToDelete.Add(current.gameObject);
-		var textObject = current.transform.GetComponentInChildren<TextMeshPro>();
-		textObject.text = _currentNumber.ToString();
-		current.gameObject.SetActive(true);
-		current.value = _currentNumber;
-		_currentNumber++;
+        SpinningCircleHelper.SetSpinningCircleForNumberModel(model, false);
 
-		// call CreateNumber again when drag ended.
-		current.OnDragEnded = CreateNumber;
+		if(GameManager.GameMode == GameMode.Multiplayer)
+		{
+			if (NetworkManager.Singleton.IsHost)
+			{
+				InstantiateNewNumber(spawnNetworkObject: true);
+			}
+		}
+		else
+		{
+			InstantiateNewNumber(spawnNetworkObject: false);
+		}
+
 	}
 
 	public void ExecuteStage()
@@ -62,7 +90,7 @@ public class NumbersManager : MonoBehaviour, IGameStage
 		gameObject.SetActive(true);
 
 		var rnd1 = new System.Random().Next(1, 3);
-		_playerDrawingText.text = $"P{rnd1} is drawing";
+		_playerDrawingText.text = $"P1 is drawing";
 		_playerDrawingText.gameObject.SetActive(true);
 		CreateNumber(null);
 	}
@@ -77,6 +105,34 @@ public class NumbersManager : MonoBehaviour, IGameStage
 
 		_currentNumber = 1;
 		_numbersList.RemoveAll();
+	}
+
+	private void InstantiateNewNumber(bool spawnNetworkObject)
+	{
+		var current = Instantiate(numberPrefab, NumberScript.DefaultPosition, Quaternion.identity);
+		prevCircle = current;
+		_numbersToDelete.Add(current.gameObject);
+		var textObject = current.transform.GetComponentInChildren<TextMeshPro>();
+		textObject.text = _currentNumber.ToString();
+		current.value = _currentNumber;
+		current.gameObject.SetActive(true);
+
+		// call CreateNumber again when drag ended.
+		current.OnDragEnded = CreateNumber;
+
+		// only if multiplayer active we spawn and send network object
+		if (spawnNetworkObject)
+		{
+			current.GetComponent<NetworkObject>().Spawn();
+			//current.GetComponent<SetNumberValue>().SetNumberValueText(_currentNumber.ToString());
+			current.GetComponent<MP_Number>().SetNumberValueInClient(_currentNumber);
+		}
+		_currentNumber++;
+	}
+
+	public void InvokeStageEnd()
+	{
+		OnStageExecutionCompleted?.Invoke();
 	}
 }
 
