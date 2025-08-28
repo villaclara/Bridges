@@ -309,9 +309,17 @@ public class DrawManager : MonoBehaviour, IGameStage
 		_numbers = NumbersList.GetInstance();
 
 		// Set first turn randomly
-		uint seed = (uint)System.Environment.TickCount;
-		if (seed == 0) seed = 1;
-		var rnd = new Unity.Mathematics.Random(seed).NextBool();
+		bool rnd = true;
+		if (GameManager.GameMode == GameMode.Multiplayer)
+		{
+			rnd = MP_PlayerDrawing.IsP1TurnRandomSpawnedMP;
+		}
+		else
+		{
+			uint seed = (uint)System.Environment.TickCount;
+			if (seed == 0) seed = 1;
+			rnd = new Unity.Mathematics.Random(seed).NextBool();
+		}
 		PlayerManager.SetupFirstTurn(rnd);
 	}
 
