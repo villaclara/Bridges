@@ -34,6 +34,9 @@ public class MP_PlayerDrawing : NetworkBehaviour
 	{
 		if (IsServer)
 		{
+			/* All logic is only invoked on Server side.
+			 * On the Client side they receive the Network Variable representing result value.
+			 */
 			PlayerManager.OnPlayerTurnSwitch += PlayerManager_OnPlayerTurnSwitch;
 			PlayerManager.OnPlayerBridgesChanged += PlayerManager_OnPlayerBridgesChanged;
 			gameManager.GetComponent<GameManager>().MP_RestartAsked += GameManager_OnRestartAsked;
@@ -58,7 +61,6 @@ public class MP_PlayerDrawing : NetworkBehaviour
 		{
 			PlayerManager.OnPlayerTurnSwitch -= PlayerManager_OnPlayerTurnSwitch;
 			PlayerManager.OnPlayerBridgesChanged -= PlayerManager_OnPlayerBridgesChanged;
-
 			gameManager.GetComponent<GameManager>().MP_RestartAsked -= GameManager_OnRestartAsked;
 		}
 

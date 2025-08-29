@@ -20,6 +20,7 @@ public class PlayerCanvasStyleController : MonoBehaviour
 
 	private void PlayerManager_OnPlayerTurnSwitch()
 	{
+		Debug.Log($"{nameof(PlayerManager.OnPlayerTurnSwitch)} called in code, turn - {PlayerManager.playerTurn}");
 		Action a = PlayerManager.playerTurn switch
 		{
 			PlayerTurn.P1_Turn => ChangeOutline_forP1,

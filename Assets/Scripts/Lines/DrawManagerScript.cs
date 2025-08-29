@@ -65,40 +65,6 @@ public class DrawManager : MonoBehaviour, IGameStage
 
 	}
 
-	/// <summary>
-	/// Execute NumbersMoveNext and Switch Turns when the player did not reach next number in time.
-	/// </summary>
-	private void StepTimerScript_StepTimerFinished()
-	{
-		// TOOD - Here is invoked only on Host. Need to invoke in client too.
-		_isDrawing = false;
-		_isDrawingToNextCompleted = true;
-
-		if(GameManager.GameMode == GameMode.Local)
-		{
-			NumbersMoveNext_and_PlayerSwitchTurns();
-			return;
-		}
-
-		// Deciding who should call method
-		if (PlayerManager.playerTurn == PlayerTurn.P1_Turn && NetworkManager.Singleton.IsHost)
-		{
-			// Is P1 and Host
-			NumbersMoveNext_and_PlayerSwitchTurns();
-		}
-		else if (PlayerManager.playerTurn == PlayerTurn.P2_Turn && !NetworkManager.Singleton.IsHost)
-		{
-			// Is P2 and Client
-			NumbersMoveNext_and_PlayerSwitchTurns();
-		}
-	}
-
-	private void DrawMessenger_NumbersMoveNextReturnFalse()
-	{
-		this.enabled = false;
-		_stageSetup.SetEndGameRpc();
-	}
-
 	// Update is called once per frame
 	void Update()
 	{
@@ -250,6 +216,43 @@ public class DrawManager : MonoBehaviour, IGameStage
 	}
 
 	/// <summary>
+	/// Execute NumbersMoveNext and Switch Turns when the player did not reach next number in time.
+	/// </summary>
+	private void StepTimerScript_StepTimerFinished()
+	{
+		// TOOD - Here is invoked only on Host. Need to invoke in client too.
+		_isDrawing = false;
+		_isDrawingToNextCompleted = true;
+
+		if (GameManager.GameMode == GameMode.Local)
+		{
+			NumbersMoveNext_and_PlayerSwitchTurns();
+			return;
+		}
+
+		// Deciding who should call method
+		if (PlayerManager.playerTurn == PlayerTurn.P1_Turn && NetworkManager.Singleton.IsHost)
+		{
+			// Is P1 and Host
+			NumbersMoveNext_and_PlayerSwitchTurns();
+		}
+		else if (PlayerManager.playerTurn == PlayerTurn.P2_Turn && !NetworkManager.Singleton.IsHost)
+		{
+			// Is P2 and Client
+			NumbersMoveNext_and_PlayerSwitchTurns();
+		}
+	}
+
+	/// <summary>
+	/// Calls the Endgame in MP.
+	/// </summary>
+	private void DrawMessenger_NumbersMoveNextReturnFalse()
+	{
+		this.enabled = false;
+		_stageSetup.SetEndGameRpc();
+	}
+
+	/// <summary>
 	/// Executes <see cref="NumbersList.MoveNext"/> to get Current and Next numbers to draw.
 	/// Switches player turns <see cref="PlayerManager.SwitchTurns"/>. 
 	/// Triggers <see cref="OnStageExecutionCompleted"/> in case <see cref="NumbersList.MoveNext"/> returns false.
@@ -299,6 +302,8 @@ public class DrawManager : MonoBehaviour, IGameStage
 	}
 
 	#region StageExecution
+	
+	/// <inheritdoc/>
 	public void ExecuteStage()
 	{
 		//_canDraw = true;
@@ -322,7 +327,8 @@ public class DrawManager : MonoBehaviour, IGameStage
 		}
 		PlayerManager.SetupFirstTurn(rnd);
 	}
-
+	
+	/// <inheritdoc/>
 	public void ResetStage()
 	{
 		foreach (var line in GlobalVars.linesToDelete)
@@ -336,11 +342,14 @@ public class DrawManager : MonoBehaviour, IGameStage
 		OnStageExecutionCompleted?.Invoke();
 	}
 
-
 	#endregion StageExecution
 
 	#region CheckPoints secion
-
+	/* These helper methods are used to check if the current point (the Head of line) is:
+	 * 1. near or inside Number object
+	 * 2. crossing another Line
+	 * 3. near unfinished line -> is used to continue drawing the same turn
+	 */
 	private bool IfPointInsideCurrentNumber(Vector2 point) =>
 		(point.x >= _numbers.Current.Position.x - _numbers.Current.Radius) && (point.x <= _numbers.Current.Position.x + _numbers.Current.Radius)
 				&& (point.y >= _numbers.Current.Position.y - _numbers.Current.Radius) && (point.y <= _numbers.Current.Position.y + _numbers.Current.Radius);
