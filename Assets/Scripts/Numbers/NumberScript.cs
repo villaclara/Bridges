@@ -15,6 +15,8 @@ public class NumberScript : NetworkBehaviour
 	private SpriteRenderer _circleRenderer;
 	private bool _isEnabled = true;
 
+	private float defaultRadius;	// is used in collider check to block number not by center, but rather full
+
 	public int value;
 	#endregion
 
@@ -58,6 +60,11 @@ public class NumberScript : NetworkBehaviour
 			_circleRenderer.color = Color.yellow;
 			OnIsAllowedToStopDragChanged += SetColorIfAllowedToDrop;
 		}
+
+		var childObj = transform.GetChild(0); // get Circle object
+		var childCircle = childObj.GetComponent<CircleCollider2D>(); // index 1 because the parent itself has collider and it also counts
+
+		defaultRadius = childCircle.radius * childObj.transform.lossyScale.x;
 	}
 
 	// Update is called once per frame
@@ -83,7 +90,44 @@ public class NumberScript : NetworkBehaviour
 
 		Vector3 mousePos = _cam.ScreenToWorldPoint(Input.mousePosition);
 		mousePos.z = -2f;   // -2 because of the border of circle. (border has z= -1 in prefab).
-		this.transform.position = mousePos;
+		Vector3 newPos = mousePos;
+		if (ScreenBoundsEdges.Instance != null)
+		{
+			Debug.Log($"Transform pos - {transform.position}");
+			Debug.Log($"Edge pos - {ScreenBoundsEdges.Instance.GetBounds().min.x}");
+			Bounds b = ScreenBoundsEdges.Instance.GetBounds();
+
+			
+			// adding/subtracting defaultRadius to set number position to full under the edgeCollider
+			newPos.x = Mathf.Clamp(newPos.x, b.min.x + defaultRadius, b.max.x - defaultRadius);
+			newPos.y = Mathf.Clamp(newPos.y, b.min.y + defaultRadius, b.max.y - defaultRadius);
+		}
+		this.transform.position = newPos;
+
+		var rectangleRect = ScreenBoundsEdges.Instance.GetComponent<RectTransform>();
+		//if (RectTransformUtility.ScreenPointToLocalPointInRectangle(boundsRect, Input.mousePosition, null, out var localPoint))
+		//{
+		//	// Clamp the position inside the rectangle
+		//	float clampedX = Mathf.Clamp(localPoint.x, -boundsRect.rect.width / 2 + transform.GetComponent<RectTransform>().rect.width / 2, boundsRect.rect.width / 2 - transform.GetComponent<RectTransform>().rect.width / 2);
+		//	float clampedY = Mathf.Clamp(localPoint.y, -boundsRect.rect.height / 2 + this.transform.GetComponent<RectTransform>().rect.height / 2, boundsRect.rect.height / 2 - transform.GetComponent<RectTransform>().rect.height / 2);
+
+		//	this.transform.localPosition = new Vector2(clampedX, clampedY);
+		//}
+
+		//Vector3[] corners = new Vector3[4];
+		//rectangleRect.GetWorldCorners(corners);
+		//float minX = corners[0].x; // bottom-left
+		//float maxX = corners[2].x; // top-right
+		//float minY = corners[0].y;
+		//float maxY = corners[2].y;
+		//Debug.Log($"{corners[0].x} {corners[2].x} {corners[0].y} {corners[2].y}");
+		//// Clamp circle position inside rectangle
+		//Vector3 clampedPos = mousePos;
+		//clampedPos.x = Mathf.Clamp(mousePos.x, minX, maxX);
+		//clampedPos.y = Mathf.Clamp(mousePos.y, minY, maxY);
+
+		//transform.position = clampedPos;
+
 
 		if (Input.GetMouseButtonUp(0) && IsValidPosToStopDrag)
 		{
@@ -131,7 +175,12 @@ public class NumberScript : NetworkBehaviour
 
 	private void OnCollisionStay2D(Collision2D collision)
 	{
-		IsValidPosToStopDrag = false;
+
+		Debug.Log("On Collision stay");
+		if (collision.gameObject.TryGetComponent<NumberScript>(out _).GetType() == typeof(NumberScript))
+		{
+			IsValidPosToStopDrag = false;
+		}
 	}
 
 	private void OnCollisionEnter2D(Collision2D collision)
@@ -142,7 +191,7 @@ public class NumberScript : NetworkBehaviour
 			return;
 		}
 
-		if (collision.gameObject.GetComponent<NumberScript>().GetType() == typeof(NumberScript))
+		if (collision.gameObject.TryGetComponent<NumberScript>(out NumberScript number))
 		{
 			IsValidPosToStopDrag = false;
 		}
@@ -156,7 +205,7 @@ public class NumberScript : NetworkBehaviour
 			return;
 		}
 
-		if (collision.gameObject.GetComponent<NumberScript>().GetType() == typeof(NumberScript))
+		if (collision.gameObject.TryGetComponent<NumberScript>(out _))
 		{
 			IsValidPosToStopDrag = true;
 		}
