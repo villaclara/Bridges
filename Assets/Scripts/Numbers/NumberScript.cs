@@ -93,8 +93,6 @@ public class NumberScript : NetworkBehaviour
 		Vector3 newPos = mousePos;
 		if (ScreenBoundsEdges.Instance != null)
 		{
-			Debug.Log($"Transform pos - {transform.position}");
-			Debug.Log($"Edge pos - {ScreenBoundsEdges.Instance.GetBounds().min.x}");
 			Bounds b = ScreenBoundsEdges.Instance.GetBounds();
 
 			
@@ -155,7 +153,6 @@ public class NumberScript : NetworkBehaviour
 								gameObject)); // here to get real radius in World space
 		}
 	}
-
 	
 	private void OnMouseDown()
 	{
@@ -211,14 +208,12 @@ public class NumberScript : NetworkBehaviour
 		}
 	}
 
-
 	private void SetColorIfAllowedToDrop(bool isAllowedToDrop)
 	{
 		_circleRenderer.color = isAllowedToDrop
 			? new Color32(60, 143, 79, 255)
 			: new Color32(255, 0, 0, 255);
 	}
-
 
 	/// <summary>
 	/// Disables the Update() calls on clients and host as well after the number.

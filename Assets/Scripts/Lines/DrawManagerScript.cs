@@ -91,6 +91,17 @@ public class DrawManager : MonoBehaviour, IGameStage
 
 		Vector2 mousePos = _cam.ScreenToWorldPoint(Input.mousePosition);
 
+		// Restrict setting mouse position and therefore Line by Game Area Bounds.
+		Vector3 newPos = mousePos;
+		if (ScreenBoundsEdges.Instance != null)
+		{
+			Bounds b = ScreenBoundsEdges.Instance.GetBounds();
+
+			newPos.x = Mathf.Clamp(newPos.x, b.min.x, b.max.x);
+			newPos.y = Mathf.Clamp(newPos.y, b.min.y, b.max.y);
+		}
+		mousePos = newPos;
+
 		// Press 
 		if (Input.GetMouseButtonDown(0))
 		{

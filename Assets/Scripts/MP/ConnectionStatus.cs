@@ -17,6 +17,7 @@ public class ConnectionStatus : NetworkBehaviour
 
 	public GameObject gameManager;
 	public DisconnectScreen disconnectScreen;
+	public SetupGameArea setupGameArea;
 
 	// NetworkVariable to sync the status message across clients
 	private NetworkVariable<FixedString128Bytes> statusMessage = new NetworkVariable<FixedString128Bytes>(
@@ -173,6 +174,12 @@ public class ConnectionStatus : NetworkBehaviour
 	[Rpc(SendTo.ClientsAndHost)]
 	private void StartGameOnClientRpc()
 	{
+		// Send GameArea and compare to decide which Game Area to use
+		if (!IsServer)
+		{
+			setupGameArea.RequestSendClientGameAreaToHostRpc(ScreenBoundsEdges.Instance.GetComponent<EdgeCollider2D>().points);
+		}
+
 		// Resets the 'Restart 1/2' text used in EndGameScreen and 'Connected 1/2' text.
 		_restartPlayersCountTMP.text = " ";
 

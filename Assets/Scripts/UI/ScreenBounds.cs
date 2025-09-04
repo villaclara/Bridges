@@ -108,4 +108,17 @@ public class ScreenBoundsEdges : MonoBehaviour
 	{
 		return edgeCollider.bounds;
 	}
+
+	public void ReceiveMPGameArea(Vector2[] points)
+	{
+		edgeCollider.points = points;
+		lineRenderer.positionCount = 0;
+		lineRenderer.positionCount = edgeCollider.points.Length;
+		for (int i = 0; i < edgeCollider.points.Length; i++)
+		{
+			Vector3 worldPoint = transform.TransformPoint(edgeCollider.points[i]);
+			worldPoint.z = -3;
+			lineRenderer.SetPosition(i, worldPoint);
+		}
+	}
 }
