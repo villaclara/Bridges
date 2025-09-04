@@ -10,8 +10,6 @@ public class ScreenBoundsEdges : MonoBehaviour
 	private float topUiHeight;
 	public static ScreenBoundsEdges Instance;
 
-	public GameObject playersUIGroup;
-
 	void Awake()
 	{
 		Instance = this;
@@ -20,9 +18,16 @@ public class ScreenBoundsEdges : MonoBehaviour
 		lastScreenWidth = Screen.width;
 		lastScreenHeight = Screen.height;
 
+		// Check if mobile / desktop to render collider
 		float aspect = (float)Screen.width / Screen.height;
 		topUiHeight = aspect > 1 ? 115f : 280f;
 
+		// Check if in Mobile Landscape mode
+		var isMobile = BgSelector.IsRunningOnMobileWeb();
+		if (isMobile && aspect > 1)
+		{
+			topUiHeight = 270f;
+		}
 		UpdateBounds();
 	}
 
@@ -32,9 +37,17 @@ public class ScreenBoundsEdges : MonoBehaviour
 		{
 			lastScreenWidth = Screen.width;
 			lastScreenHeight = Screen.height;
+
+			// Check if mobile / desktop to render collider
 			float aspect = (float)Screen.width / Screen.height;
 			topUiHeight = aspect > 1 ? 115f : 280f;
 
+			// Check if in Mobile Landscape mode
+			var isMobile = BgSelector.IsRunningOnMobileWeb();
+			if (isMobile && aspect > 1)
+			{
+				topUiHeight = 270f;
+			}
 			UpdateBounds();
 		}
 	}
@@ -77,8 +90,10 @@ public class ScreenBoundsEdges : MonoBehaviour
 			transform.InverseTransformPoint(bottomLeft) // close loop
 		      };
 
+		// setting points to collider
 		edgeCollider.points = points;
 
+		// rendering rectangle
 		lineRenderer.positionCount = edgeCollider.points.Length;
 		for (int i = 0; i < edgeCollider.points.Length; i++)
 		{
