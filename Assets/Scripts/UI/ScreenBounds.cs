@@ -10,6 +10,9 @@ public class ScreenBoundsEdges : MonoBehaviour
 
 	public static ScreenBoundsEdges Instance;
 
+	public GameObject endGameScreen;
+	public GameObject disconnectScreen;
+
 	void Awake()
 	{
 		Instance = this;
@@ -29,6 +32,12 @@ public class ScreenBoundsEdges : MonoBehaviour
 
 	void Update()
 	{
+		// If the game has ended/cancelled then we return EdgeCollider to normal values.
+		if (endGameScreen.activeSelf || disconnectScreen.activeSelf)
+		{
+			UpdateBounds();
+		}
+
 		// Restrict changing the collider when the match is runnig.
 		if (GameManager.MatchActive)
 		{
@@ -110,7 +119,7 @@ public class ScreenBoundsEdges : MonoBehaviour
 	}
 
 	/// <summary>
-	/// Sets the <see cref="EdgeCollider2D"/> and <see cref="LineRenderer"/> if in Multiplayer game.
+	/// Directly sets the <see cref="EdgeCollider2D"/> and <see cref="LineRenderer"/> if in Multiplayer game.
 	/// </summary>
 	/// <param name="points"></param>
 	public void ReceiveMPGameArea(Vector2[] points)

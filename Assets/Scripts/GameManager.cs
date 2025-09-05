@@ -21,6 +21,8 @@ public class GameManager : MonoBehaviour
 
 	/// <summary>
 	/// Represents if the match is currently being played.
+	/// <br/>
+	/// When disconnect happens the MatchActive will remain true.
 	/// </summary>
 	public static bool MatchActive { get; private set; } = false;
 
@@ -56,7 +58,6 @@ public class GameManager : MonoBehaviour
 	/// <param name="isOnline">Sets the <see cref="GameMode"/> GameMode. </param>
 	public void StartGame(bool isOnline = false)
 	{
-		MatchActive = true;
 		// Resetting all and hiding all UI Screens
 		gameObject.SetActive(true);
 		ResetAll();
@@ -65,6 +66,7 @@ public class GameManager : MonoBehaviour
 		endGameScreen.SetActive(false);
 		this._isOnline = isOnline;
 		GameMode = isOnline ? GameMode.Multiplayer : GameMode.Local;
+		MatchActive = true;
 		StartStage(_currentStageIndex);
 	}
 
