@@ -6,8 +6,8 @@ public class ScreenBoundsEdges : MonoBehaviour
 	private EdgeCollider2D edgeCollider;
 	private LineRenderer lineRenderer;
 	private int lastScreenWidth, lastScreenHeight;
-
 	private float topUiHeight;
+
 	public static ScreenBoundsEdges Instance;
 
 	void Awake()
@@ -24,18 +24,17 @@ public class ScreenBoundsEdges : MonoBehaviour
 		 */
 		float aspect = (float)Screen.width / Screen.height;
 		topUiHeight = aspect > 1 ? Screen.height / 4.32f : Screen.height / 8.17f;
-
-		//// Check if in Mobile Landscape mode
-		//var isMobile = BgSelector.IsRunningOnMobileWeb();
-		//if (isMobile && aspect > 1)
-		//{
-		//	topUiHeight = 270f;
-		//}
 		UpdateBounds();
 	}
 
 	void Update()
 	{
+		// Restrict changing the collider when the match is runnig.
+		if (GameManager.MatchActive)
+		{
+			return;
+		}
+
 		if (Screen.width != lastScreenWidth || Screen.height != lastScreenHeight)
 		{
 			lastScreenWidth = Screen.width;
@@ -47,17 +46,16 @@ public class ScreenBoundsEdges : MonoBehaviour
 			 */
 			float aspect = (float)Screen.width / Screen.height;
 			topUiHeight = aspect > 1 ? Screen.height / 4.32f : Screen.height / 8.17f;
-
-			// Check if in Mobile Landscape mode
-			//var isMobile = BgSelector.IsRunningOnMobileWeb();
-			//if (isMobile && aspect > 1)
-			//{
-			//	topUiHeight = 270f;
-			//}
 			UpdateBounds();
 		}
 	}
 
+	/// <summary>
+	/// Sets initial values for the <see cref="EdgeCollider2D"/> component based on <see cref="topUiHeight"/> value 
+	/// and draws <see cref="LineRenderer"/> component on collider points.
+	/// <br />
+	/// For Multiplayer chek <see cref="ReceiveMPGameArea(Vector2[])"/> method.
+	/// </summary>
 	void UpdateBounds()
 	{
 		Camera cam = Camera.main;
@@ -77,8 +75,9 @@ public class ScreenBoundsEdges : MonoBehaviour
 		topLeft.y -= uiWorldHeight;
 
 		/*
-		 * ADD these in case you want to make full rectangle appear
-		*/			
+		 * ADD these in case you want to make full rectangle appear.
+		 * It adds some small gaps on the left, right, bottom.
+		 */			
 		//topLeft.x += uiWorldHeight * 0.05f;
 		//bottomLeft.x += uiWorldHeight * 0.05f;
 		//topRight.x -= uiWorldHeight * 0.05f;
@@ -110,11 +109,10 @@ public class ScreenBoundsEdges : MonoBehaviour
 		
 	}
 
-	public Bounds GetBounds()
-	{
-		return edgeCollider.bounds;
-	}
-
+	/// <summary>
+	/// Sets the <see cref="EdgeCollider2D"/> and <see cref="LineRenderer"/> if in Multiplayer game.
+	/// </summary>
+	/// <param name="points"></param>
 	public void ReceiveMPGameArea(Vector2[] points)
 	{
 		edgeCollider.points = points;
@@ -126,5 +124,14 @@ public class ScreenBoundsEdges : MonoBehaviour
 			worldPoint.z = -3;
 			lineRenderer.SetPosition(i, worldPoint);
 		}
+	}
+
+	/// <summary>
+	/// Get the bounds of <see cref="EdgeCollider2D"/> to use Math.Clamp.
+	/// </summary>
+	/// <returns></returns>
+	public Bounds GetBounds()
+	{
+		return edgeCollider.bounds;
 	}
 }

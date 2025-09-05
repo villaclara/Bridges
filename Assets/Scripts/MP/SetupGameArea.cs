@@ -3,13 +3,11 @@ using UnityEngine;
 
 public class SetupGameArea : NetworkBehaviour
 {
-	public static SetupGameArea Instance;
-
-	public override void OnNetworkSpawn()
-	{
-		Instance = this;
-	}
-
+	/// <summary>
+	/// Compares the current <see cref="ScreenBoundsEdges.Instance"/> <see cref="EdgeCollider2D"/> points with parameter.
+	/// </summary>
+	/// <param name="pointsOther"><see cref="EdgeCollider2D"/> points of other player.</param>
+	/// <returns>True if this current player area is bigger than other player, false otherwise.</returns>
 	private bool CompareGameAreaClientWithMeHost(Vector2[] pointsOther)
 	{
 		var hostArea = GetPolygonArea(ScreenBoundsEdges.Instance.GetComponent<EdgeCollider2D>().points);
@@ -18,12 +16,21 @@ public class SetupGameArea : NetworkBehaviour
 		return hostArea.CompareTo(clientArea) > 0;
 	}
 
+	/// <summary>
+	/// Sends to both Client and Host the command to change the <see cref="EdgeCollider2D"/> bounds to be the same.
+	/// </summary>
+	/// <param name="points">The array of points for EdgeCollider to create.</param>
 	[Rpc(SendTo.ClientsAndHost)]
 	public void SendGameAreaToClientsRpc(Vector2[] points)
 	{
 		ScreenBoundsEdges.Instance.ReceiveMPGameArea(points);
 	}
 
+	/// <summary>
+	/// Sends from Client to Host the request with Clients <see cref="EdgeCollider2D"/> points as array.
+	/// Is called at the <see cref="ConnectionStatus.OnClientConnected(ulong)"/> callback in <see cref="ConnectionStatus"/>.
+	/// </summary>
+	/// <param name="points">Clients Collider points array.</param>
 	[Rpc(SendTo.ClientsAndHost)]
 	public void RequestSendClientGameAreaToHostRpc(Vector2[] points)
 	{
@@ -41,6 +48,11 @@ public class SetupGameArea : NetworkBehaviour
 		}
 	}
 
+	/// <summary>
+	/// Gets the area of the rectangle formed from points.
+	/// </summary>
+	/// <param name="pts">Array of points.</param>
+	/// <returns>The area of rectangle formed from points.</returns>
 	public static float GetPolygonArea(Vector2[] pts)
 	{
 		if (pts == null || pts.Length < 3) return 0f;
