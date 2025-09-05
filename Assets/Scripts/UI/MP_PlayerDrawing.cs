@@ -14,31 +14,34 @@ public class MP_PlayerDrawing : NetworkBehaviour
     [SerializeField] private TextMeshProUGUI _p2TextTMP;
 	//[SerializeField] private PlayerManager _playerManager;
 
-    private NetworkVariable<FixedString64Bytes> _playerDrawingChanged = new();
+    private readonly NetworkVariable<FixedString64Bytes> _playerDrawingChanged = new();
 
-	private NetworkVariable<bool> _isP1Turn = new();
-	private NetworkVariable<int> _p1Bridges = new();
-	private NetworkVariable<int> _p2Bridges = new();
+	private readonly NetworkVariable<bool> _isP1Turn = new();
+	private readonly NetworkVariable<int> _p1Bridges = new();
+	private readonly NetworkVariable<int> _p2Bridges = new();
+
+	// Is used to randomly determine first turn on Server and to send the value to the Client.
+	private readonly NetworkVariable<bool> _isP1FirstTurnRandom = new();
 
 	public static event Action OnPlayerTurnChangedInMPNetworkVar;
 
-	private void Start()
-	{
-		//_playerDrawingChanged.OnValueChanged += OnValueChanged;
-		//_isP1Turn.OnValueChanged += OnPlayerTurnChanged;
+	public static bool IsP1TurnRandomSpawnedMP { get; private set; }
 
-
-		//_p1Bridges.OnValueChanged += OnP1BridgesCountChanged;
-		//_p2Bridges.OnValueChanged += OnP2BridgesCountChanged;
-	}
+	public GameObject gameManager;
 
 	/// <inheritdoc/>
 	public override void OnNetworkSpawn()
 	{
 		if (IsServer)
 		{
+			/* All logic is only invoked on Server side.
+			 * On the Client side they receive the Network Variable representing result value.
+			 */
 			PlayerManager.OnPlayerTurnSwitch += PlayerManager_OnPlayerTurnSwitch;
 			PlayerManager.OnPlayerBridgesChanged += PlayerManager_OnPlayerBridgesChanged;
+			gameManager.GetComponent<GameManager>().MP_RestartAsked += GameManager_OnRestartAsked;
+
+			_isP1FirstTurnRandom.Value = new System.Random().Next(2) == 0;
 		}
 
 		_playerDrawingChanged.OnValueChanged += OnPlayerDrawingValueChanged;
@@ -47,6 +50,7 @@ public class MP_PlayerDrawing : NetworkBehaviour
 		_p1Bridges.OnValueChanged += OnP1BridgesCountChanged;
 		_p2Bridges.OnValueChanged += OnP2BridgesCountChanged;
 
+		_isP1FirstTurnRandom.OnValueChanged += OnFirstTurnSetupChanged;
 		base.OnNetworkSpawn();
 	}
 
@@ -57,6 +61,7 @@ public class MP_PlayerDrawing : NetworkBehaviour
 		{
 			PlayerManager.OnPlayerTurnSwitch -= PlayerManager_OnPlayerTurnSwitch;
 			PlayerManager.OnPlayerBridgesChanged -= PlayerManager_OnPlayerBridgesChanged;
+			gameManager.GetComponent<GameManager>().MP_RestartAsked -= GameManager_OnRestartAsked;
 		}
 
 		_playerDrawingChanged.OnValueChanged -= OnPlayerDrawingValueChanged;
@@ -64,6 +69,8 @@ public class MP_PlayerDrawing : NetworkBehaviour
 
 		_p1Bridges.OnValueChanged -= OnP1BridgesCountChanged;
 		_p2Bridges.OnValueChanged -= OnP2BridgesCountChanged;
+
+		_isP1FirstTurnRandom.OnValueChanged -= OnFirstTurnSetupChanged;
 
 		base.OnNetworkDespawn();
 	}
@@ -144,5 +151,26 @@ public class MP_PlayerDrawing : NetworkBehaviour
 		};
 		//PlayerManager.playerTurn = PlayerManager.playerTurn;
 		_isP1Turn.Value = PlayerManager.playerTurn == PlayerTurn.P1_Turn;
+	}
+
+	/// <summary>
+	/// Is called when <see cref="_isP1FirstTurnRandom"/> value changed. Sets the public property 
+	/// <see cref="IsP1TurnRandomSpawnedMP"/> to the new value,
+	/// to determine in <see cref="DrawManager"/> first player to draw a line.
+	/// </summary>
+	/// <param name="previousValue">Previous value.</param>
+	/// <param name="newValue">New value.</param>
+	private void OnFirstTurnSetupChanged(bool previousValue, bool newValue)
+	{
+		IsP1TurnRandomSpawnedMP = newValue;
+	}
+
+	/// <summary>
+	/// Is called when the user press 'Restart' in Multiplayer Engame screen. 
+	/// Is used here to refresh the network variable <see cref="_isP1FirstTurnRandom"/> regarding first turn next game.
+	/// </summary>
+	private void GameManager_OnRestartAsked()
+	{
+		_isP1FirstTurnRandom.Value = new System.Random().Next(2) == 0;
 	}
 }

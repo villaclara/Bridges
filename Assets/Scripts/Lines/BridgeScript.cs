@@ -5,7 +5,7 @@ using UnityEngine;
 public class BridgeScript : NetworkBehaviour
 {
 	public IPlayerModel currentPlayer;
-	public int playerId => currentPlayer.Id;
+	public int PlayerId => currentPlayer.Id;
 
 	public List<Sprite> _bridgeSprites;
 

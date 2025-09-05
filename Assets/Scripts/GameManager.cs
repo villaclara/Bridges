@@ -13,8 +13,23 @@ public class GameManager : MonoBehaviour
 	// List of all stages of the game flow (setup numbers, draw lines, end).
 	[SerializeField] private List<IGameStage> _stages = new();
 	private int _currentStageIndex = 0;
+
+	/// <summary>
+	/// Represents the GameMode of current game.
+	/// </summary>
 	public static GameMode GameMode { get; private set; } = GameMode.Local;
 
+	/// <summary>
+	/// Represents if the match is currently being played.
+	/// <br/>
+	/// When disconnect happens the MatchActive will remain true.
+	/// </summary>
+	public static bool MatchActive { get; private set; } = false;
+
+	/// <summary>
+	/// Is used in MP. 
+	/// When the players have asked for restart.
+	/// </summary>
 	public event Action MP_RestartAsked;
 	
 	[Header("Manager References")]
@@ -51,6 +66,7 @@ public class GameManager : MonoBehaviour
 		endGameScreen.SetActive(false);
 		this._isOnline = isOnline;
 		GameMode = isOnline ? GameMode.Multiplayer : GameMode.Local;
+		MatchActive = true;
 		StartStage(_currentStageIndex);
 	}
 
@@ -63,6 +79,7 @@ public class GameManager : MonoBehaviour
 		if (index >= _stages.Count)
 		{
 			endGameScreen.SetActive(true);
+			MatchActive = false;
 			stepTimerScript.GetComponent<StepTimerScript>().ResetTimer();
 			var playerIdWon = "Draw";
 			if (PlayerManager.player1.BridgesCount < PlayerManager.player2.BridgesCount)
