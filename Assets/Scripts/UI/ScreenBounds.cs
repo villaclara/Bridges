@@ -18,16 +18,19 @@ public class ScreenBoundsEdges : MonoBehaviour
 		lastScreenWidth = Screen.width;
 		lastScreenHeight = Screen.height;
 
-		// Check if mobile / desktop to render collider
+		/* Check if mobile / desktop to render collider
+		 * The values 4.32f and 8.17f was found manually as the relation of how much space does take topUI
+		 * The topUIHeight default value in Editor is 130, which then is calculated related to height.
+		 */
 		float aspect = (float)Screen.width / Screen.height;
-		topUiHeight = aspect > 1 ? 115f : 280f;
+		topUiHeight = aspect > 1 ? Screen.height / 4.32f : Screen.height / 8.17f;
 
-		// Check if in Mobile Landscape mode
-		var isMobile = BgSelector.IsRunningOnMobileWeb();
-		if (isMobile && aspect > 1)
-		{
-			topUiHeight = 270f;
-		}
+		//// Check if in Mobile Landscape mode
+		//var isMobile = BgSelector.IsRunningOnMobileWeb();
+		//if (isMobile && aspect > 1)
+		//{
+		//	topUiHeight = 270f;
+		//}
 		UpdateBounds();
 	}
 
@@ -38,16 +41,19 @@ public class ScreenBoundsEdges : MonoBehaviour
 			lastScreenWidth = Screen.width;
 			lastScreenHeight = Screen.height;
 
-			// Check if mobile / desktop to render collider
+			/* Check if mobile / desktop to render collider
+			 * The values 4.32f and 8.17f was found manually as the relation of how much space does take topUI
+			 * The topUIHeight default value in Editor is 130, which then is calculated related to height.
+			 */
 			float aspect = (float)Screen.width / Screen.height;
-			topUiHeight = aspect > 1 ? 115f : 280f;
+			topUiHeight = aspect > 1 ? Screen.height / 4.32f : Screen.height / 8.17f;
 
 			// Check if in Mobile Landscape mode
-			var isMobile = BgSelector.IsRunningOnMobileWeb();
-			if (isMobile && aspect > 1)
-			{
-				topUiHeight = 270f;
-			}
+			//var isMobile = BgSelector.IsRunningOnMobileWeb();
+			//if (isMobile && aspect > 1)
+			//{
+			//	topUiHeight = 270f;
+			//}
 			UpdateBounds();
 		}
 	}
