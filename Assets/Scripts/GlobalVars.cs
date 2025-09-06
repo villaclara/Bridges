@@ -24,4 +24,11 @@ public class GlobalVars
 			DEFAULT_GREEN_BUTTON_COLOR.b * GlobalVars.DARKER_MULTIPLYER / 256,
 			DEFAULT_GREEN_BUTTON_COLOR.a);
 	public const float DARKER_MULTIPLYER = 0.8f;
+
+	public readonly static Color32 DEFAULT_P1_COLOR = new(139, 78, 217, 255);
+	public readonly static string DEFAULT_P1_COLOR_HEX = "#A259FF";
+	public readonly static Color32 DEFAULT_P2_COLOR = new(12, 159, 140, 255);
+	public readonly static string DEFAULT_P2_COLOR_HEX = "#00BFA6";
+
+	public readonly static Color32 NUMBER_COLOR = new(228, 233, 190, 255);
 }

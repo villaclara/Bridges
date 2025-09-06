@@ -14,7 +14,7 @@ public class NumbersManager : MonoBehaviour, IGameStage
 	[SerializeField]
 	private TextMeshProUGUI _playerDrawingText;
 
-	private NumbersList _numbersList = NumbersList.GetInstance();
+	private readonly NumbersList _numbersList = NumbersList.GetInstance();
 
 	// event is called when all numbers are added and positions are set
 	public event Action OnStageExecutionCompleted;
@@ -50,13 +50,9 @@ public class NumbersManager : MonoBehaviour, IGameStage
 
 		if (_currentNumber > GlobalVars.NUMBERS_COUNT)
 		{
-			//GlobalVars.OnNumbersPlaced?.Invoke();
-
 			_numbersList.Setup();
 			gameObject.SetActive(false);
-			//_playerDrawingText.gameObject.SetActive(false);
 			_playerDrawingText.text = "              ";
-			//OnStageExecutionCompleted?.Invoke();
 			if(GameManager.GameMode == GameMode.Multiplayer)
 			{
 				numberMessenger.SetupNumbersList();
@@ -82,14 +78,11 @@ public class NumbersManager : MonoBehaviour, IGameStage
 		{
 			InstantiateNewNumber(spawnNetworkObject: false);
 		}
-
 	}
 
 	public void ExecuteStage()
 	{
 		gameObject.SetActive(true);
-
-		var rnd1 = new System.Random().Next(1, 3);
 		_playerDrawingText.text = $"P1 is drawing";
 		_playerDrawingText.gameObject.SetActive(true);
 		CreateNumber(null);
@@ -124,7 +117,6 @@ public class NumbersManager : MonoBehaviour, IGameStage
 		if (spawnNetworkObject)
 		{
 			current.GetComponent<NetworkObject>().Spawn();
-			//current.GetComponent<SetNumberValue>().SetNumberValueText(_currentNumber.ToString());
 			current.GetComponent<MP_Number>().SetNumberValueInClient(_currentNumber);
 		}
 		_currentNumber++;

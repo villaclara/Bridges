@@ -90,6 +90,8 @@ public class NumberScript : NetworkBehaviour
 
 		Vector3 mousePos = _cam.ScreenToWorldPoint(Input.mousePosition);
 		mousePos.z = -2f;   // -2 because of the border of circle. (border has z= -1 in prefab).
+		
+		// Restrict moving Number to Game Area only.
 		Vector3 newPos = mousePos;
 		if (ScreenBoundsEdges.Instance != null)
 		{
@@ -102,40 +104,15 @@ public class NumberScript : NetworkBehaviour
 		}
 		this.transform.position = newPos;
 
-		var rectangleRect = ScreenBoundsEdges.Instance.GetComponent<RectTransform>();
-		//if (RectTransformUtility.ScreenPointToLocalPointInRectangle(boundsRect, Input.mousePosition, null, out var localPoint))
-		//{
-		//	// Clamp the position inside the rectangle
-		//	float clampedX = Mathf.Clamp(localPoint.x, -boundsRect.rect.width / 2 + transform.GetComponent<RectTransform>().rect.width / 2, boundsRect.rect.width / 2 - transform.GetComponent<RectTransform>().rect.width / 2);
-		//	float clampedY = Mathf.Clamp(localPoint.y, -boundsRect.rect.height / 2 + this.transform.GetComponent<RectTransform>().rect.height / 2, boundsRect.rect.height / 2 - transform.GetComponent<RectTransform>().rect.height / 2);
-
-		//	this.transform.localPosition = new Vector2(clampedX, clampedY);
-		//}
-
-		//Vector3[] corners = new Vector3[4];
-		//rectangleRect.GetWorldCorners(corners);
-		//float minX = corners[0].x; // bottom-left
-		//float maxX = corners[2].x; // top-right
-		//float minY = corners[0].y;
-		//float maxY = corners[2].y;
-		//Debug.Log($"{corners[0].x} {corners[2].x} {corners[0].y} {corners[2].y}");
-		//// Clamp circle position inside rectangle
-		//Vector3 clampedPos = mousePos;
-		//clampedPos.x = Mathf.Clamp(mousePos.x, minX, maxX);
-		//clampedPos.y = Mathf.Clamp(mousePos.y, minY, maxY);
-
-		//transform.position = clampedPos;
-
-
+		// Release the mouse and set Number position.
 		if (Input.GetMouseButtonUp(0) && IsValidPosToStopDrag)
 		{
 			OnIsAllowedToStopDragChanged -= SetColorIfAllowedToDrop;
 
 			_isDragging = false;
-			_circleRenderer.color = Color.white;
+			_circleRenderer.color = GlobalVars.NUMBER_COLOR;
 			this.enabled = false; // disable script after drag ends
 			_isEnabled = false;     // disable OnMouseDown registering event
-
 
 			// disabling Update() calls on both client and host.
 			if(GameManager.GameMode == GameMode.Multiplayer && IsOwner && IsHost)
@@ -172,8 +149,6 @@ public class NumberScript : NetworkBehaviour
 
 	private void OnCollisionStay2D(Collision2D collision)
 	{
-
-		Debug.Log("On Collision stay");
 		if (collision.gameObject.TryGetComponent<NumberScript>(out _).GetType() == typeof(NumberScript))
 		{
 			IsValidPosToStopDrag = false;
@@ -211,8 +186,8 @@ public class NumberScript : NetworkBehaviour
 	private void SetColorIfAllowedToDrop(bool isAllowedToDrop)
 	{
 		_circleRenderer.color = isAllowedToDrop
-			? new Color32(60, 143, 79, 255)
-			: new Color32(255, 0, 0, 255);
+			? new Color32(60, 143, 79, 255)	// green
+			: new Color32(255, 0, 0, 255);	// red
 	}
 
 	/// <summary>

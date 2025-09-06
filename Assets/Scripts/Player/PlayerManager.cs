@@ -3,9 +3,9 @@ using UnityEngine;
 
 public class PlayerManager : MonoBehaviour
 {
-	public readonly static IPlayerModel player1 = new PlayerModel(1, "#A259FF");
+	public readonly static IPlayerModel player1 = new PlayerModel(1, GlobalVars.DEFAULT_P1_COLOR_HEX);
 
-	public readonly static IPlayerModel player2 = new PlayerModel(2, "#00BFA6");
+	public readonly static IPlayerModel player2 = new PlayerModel(2, GlobalVars.DEFAULT_P2_COLOR_HEX);
 
 	public static PlayerTurn playerTurn;
 

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Unity.VisualScripting;
+using UnityEngine;
 
 [RequireComponent(typeof(EdgeCollider2D))]
 public class ScreenBoundsEdges : MonoBehaviour
@@ -12,6 +13,7 @@ public class ScreenBoundsEdges : MonoBehaviour
 
 	public GameObject endGameScreen;
 	public GameObject disconnectScreen;
+	public SpriteMask spriteMask; 
 
 	void Awake()
 	{
@@ -86,13 +88,13 @@ public class ScreenBoundsEdges : MonoBehaviour
 		/*
 		 * ADD these in case you want to make full rectangle appear.
 		 * It adds some small gaps on the left, right, bottom.
-		 */			
-		//topLeft.x += uiWorldHeight * 0.05f;
-		//bottomLeft.x += uiWorldHeight * 0.05f;
-		//topRight.x -= uiWorldHeight * 0.05f;
-		//bottomRight.x -= uiWorldHeight * 0.05f;
-		//bottomLeft.y += uiWorldHeight * 0.05f;
-		//bottomRight.y += uiWorldHeight * 0.05f;
+		 */
+		topLeft.x += uiWorldHeight * 0.05f;
+		bottomLeft.x += uiWorldHeight * 0.05f;
+		topRight.x -= uiWorldHeight * 0.05f;
+		bottomRight.x -= uiWorldHeight * 0.05f;
+		bottomLeft.y += uiWorldHeight * 0.05f;
+		bottomRight.y += uiWorldHeight * 0.05f;
 
 		// Convert to local space so collider aligns correctly
 		Vector2[] points = new Vector2[5]
@@ -115,6 +117,9 @@ public class ScreenBoundsEdges : MonoBehaviour
 			worldPoint.z = -3;
 			lineRenderer.SetPosition(i, worldPoint);
 		}
+
+
+		RenderSpriteMask();
 		
 	}
 
@@ -133,6 +138,8 @@ public class ScreenBoundsEdges : MonoBehaviour
 			worldPoint.z = -3;
 			lineRenderer.SetPosition(i, worldPoint);
 		}
+
+		RenderSpriteMask();
 	}
 
 	/// <summary>
@@ -142,5 +149,42 @@ public class ScreenBoundsEdges : MonoBehaviour
 	public Bounds GetBounds()
 	{
 		return edgeCollider.bounds;
+	}
+
+	/// <summary>
+	/// Computes and sets the Sprite Mask size to make visible background Grid only on Game Area.
+	/// </summary>
+	private void RenderSpriteMask()
+	{
+		// Step 1: Take the first 4 points (ignore last duplicate)
+		Vector3[] worldPoints = new Vector3[4];
+		for (int i = 0; i < 4; i++)
+		{
+			worldPoints[i] = transform.TransformPoint(edgeCollider.points[i]);
+		}
+
+		// Step 2: Compute center
+		Vector3 center = (worldPoints[0] + worldPoints[1] + worldPoints[2] + worldPoints[3]) / 4f;
+		spriteMask.transform.position = center;
+
+		// Step 3: Compute width and height
+		float width = Vector3.Distance(worldPoints[0], worldPoints[1]);
+		float height = Vector3.Distance(worldPoints[1], worldPoints[2]);
+
+		// Step 4: Account for parent scale
+		Vector3 parentScale = spriteMask.transform.parent != null
+			? spriteMask.transform.parent.lossyScale
+			: Vector3.one;
+
+		width /= parentScale.x;
+		height /= parentScale.y;
+
+		// Step 5: Scale mask relative to sprite size
+		Vector2 spriteSize = spriteMask.sprite.bounds.size; // local units
+		spriteMask.transform.localScale = new Vector3(
+			width / spriteSize.x,
+			height / spriteSize.y,
+			1f
+		);
 	}
 }

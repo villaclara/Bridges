@@ -21,9 +21,9 @@ public class spinningCircle : MonoBehaviour
 	{
 		_renderer.color = PlayerManager.playerTurn switch
 		{
-			PlayerTurn.P1_Turn => new Color32(139, 78, 217, 255),
-			PlayerTurn.P2_Turn => new Color32(12, 159, 140, 255),
-			_ => new Color32(47, 107, 67, 255)
+			PlayerTurn.P1_Turn => GlobalVars.DEFAULT_P1_COLOR,	// purple
+			PlayerTurn.P2_Turn => GlobalVars.DEFAULT_P2_COLOR,	// green
+			_ => new Color32(47, 107, 67, 255)						// dark green
 		};
 
 
