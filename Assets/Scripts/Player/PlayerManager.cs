@@ -1,6 +1,10 @@
 using System;
 using UnityEngine;
 
+/// <summary>
+/// Manager class for players instances with logic to add bridges, turn management.
+/// Singleton.
+/// </summary>
 public class PlayerManager : MonoBehaviour
 {
 	public readonly static IPlayerModel player1 = new PlayerModel(1, GlobalVars.DEFAULT_P1_COLOR_HEX);
@@ -26,10 +30,12 @@ public class PlayerManager : MonoBehaviour
 		}
 	}
 
+	/// <summary>
+	/// Sets the first turn.
+	/// </summary>
+	/// <param name="isPlayer1First">If the p1 turns first. Is set randomly.</param>
 	public static void SetupFirstTurn(bool isPlayer1First)
 	{
-		// TODO - Remove fake setup first turn
-		//isPlayer1First = true;
 		if (isPlayer1First)
 		{
 			player1.IsMyTurn = isPlayer1First;
@@ -45,6 +51,9 @@ public class PlayerManager : MonoBehaviour
 		OnPlayerTurnSwitch?.Invoke();
 	}
 
+	/// <summary>
+	/// Switch turns and invoke an Event.
+	/// </summary>
 	public static void SwitchTurns()
 	{
 		player1.IsMyTurn = !player1.IsMyTurn;
@@ -53,12 +62,20 @@ public class PlayerManager : MonoBehaviour
 		OnPlayerTurnSwitch?.Invoke();
 	}
 
+	/// <summary>
+	/// Adds bridge to the selected player.
+	/// </summary>
+	/// <param name="player">Player to add bridge.</param>
+	/// <param name="count">Count of bridges to add.</param>
 	public static void AddBridgeToPlayer(IPlayerModel player, int count = 1)
 	{
 		player.BridgesCount += count;
 		OnPlayerBridgesChanged?.Invoke();
 	}
 
+	/// <summary>
+	/// Resets the bridges values for the players and invoke an Event.
+	/// </summary>
 	public static void ResetBridgesCountForPlayers()
 	{
 		player1.BridgesCount = 0;

@@ -5,15 +5,18 @@ using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 
+/// <summary>
+/// Countdown script for the player turn.
+/// </summary>
 public class StepTimerScript : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI _timerTMP;
-    // Start is called before the first frame update
 
     private int _currentTimer;
 	private Coroutine _coroutine;
 
 	public static event Action StepTimerFinished;
+	
 	private void Awake()
 	{
 		PlayerManager.OnPlayerTurnSwitch += PlayerManager_OnPlayerTurnSwitch;
@@ -33,12 +36,18 @@ public class StepTimerScript : MonoBehaviour
 		StartTimer();
 	}
 
+	/// <summary>
+	///  Starts the time.
+	/// </summary>
 	public void StartTimer()
     {
         gameObject.SetActive(true);
 		_coroutine = StartCoroutine(StartTimerEnumerator());
     }
 
+	/// <summary>
+	/// Reset timer to default value from <see cref="GlobalVars"/>.
+	/// </summary>
 	public void ResetTimer()
 	{
 		if (_coroutine != null)

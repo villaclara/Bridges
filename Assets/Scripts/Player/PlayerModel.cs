@@ -14,6 +14,9 @@ public class PlayerModel : IPlayerModel
 	}
 }
 
+/// <summary>
+/// Represents the basic player. 
+/// </summary>
 public interface IPlayerModel
 {
 	int Id { get; }

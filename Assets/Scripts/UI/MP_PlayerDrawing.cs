@@ -1,21 +1,19 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using Unity.Collections;
-using Unity.Collections.LowLevel.Unsafe;
 using Unity.Netcode;
 using UnityEngine;
 
+/// <summary>
+/// Class synchronizes the text values of what player is drawing in MP.
+/// </summary>
 public class MP_PlayerDrawing : NetworkBehaviour
 {
     [SerializeField] private TextMeshProUGUI _playerDrawingTMP;
     [SerializeField] private TextMeshProUGUI _p1TextTMP;
     [SerializeField] private TextMeshProUGUI _p2TextTMP;
-	//[SerializeField] private PlayerManager _playerManager;
 
     private readonly NetworkVariable<FixedString64Bytes> _playerDrawingChanged = new();
-
 	private readonly NetworkVariable<bool> _isP1Turn = new();
 	private readonly NetworkVariable<int> _p1Bridges = new();
 	private readonly NetworkVariable<int> _p2Bridges = new();
@@ -23,11 +21,10 @@ public class MP_PlayerDrawing : NetworkBehaviour
 	// Is used to randomly determine first turn on Server and to send the value to the Client.
 	private readonly NetworkVariable<bool> _isP1FirstTurnRandom = new();
 
-	public static event Action OnPlayerTurnChangedInMPNetworkVar;
-
-	public static bool IsP1TurnRandomSpawnedMP { get; private set; }
-
 	public GameObject gameManager;
+	public static event Action OnPlayerTurnChangedInMPNetworkVar;
+	
+	public static bool IsP1TurnRandomSpawnedMP { get; private set; }
 
 	/// <inheritdoc/>
 	public override void OnNetworkSpawn()

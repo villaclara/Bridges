@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
+/// <summary>
+/// Multiplayer features for Line, essentially doing the same as <see cref="Line"/>.
+/// </summary>
 public class MP_Line : NetworkBehaviour
 {
 	[SerializeField] private Line _line;
@@ -44,5 +47,4 @@ public class MP_Line : NetworkBehaviour
 		}
 		GetComponent<Line>().SetLineColor(PlayerManager.player1.ColorHEX);
 	}
-
 }

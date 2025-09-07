@@ -11,16 +11,23 @@ public class NumbersList
 	private List<NumberModel> _numbers;
 	private static NumbersList _instance;
 	private static int _currentIndex = 0;
+
 	public static NumbersList GetInstance()
 	{
 		return _instance ??= new NumbersList();
 	}
-
+	public NumberModel Current { get; private set; }
+	public NumberModel Next { get; private set; }
+	
 	private NumbersList()
 	{
 		_numbers = new List<NumberModel>();
 	}
 
+	/// <summary>
+	/// Moves the pointers of <see cref="Current"/> and <see cref="Next"/> to the next values in List of <see cref="NumberModel"/> if possible.
+	/// </summary>
+	/// <returns>True if move successfull, false otherwise.</returns>
 	public bool MoveNext()
 	{
 		SpinningCircleHelper.SetSpinningCircleForNumberModel(Next, false);
@@ -39,9 +46,9 @@ public class NumbersList
         return true;
 	}
 
-	public NumberModel Current { get; private set; }
-	public NumberModel Next { get; private set; }
-
+	/// <summary>
+	/// Setups the initial values for <see cref="Current"/> and <see cref="Next"/> Numbers.
+	/// </summary>
 	public void Setup()
 	{
 		Current = _numbers[0];
@@ -55,11 +62,18 @@ public class NumbersList
         }
     }
 
+	/// <summary>
+	/// Adds <see cref="NumberModel"/> to the list of numbers.
+	/// </summary>
+	/// <param name="number">Object ot add.</param>
 	public void Add(NumberModel number)
 	{
 		_numbers.Add(number);
 	}
 
+	/// <summary>
+	/// Clears the list of <see cref="NumberModel"/>.
+	/// </summary>
 	public void RemoveAll()
 	{
 		_numbers.Clear();
@@ -67,12 +81,14 @@ public class NumbersList
 
 }
 
+/// <summary>
+/// Represents the model of number object.
+/// </summary>
 public class NumberModel
 {
 	public int Value { get; }
 	public Vector2 Position { get; }
 	public float Radius { get; }
-
 	public GameObject NumberObject { get; }
 	public NumberModel(int number, Vector2 position, float radius, GameObject numberObject)
 	{

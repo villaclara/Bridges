@@ -1,29 +1,24 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using TMPro;
-using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using static UnityEngine.UI.Button;
 
+/// <summary>
+/// Class for styling buttons of MultiplayerLoadingScreen.
+/// </summary>
 public class MP_LoadingScreenScript : MonoBehaviour
 {
     [SerializeField] private Button _hostGameButton;
     [SerializeField] private Button _joinGameButton;
     [SerializeField] private Button _exitButton;
     [SerializeField] private GameObject _networkMessenger;
-    private SetupNetwork _network;
-
     [SerializeField] private GameObject _spinner;
     [SerializeField] private TextMeshProUGUI _roomCodeTMP;
     [SerializeField] private Image _roomCodeImg;
     [SerializeField] private TextMeshProUGUI _connectionStatus;
 	[SerializeField] private TMP_InputField _joincode_textTMP;
 
+    private SetupNetwork _network;
+	
 	private void OnEnable()
 	{
 		_roomCodeImg.enabled = false;
@@ -58,7 +53,6 @@ public class MP_LoadingScreenScript : MonoBehaviour
         Debug.Log("ON EXIT BUTTON CLICK");
         _network.Shutdown();
 	}
-
 	private async void OnHostButtonClick()
     {
 		_connectionStatus.text = string.Empty;
@@ -90,7 +84,6 @@ public class MP_LoadingScreenScript : MonoBehaviour
 			_joinGameButton.GetComponent<DefaultButton>().enabled = true;
 		}
 	}
-
 	private async void OnJoinGameButtonClick()
     {
         _connectionStatus.text = string.Empty;

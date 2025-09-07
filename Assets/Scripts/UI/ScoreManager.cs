@@ -6,16 +6,13 @@ using UnityEngine;
 /// </summary>
 public class ScoreManager : MonoBehaviour
 {
-	public static ScoreManager Instance { get; private set; }
-
-	[SerializeField]
-	private TextMeshProUGUI _p1ScoreText;
-
-	[SerializeField]
-	private TextMeshProUGUI _p2ScoreText;
-
+	[SerializeField] private TextMeshProUGUI _p1ScoreText;
+	[SerializeField] private TextMeshProUGUI _p2ScoreText;
+	
 	private int _prevP1Score = 0;
 	private int _prevP2Score = 0;
+	
+	public static ScoreManager Instance { get; private set; }
 
 	private void Awake()
 	{
@@ -28,11 +25,12 @@ public class ScoreManager : MonoBehaviour
 		{
 			Destroy(gameObject);
 		}
-
-		// TOOD - Check if we need this in multiplayer. As in MP we already subscribe in MP_PlayerDrawing
 		PlayerManager.OnPlayerBridgesChanged += RedrawText;
 	}
 
+	/// <summary>
+	/// Updates text values with Score.
+	/// </summary>
 	private void RedrawText()
 	{
 		_p1ScoreText.text = $"P1 - {PlayerManager.player1.BridgesCount}";

@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5397081474752303097}
   - component: {fileID: 6990930727080202086}
-  - component: {fileID: 1453675015741400258}
+  - component: {fileID: 3592292452087654324}
   m_Layer: 0
   m_Name: spinningCircle (1)
   m_TagString: Untagged
@@ -87,7 +87,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &1453675015741400258
+--- !u!114 &3592292452087654324
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -100,4 +100,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 6990930727080202086}
-  fadeSpeed: 1.5
+  fadeSpeed: 1

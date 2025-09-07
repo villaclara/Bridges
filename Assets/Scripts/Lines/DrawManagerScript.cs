@@ -1,42 +1,33 @@
 using System;
-using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.Rendering.Universal;
 
+/// <summary>
+/// Manager class for <see cref="Line"/> which handles logic to mouse movement and instantianing new Line.
+/// </summary>
 public class DrawManager : MonoBehaviour, IGameStage
 {
 
 	#region fields
-	private Camera _cam;
 	[SerializeField] private Line _linePrefab;
-	[SerializeField] public GameObject Bridge;
+	[SerializeField] private GameObject Bridge;
 	[SerializeField] private GameObject _intersectionCollider;
 	[SerializeField] private NumbersList _numbers;
 	[SerializeField] private PlayerManager _playerManager;
 	[SerializeField] private MP_StageSetup _stageSetup;
 
-	[SerializeField]
 	private bool _isDrawing = false;
-
-	[SerializeField]
 	private bool _isDrawingToNextCompleted = true;
 
+	private Camera _cam;
 	private Line _currentLine;
-
+	
 	// is used for temporary saving _currentLine object into memory
 	private Line _unfinishedLine;
 	private Vector2 _previousColliderPos;
 
-
-	private readonly List<GameObject> _linesToDelete = new();
-
-
-	/// <summary>
 	/// <inheritdoc/>
-	/// </summary>
 	public event Action OnStageExecutionCompleted;
-
 
 	public NumberMessenger numberMessenger;
 	public DrawMessenger drawMessenger;
@@ -45,24 +36,9 @@ public class DrawManager : MonoBehaviour, IGameStage
 
 	void Start()
 	{
-		//_cam = Camera.main;
-		//_numbers = NumbersList.GetInstance();
-
-		//// Set first turn randomly
-		//uint seed = (uint)System.Environment.TickCount;
-		//if (seed == 0) seed = 1;
-		//var rnd = new Unity.Mathematics.Random(seed).NextBool();
-		//PlayerManager.SetupFirstTurn(rnd);
-		//Debug.Log($"First turn - {PlayerManager.playerTurn}");
-
 		drawMessenger.NumbersMoveNextReturnedFalse += DrawMessenger_NumbersMoveNextReturnFalse;
 		drawMessenger.SetNumbersListReference(_numbers);
-
 		StepTimerScript.StepTimerFinished += StepTimerScript_StepTimerFinished;
-
-		Debug.Log($"Numbers Current - {_numbers.Current.Value}, Next - {_numbers.Next.Value}");
-		Debug.Log($"Start end called in Drawmanager, numbers - {_numbers ?? null}");
-
 	}
 
 	// Update is called once per frame
@@ -347,7 +323,6 @@ public class DrawManager : MonoBehaviour, IGameStage
 			Destroy(line);
 		}
 	}
-
 	public void InvokeStageEnd()
 	{
 		OnStageExecutionCompleted?.Invoke();
@@ -378,6 +353,4 @@ public class DrawManager : MonoBehaviour, IGameStage
 					&& (point.y >= _previousColliderPos.y - IntersectionCollider.Radius * 2) && (point.y <= _previousColliderPos.y + IntersectionCollider.Radius * 2);
 
 	#endregion CheckPoints section
-
-
 }

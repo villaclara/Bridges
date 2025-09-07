@@ -1,6 +1,8 @@
-﻿using Unity.VisualScripting;
-using UnityEngine;
+﻿using UnityEngine;
 
+/// <summary>
+/// Class responsible for creating the Game Area bounds.
+/// </summary>
 [RequireComponent(typeof(EdgeCollider2D))]
 public class ScreenBoundsEdges : MonoBehaviour
 {

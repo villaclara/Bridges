@@ -1,15 +1,16 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Class showing the EndGame screen.
+/// </summary>
 public class EndGameScript : MonoBehaviour
 {
     [SerializeField] private Button _restartButton;
 
 	public event Action RestartButtonClick;
+
 	private void Start()
 	{
 		_restartButton.onClick.AddListener(OnRestartButtonClick);

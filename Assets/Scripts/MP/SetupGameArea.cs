@@ -1,6 +1,10 @@
 using Unity.Netcode;
 using UnityEngine;
 
+/// <summary>
+/// Handles logic for setup of Game Area Bounds (<see cref="ScreenBoundsEdges"/>) in MP.
+/// Responsible for making the Game Area the same for both players.
+/// </summary>
 public class SetupGameArea : NetworkBehaviour
 {
 	/// <summary>

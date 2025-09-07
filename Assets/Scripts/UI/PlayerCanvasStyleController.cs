@@ -6,10 +6,8 @@ using UnityEngine;
 /// </summary>
 public class PlayerCanvasStyleController : MonoBehaviour
 {
-	private GameObject _obj;
-
-	[SerializeField]
 	private int _playerId;
+	private GameObject _obj;
 
 	private void Awake()
 	{
@@ -18,6 +16,10 @@ public class PlayerCanvasStyleController : MonoBehaviour
 		PlayerManager.OnPlayerTurnSwitch += PlayerManager_OnPlayerTurnSwitch;
 	}
 
+	/// <summary>
+	/// Changes outline for the current Plaeyr. 
+	/// Used only in Local for now.
+	/// </summary>
 	private void PlayerManager_OnPlayerTurnSwitch()
 	{
 		Debug.Log($"{nameof(PlayerManager.OnPlayerTurnSwitch)} called in code, turn - {PlayerManager.playerTurn}");
@@ -29,7 +31,6 @@ public class PlayerCanvasStyleController : MonoBehaviour
 		};
 		a?.Invoke();
 	}
-
 
 	// Sets the thicker border if player 1 turn
 	private void ChangeOutline_forP1() =>

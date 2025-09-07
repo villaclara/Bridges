@@ -1,29 +1,25 @@
-	using System;
+using System;
 using System.Collections.Generic;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 
+/// <summary>
+/// Manager CLass for Drawing Numbers stage. 
+/// Handles the Stage execution. 
+/// </summary>
 public class NumbersManager : MonoBehaviour, IGameStage
 {
-	[SerializeField]
-	private int _currentNumber = 1;
-
-	public NumberScript numberPrefab;
-
-	[SerializeField]
-	private TextMeshProUGUI _playerDrawingText;
-
-	private readonly NumbersList _numbersList = NumbersList.GetInstance();
-
-	// event is called when all numbers are added and positions are set
-	public event Action OnStageExecutionCompleted;
-
-	private readonly List<GameObject> _numbersToDelete = new();
-	private NumberScript prevCircle = null;
-
+	[SerializeField] private int _currentNumber = 1;
+	[SerializeField] private TextMeshProUGUI _playerDrawingText;
 	[SerializeField] private MP_StageSetup _stageSetup;
 
+	private readonly NumbersList _numbersList = NumbersList.GetInstance();
+	private readonly List<GameObject> _numbersToDelete = new();
+	
+	// event is called when all numbers are added and positions are set
+	public event Action OnStageExecutionCompleted;
+	public NumberScript numberPrefab;
 	public NumberMessenger numberMessenger;
 
 	private void Awake()
@@ -31,6 +27,10 @@ public class NumbersManager : MonoBehaviour, IGameStage
 		numberMessenger.SetNumbersListReference(_numbersList);
 	}
 
+	/// <summary>
+	/// Creates the new <see cref="NumberModel"/> object and checks the stage execution.
+	/// </summary>
+	/// <param name="model"></param>
 	private void CreateNumber(NumberModel model = null)
 	{
 		if (model is not null)
@@ -100,10 +100,13 @@ public class NumbersManager : MonoBehaviour, IGameStage
 		_numbersList.RemoveAll();
 	}
 
+	/// <summary>
+	/// Instantiates new <see cref="NumberScript"/> GO.
+	/// </summary>
+	/// <param name="spawnNetworkObject">Wheter to spawn NetworkObject related to this GO.</param>
 	private void InstantiateNewNumber(bool spawnNetworkObject)
 	{
 		var current = Instantiate(numberPrefab, NumberScript.DefaultPosition, Quaternion.identity);
-		prevCircle = current;
 		_numbersToDelete.Add(current.gameObject);
 		var textObject = current.transform.GetComponentInChildren<TextMeshPro>();
 		textObject.text = _currentNumber.ToString();

@@ -1,16 +1,19 @@
+using System;
 using UnityEngine;
 
-public class spinningCircle : MonoBehaviour
+/// <summary>
+/// Class for managing spinning cirle around the Number. 
+/// Handles fade animation and color.
+/// </summary>
+public class SpinningCircle : MonoBehaviour
 {
-	private float spinSpeed = 50f;
-
-	public SpriteRenderer spriteRenderer;
-	public float fadeSpeed = 0.5f; // Speed of fade
-
+	private float spinSpeed = 70f;
 	private float alpha = 0.3f;
 	private bool fadingOut = true;
-
 	private SpriteRenderer _renderer;
+	
+	public SpriteRenderer spriteRenderer;
+	public float fadeSpeed = 1f; // Speed of fade
 
 	private void Awake()
 	{
@@ -25,7 +28,6 @@ public class spinningCircle : MonoBehaviour
 			PlayerTurn.P2_Turn => GlobalVars.DEFAULT_P2_COLOR,	// green
 			_ => new Color32(47, 107, 67, 255)						// dark green
 		};
-
 
 		transform.Rotate(Vector3.forward, spinSpeed * Time.deltaTime);
 

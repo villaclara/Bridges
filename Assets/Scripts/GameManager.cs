@@ -5,6 +5,9 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Principal Manager of all managers. Reponsible for match starting and stages executing etc.
+/// </summary>
 public class GameManager : MonoBehaviour
 {
 	[Header("Game Mode")]
@@ -150,7 +153,6 @@ public class GameManager : MonoBehaviour
 		}
 	}
 }
-
 
 /// <summary>
 /// Represents the possible game modes.

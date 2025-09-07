@@ -3,25 +3,26 @@ using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 
+/// <summary>
+/// Class handles the logic of creating and moving Number object in Drawing stage.
+/// </summary>
 public class NumberScript : NetworkBehaviour
 {
 	public static readonly Vector3 DefaultPosition = new(0f, 0f, -2f);   // if 0z - the black border is not visible
 
 	#region private fields
-
+	
 	private Camera _cam;
 	private bool _isDragging;
 	private bool _isValidPositionToStopDrag = true; // by default we allow to stop
 	private SpriteRenderer _circleRenderer;
 	private bool _isEnabled = true;
-
 	private float defaultRadius;	// is used in collider check to block number not by center, but rather full
-
-	public int value;
+	
 	#endregion
 
 	#region public fields
-
+	public int value;
 	public event Action<bool> OnIsAllowedToStopDragChanged;
 
 	public bool IsValidPosToStopDrag
@@ -78,7 +79,6 @@ public class NumberScript : NetworkBehaviour
 
 		// Check if mouse is not over the screen.
 		// xz chu norm tyt.
-
 		Vector3 mousePos1 = Input.mousePosition;
 		var isMouseOverScreen = mousePos1.x >= 0 && mousePos1.x <= Screen.width &&
 			   mousePos1.y >= 0 && mousePos1.y <= Screen.height;
@@ -97,7 +97,6 @@ public class NumberScript : NetworkBehaviour
 		{
 			Bounds b = ScreenBoundsEdges.Instance.GetBounds();
 
-			
 			// adding/subtracting defaultRadius to set number position to full under the edgeCollider
 			newPos.x = Mathf.Clamp(newPos.x, b.min.x + defaultRadius, b.max.x - defaultRadius);
 			newPos.y = Mathf.Clamp(newPos.y, b.min.y + defaultRadius, b.max.y - defaultRadius);

@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Extension methods for enabling/disabling <see cref="SpinningCircle"/> aroung Number.
+/// </summary>
 public static class SpinningCircleHelper
 {
     public static void SetSpinningCircleForNumberModel(NumberModel numberModel, bool toSetActive, bool destroyThisGO = false)

@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Class for Line GO which adds the points to the line and draws it.
+/// </summary>
 public class Line : MonoBehaviour
 {
 
@@ -14,6 +17,10 @@ public class Line : MonoBehaviour
 		_collider.transform.position -= transform.position; //to make collider points the same as line points
 	}
 
+	/// <summary>
+	/// Sets the color of <see cref="LineRenderer"/> to the current player color.
+	/// </summary>
+	/// <param name="colorHEX"></param>
 	public void SetLineColor(string colorHEX)
 	{
 		if (ColorUtility.TryParseHtmlString(colorHEX, out Color newcolor))
@@ -24,6 +31,10 @@ public class Line : MonoBehaviour
 		}
 	}
 
+	/// <summary>
+	/// Adds position to the line and updates the <see cref="EdgeCollider2D"/> object with Line.
+	/// </summary>
+	/// <param name="pos">Position to add.</param>
 	public void SetPosition(Vector2 pos)
 	{
 		if (!CanAppend(pos))
@@ -38,6 +49,12 @@ public class Line : MonoBehaviour
 		_collider.points = _points.ToArray();
 	}
 
+	/// <summary>
+	/// Checks if the position can be added into the line.
+	/// Using distance between last position of line to the position in parameter.
+	/// </summary>
+	/// <param name="pos">Position to check.</param>
+	/// <returns>True/False if position can be added to the Line.</returns>
 	private bool CanAppend(Vector2 pos)
 	{
 		if (_renderer.positionCount == 0)

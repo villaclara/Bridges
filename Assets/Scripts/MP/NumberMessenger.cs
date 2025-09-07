@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
+/// <summary>
+/// Messenger Class to manipulated data in MP of the <see cref="NumbersManager"/> class.
+/// </summary>
 public class NumberMessenger : NetworkBehaviour
 {
     /// <summary>
@@ -10,6 +13,10 @@ public class NumberMessenger : NetworkBehaviour
     /// </summary>
     private NumbersList _numbersList;
 
+    /// <summary>
+    /// Sets reference to the local copy of numbers used in MP.
+    /// </summary>
+    /// <param name="numbersList"></param>
     public void SetNumbersListReference(NumbersList numbersList)
     {
         _numbersList = numbersList;
@@ -50,6 +57,9 @@ public class NumberMessenger : NetworkBehaviour
         SetupNumbersListRpc();
     }
 
+    /// <summary>
+    /// Tells Client to setup numbers - assign Current and Next numbers.
+    /// </summary>
     [Rpc(SendTo.NotServer)]
     private void SetupNumbersListRpc()
     {

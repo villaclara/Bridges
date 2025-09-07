@@ -1,9 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
+/// <summary>
+/// Class for default styling behavior for all buttons in the game (except DSA screen buttons).
+/// </summary>
 public class DefaultButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler
 {
 	private Color32 _originalColor = GlobalVars.DEFAULT_GREEN_BUTTON_COLOR;
@@ -13,6 +14,7 @@ public class DefaultButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 	{
 		_imgComp = GetComponent<Image>();
 	}
+
 	public void OnPointerEnter(PointerEventData eventData)
 	{
 		_imgComp.color = new Color(_imgComp.color.r * GlobalVars.DARKER_MULTIPLYER, 
@@ -41,7 +43,6 @@ public class DefaultButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 		GetComponent<Button>().interactable = false;
 		enabled = false;
 	}
-
 	public void SetDisabled()
 	{
 		gameObject.GetComponent<Image>().color = Color.grey;

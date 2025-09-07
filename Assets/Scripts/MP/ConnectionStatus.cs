@@ -15,16 +15,16 @@ public class ConnectionStatus : NetworkBehaviour
 	[SerializeField] private TextMeshProUGUI connectionStatusText;
 	[SerializeField] private TextMeshProUGUI _restartPlayersCountTMP;
 
-	public GameObject gameManager;
-	public DisconnectScreen disconnectScreen;
-	public SetupGameArea setupGameArea;
-
 	// NetworkVariable to sync the status message across clients
 	private NetworkVariable<FixedString128Bytes> statusMessage = new NetworkVariable<FixedString128Bytes>(
 		"Waiting for connection...");
 
 	// NetworkVariable to sync the count of players wanting to restart game in MP EndGameScreen
 	private NetworkVariable<int> _restartPlayersCount = new();
+
+	public GameObject gameManager;
+	public DisconnectScreen disconnectScreen;
+	public SetupGameArea setupGameArea;
 
 	/// <inheritdoc/>
 	public override void OnNetworkSpawn()

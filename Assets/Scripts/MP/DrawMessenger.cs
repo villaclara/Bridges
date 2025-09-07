@@ -1,21 +1,20 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
+/// <summary>
+/// Messenger Class for sending messages to manipulate data related to the <see cref="DrawManager"/> and <see cref="MP_Line"/> classes.
+/// </summary>
 public class DrawMessenger : NetworkBehaviour
 {
-
-	private NumbersList _numbers;
-
 	[SerializeField] private Line _linePrefab;
 	[SerializeField] private BridgeScript _bridgePrefab;
+	[SerializeField] private List<Sprite> _bridgeSprites;
+	
+	private NumbersList _numbers;
 	private Line _currentLine;
 	private BridgeScript _currentBridge;
-
-	[SerializeField]
-	private List<Sprite> _bridgeSprites;
 
 	/// <summary>
 	/// Is invoked when using _numbers.MoveNext() returns false, meaning its endgame.
@@ -23,6 +22,10 @@ public class DrawMessenger : NetworkBehaviour
 	/// </summary>
 	public event Action NumbersMoveNextReturnedFalse;
 
+	/// <summary>
+	/// Adds reference to the list of numbers for local copy of it in MP.
+	/// </summary>
+	/// <param name="numbersList"></param>
 	public void SetNumbersListReference(NumbersList numbersList)
 	{
 		_numbers = numbersList;

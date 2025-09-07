@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Some Global Variable for the game.
+/// </summary>
 public class GlobalVars
 {
 	public static bool IsMobilePlatform = false;
@@ -15,7 +18,6 @@ public class GlobalVars
 
 	public readonly static List<GameObject> linesToDelete = new();
 	public readonly static List<GameObject> bridgesToDelete = new();
-
 
 	public readonly static Color32 DEFAULT_GREEN_BUTTON_COLOR = new(0, 191, 166, 227);
 	public readonly static Color32 DARKER_GREEN_BUTTON_COLOR = new Color(

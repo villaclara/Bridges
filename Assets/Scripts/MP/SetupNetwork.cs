@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Unity.Netcode.Transports.UTP;
 using Unity.Netcode;
@@ -13,16 +11,17 @@ using System;
 using System.Text.RegularExpressions;
 using Unity.Services.Relay.Models;
 
+/// <summary>
+/// Setups the Network as StartClient, StartHost for MP match.
+/// </summary>
 public class SetupNetwork : MonoBehaviour
 {
-
 	[SerializeField] private TextMeshProUGUI createdJoinCode;
 	[SerializeField] private TextMeshProUGUI clientJoinCode;
 	[SerializeField] private TextMeshProUGUI connectionStatusText;
 	[SerializeField] private GameObject _spinner;
 
 	private Allocation _hostRelayAllocation;
-
 	
 	/// <summary>
 	/// Gets the boolean value when the user disconnects if it is the CURRENT user who disconnected.
@@ -50,14 +49,12 @@ public class SetupNetwork : MonoBehaviour
 
 		try
 		{
-
 			_hostRelayAllocation = await RelayService.Instance.CreateAllocationAsync(maxConnections);
 			NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(new RelayServerData(_hostRelayAllocation, connectionType));
 			NetworkManager.Singleton.GetComponent<UnityTransport>().UseWebSockets = true;
 			var joinCode = await RelayService.Instance.GetJoinCodeAsync(_hostRelayAllocation.AllocationId);
 			Debug.Log($"joincode - " + joinCode);
 			createdJoinCode.text = "Room Code - " + joinCode;
-			//connectionStatusText.text = "Waiting for players...";
 			_spinner.SetActive(false);
 			return NetworkManager.Singleton.StartHost() ? joinCode : null;
 		}
@@ -68,7 +65,6 @@ public class SetupNetwork : MonoBehaviour
 			return null;
 		}
 	}
-
 
 	/// <summary>
 	/// Start Client with Relay. 
@@ -100,7 +96,6 @@ public class SetupNetwork : MonoBehaviour
 			connectionStatusText.text = "Error when joining.";
 			return false;
 		}
-
 	}
 	private async Task<bool> StartClientWithRelay(string joinCode, string connectionType)
 	{

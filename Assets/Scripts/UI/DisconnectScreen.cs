@@ -4,18 +4,15 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Class for disconnect screen.
+/// </summary>
 public class DisconnectScreen : MonoBehaviour
 {
-	[SerializeField]
-	private Button _returnButton;
-
-	[SerializeField]
-	private GameObject _loadingScreen;
-	[SerializeField]
-	private GameObject _mpLoadingScreen;
-	[SerializeField]
-	private GameObject _endGameScreen;
-
+	[SerializeField] private Button _returnButton;
+	[SerializeField] private GameObject _loadingScreen;
+	[SerializeField] private GameObject _mpLoadingScreen;
+	[SerializeField] private GameObject _endGameScreen;
 
 	private void Start()
 	{

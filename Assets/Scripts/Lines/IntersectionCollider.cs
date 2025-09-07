@@ -3,25 +3,20 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
+/// <summary>
+/// The small object on top of the drawing Line, responsible for detecting intersection of current line with another GO.
+/// </summary>
 public class IntersectionCollider : MonoBehaviour
 {
+	[SerializeField] private PlayerManager _playerManager;
+	[SerializeField] private Sprite _p1Sprite;
+	[SerializeField] private Sprite _p2Sprite;
+
 	public GameObject Bridge;
-
-	[SerializeField]
-	private PlayerManager _playerManager;
-
-	[SerializeField]
-	private Sprite _p1Sprite;
-	[SerializeField]
-	private Sprite _p2Sprite;
+	public DrawMessenger drawMessenger;
 
 	private bool _canPlaceBridge = true;
 	public static float Radius;
-
-
-	private readonly List<GameObject> _bridgesToDelete = new();
-
-	public DrawMessenger drawMessenger;
 
 	private void Awake()
 	{
@@ -33,10 +28,7 @@ public class IntersectionCollider : MonoBehaviour
 	{
 		if (_canPlaceBridge && collision.CompareTag("Line"))
 		{
-			Debug.Log("Line collision, can place bridge");
-
 			GameObject bridge;
-
 			bridge = Instantiate(Bridge, new Vector3(transform.position.x, transform.position.y, -5), Quaternion.identity);
 
 			if(GameManager.GameMode == GameMode.Multiplayer)
@@ -52,7 +44,6 @@ public class IntersectionCollider : MonoBehaviour
 			}
 
 			GlobalVars.bridgesToDelete.Add(bridge);
-			//_bridgesToDelete.Add(bridge);
 			Action a = PlayerManager.playerTurn switch
 			{
 				PlayerTurn.P1_Turn => () =>
@@ -72,8 +63,7 @@ public class IntersectionCollider : MonoBehaviour
 					}
 					ChangeSpriteOfBridge(bridge, _p1Sprite);
 					AddBridgeToPlayer(PlayerManager.player1, 1);
-				}
-				,
+				},
 				PlayerTurn.P2_Turn => () =>
 				{
 					bridge.GetComponent<BridgeScript>().currentPlayer = PlayerManager.player2;
@@ -91,8 +81,7 @@ public class IntersectionCollider : MonoBehaviour
 					}
 					ChangeSpriteOfBridge(bridge, _p2Sprite);
 					AddBridgeToPlayer(PlayerManager.player2, 1);
-				}
-				,
+				},
 				_ => () => Debug.Log($"Switch player turn did not find proper value")
 			};
 			a.Invoke();
@@ -100,7 +89,6 @@ public class IntersectionCollider : MonoBehaviour
 		else if (collision.CompareTag("Bridge"))
 		{
 			_canPlaceBridge = false;
-
 			if (!collision.GetComponent<BridgeScript>().currentPlayer.IsMyTurn)
 			{
 				Action a = PlayerManager.playerTurn switch
@@ -111,15 +99,12 @@ public class IntersectionCollider : MonoBehaviour
 				};
 				a.Invoke();
 			}
-
-
 		}
 		else if (collision.CompareTag("Number"))
 		{
 			_canPlaceBridge = false;
 			return;
 		}
-
 	}
 
 	private void OnTriggerExit2D(Collider2D collision)
@@ -204,5 +189,4 @@ public class IntersectionCollider : MonoBehaviour
 			Destroy(bridge);
 		}
 	}
-
 }
