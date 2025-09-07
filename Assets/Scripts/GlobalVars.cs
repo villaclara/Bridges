@@ -8,9 +8,9 @@ public class GlobalVars
 {
 	public static bool IsMobilePlatform = false;
 
-	public const int NUMBERS_COUNT = 5;
+	public const int NUMBERS_COUNT = 15;
 
-	public const int TURN_TIMER_VALUE_SECONDS = 10;
+	public const int TURN_TIMER_VALUE_SECONDS = 20;
 
 	public static int score = 0;
 
