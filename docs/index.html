@@ -24,12 +24,12 @@
     <script>
       var canvas = document.querySelector("#unity-canvas");
       var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/bridges_webgl_release_gzip_disksizeLTO.loader.js";
+      var loaderUrl = buildUrl + "/bridges_webgl_release_brotli_decomfallback_disksizeLTO.loader.js";
       var config = {
         arguments: [],
-        dataUrl: buildUrl + "/bridges_webgl_release_gzip_disksizeLTO.data.gz",
-        frameworkUrl: buildUrl + "/bridges_webgl_release_gzip_disksizeLTO.framework.js.gz",
-        codeUrl: buildUrl + "/bridges_webgl_release_gzip_disksizeLTO.wasm.gz",
+        dataUrl: buildUrl + "/bridges_webgl_release_brotli_decomfallback_disksizeLTO.data.unityweb",
+        frameworkUrl: buildUrl + "/bridges_webgl_release_brotli_decomfallback_disksizeLTO.framework.js.unityweb",
+        codeUrl: buildUrl + "/bridges_webgl_release_brotli_decomfallback_disksizeLTO.wasm.unityweb",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "AVK Entertainment",
         productName: "Bridges",
