@@ -24,4 +24,9 @@ The game is available:
 - directly plat at [itch.io](https://villaclara.itch.io/bridges),
 - download windows zip archive at [itch.io](https://villaclara.itch.io/bridges).
 
-See you in the game :)
+See you in the game and check some game screenshots:
+
+<img width="300" height="600" alt="photo_2025-09-10_01-40-23-portrait" src="https://github.com/user-attachments/assets/0f1dbfc7-aa76-4964-8a2b-831c94c1543e" />
+<img width="300" height="600" alt="photo_2025-09-10_01-29-01-portrait" src="https://github.com/user-attachments/assets/39113ac1-0630-472d-8657-a8c049192691" />
+<img width="300" height="600" alt="photo_2025-09-10_01-29-00-portrait" src="https://github.com/user-attachments/assets/b8a76732-504e-4886-9825-92a7b5724a25" />
+<img width="1598" height="928" alt="Screenshot 2025-09-10 013248" src="https://github.com/user-attachments/assets/9bbad053-4d5d-4d05-9f35-7faeb262b480" />
