@@ -1,0 +1,49 @@
+name: Prepare and Deploy GitHub Pages
+
+on:
+  push:
+    branches:
+      - gh-pages   # runs when you push to gh-pages branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout gh-pages
+        uses: actions/checkout@v4
+
+      # Rename Brotli files for GitHub Pages
+      - name: Rename Brotli files
+        run: |
+          cd release
+          for f in $(find . -type f -name "*.br"); do
+            newname="${f%.br}"
+            mv "$f" "$newname"
+          done
+          cd ..
+
+      # Update index.html references from .br → normal
+      - name: Update index.html loader references
+        run: |
+          INDEX_FILE="release/index.html"
+          sed -i 's/\.wasm\.br/\.wasm/g' $INDEX_FILE
+          sed -i 's/\.data\.br/\.data/g' $INDEX_FILE
+          sed -i 's/\.js\.br/\.js/g' $INDEX_FILE
+
+      # Commit renamed files and updated index.html
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Rename Brotli files and fix index.html" || echo "No changes to commit"
+          git push origin gh-pages
+
+      # Deploy release folder to GitHub Pages
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: ./release
