@@ -40,11 +40,3 @@ jobs:
           git add -A
           git commit -m "Rename Brotli files and fix index.html [skip ci]" || echo "No changes to commit"
           git push origin gh-pages
-
-      # Deploy release folder to GitHub Pages
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: gh-pages
-          publish_dir: ./docs
