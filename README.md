@@ -21,7 +21,7 @@ This game was developed together with my brother [@villaclaraaa](https://github.
 
 The game is available:
 - directly play at [Github Pages](https://villaclara.github.io/bridges). 
-- directly plat at [itch.io|https://villaclara.itch.io/bridges]
-- download windows zip archive at [itch.io|https://villaclara.itch.io/bridges]
+- directly plat at [itch.io](https://villaclara.itch.io/bridges),
+- download windows zip archive at [itch.io](https://villaclara.itch.io/bridges).
 
 See you in the game :)
