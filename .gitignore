@@ -7,3 +7,6 @@
 
 # Keep .gitignore itself tracked
 !.gitignore
+
+!.github/
+!.github/**
