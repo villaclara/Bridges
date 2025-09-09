@@ -8,6 +8,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    if: github.actor != 'github-actions[bot]'   # prevents infinite loops
 
     steps:
       - name: Checkout gh-pages
@@ -16,7 +17,7 @@ jobs:
       # Rename Brotli files for GitHub Pages
       - name: Rename Brotli files
         run: |
-          cd release
+          cd docs
           for f in $(find . -type f -name "*.br"); do
             newname="${f%.br}"
             mv "$f" "$newname"
@@ -26,7 +27,7 @@ jobs:
       # Update index.html references from .br → normal
       - name: Update index.html loader references
         run: |
-          INDEX_FILE="release/index.html"
+          INDEX_FILE="docs/index.html"
           sed -i 's/\.wasm\.br/\.wasm/g' $INDEX_FILE
           sed -i 's/\.data\.br/\.data/g' $INDEX_FILE
           sed -i 's/\.js\.br/\.js/g' $INDEX_FILE
@@ -37,7 +38,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -A
-          git commit -m "Rename Brotli files and fix index.html" || echo "No changes to commit"
+          git commit -m "Rename Brotli files and fix index.html [skip ci]" || echo "No changes to commit"
           git push origin gh-pages
 
       # Deploy release folder to GitHub Pages
@@ -46,4 +47,4 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
-          publish_dir: ./release
+          publish_dir: ./docs
