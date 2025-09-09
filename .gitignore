@@ -2,8 +2,8 @@
 *
 
 # Except release folder
-!release/
-!release/**
+!docs/
+!docs/**
 
 # Keep .gitignore itself tracked
 !.gitignore
